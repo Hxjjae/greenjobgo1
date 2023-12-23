@@ -1,13 +1,17 @@
 package com.green.greenjobgo1.config.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @Table(name = "admin")
 @Entity
 @ToString(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class AdminEntity{
 
     /** pk **/
