@@ -9,6 +9,8 @@ import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "student")
@@ -21,6 +23,12 @@ public class StudentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long istudent;
+
+    @OneToMany(mappedBy = "studentEntity")
+    private List<StudentCourseSubjectEntity> scsList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "studentEntity")
+    private List<FileEntity> files = new ArrayList<>();
 
     @Column(nullable = false, length = 20, name = "student_id")
     private String id;
@@ -63,6 +71,8 @@ public class StudentEntity {
 
     @Column(nullable = false, length = 10)
     private int editableYn;
+
+
 
 
 

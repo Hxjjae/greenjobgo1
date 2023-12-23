@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Table(name = "course_subject")
@@ -20,6 +22,10 @@ public class CourseSubjectEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false, length = 20, name = "icourse_subject")
     private Long icourseSubject;
+
+    @OneToMany(mappedBy = "courseSubjectEntity")
+    private List<StudentCourseSubjectEntity> scsList = new ArrayList<>();
+
 
     @Column(nullable = false, length = 20, name = "subject_name")
     private String subjectName;
