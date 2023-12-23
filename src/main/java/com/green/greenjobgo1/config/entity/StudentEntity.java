@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import java.time.LocalDate;
@@ -61,16 +62,22 @@ public class StudentEntity {
     private String role;
 
     @Column(nullable = false, name = "huntjob_yn", length = 10)
+    @ColumnDefault("0")
     private int huntJobYn;
 
     @Column(name = "secret_key")
     private String secretKey;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 10, name = "storage_yn")
+    @ColumnDefault("0")
     private int storageYn;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 10, name = "editable_yn")
+    @ColumnDefault("0")
     private int editableYn;
+
+    private int delYn;
+
 
 
 

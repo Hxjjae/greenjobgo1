@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 
 @Data
 @Table(name = "admin")
@@ -34,6 +35,7 @@ public class AdminEntity{
 
     /** **/
     @Column(nullable = false, length = 10, name = "del_yn")
+    @ColumnDefault("0")
     private int delYn;
 
     @Column(length = 100, name = "secret_key")
