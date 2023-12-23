@@ -1,0 +1,68 @@
+package com.green.greenjobgo1.config.entity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.ToString;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "student")
+@Data
+@ToString(callSuper = true)
+public class StudentEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
+    private Long istudent;
+
+    @Column(nullable = false, length = 20, name = "student_id")
+    private String id;
+
+    @Column(nullable = false, length = 100, name = "student_pw")
+    private String pw;
+
+    @Column(nullable = false, length = 20, name = "mobile_number")
+    private String mobileNumber;
+
+    @Column(nullable = false, length = 20)
+    private String name;
+
+    @Column(nullable = false)
+    private LocalDate birthday;
+
+    @Column(nullable = false)
+    private int gender;
+
+    @Column(nullable = false, length = 20)
+    private String address;
+
+    @Column(length = 20, name = "address_detail")
+    private String addressDetail;
+
+    @Column(nullable = false, length = 20)
+    private String education;
+
+    @Column(nullable = false, length = 20)
+    private String role;
+
+    @Column(nullable = false, name = "huntjob_yn", length = 10)
+    private int huntJobYn;
+
+    @Column(name = "secret_key")
+    private String secretKey;
+
+    @Column(nullable = false, length = 10)
+    private int storageYn;
+
+    @Column(nullable = false, length = 10)
+    private int editableYn;
+
+
+
+
+
+
+}
