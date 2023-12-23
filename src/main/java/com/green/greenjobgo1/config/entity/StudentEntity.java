@@ -1,7 +1,9 @@
 package com.green.greenjobgo1.config.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
@@ -12,6 +14,8 @@ import java.time.LocalDateTime;
 @Table(name = "student")
 @Data
 @ToString(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class StudentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
