@@ -5,12 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.core.annotation.Order;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Table(name = "file_category")
+@Order(1)
 @Entity
 @ToString(callSuper = true)
 @NoArgsConstructor

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "student")
+@Order(1)
 @Data
 @ToString(callSuper = true)
 @NoArgsConstructor

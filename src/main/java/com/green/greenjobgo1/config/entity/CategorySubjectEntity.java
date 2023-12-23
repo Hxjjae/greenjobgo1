@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.core.annotation.Order;
 
 @Data
 @Table(name = "category_subject")
+@Order(1)
 @Entity
 @ToString(callSuper = true)
 @NoArgsConstructor

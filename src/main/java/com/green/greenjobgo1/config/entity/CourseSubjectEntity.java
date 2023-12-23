@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.core.annotation.Order;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Data
 @Table(name = "course_subject")
+@Order(2)
 @Entity
 @ToString(callSuper = true)
 @NoArgsConstructor
@@ -37,5 +39,5 @@ public class CourseSubjectEntity {
     private LocalDate endedAt;
 
     @Column(nullable = false, length = 10)
-    private int condition;
+    private int subjectCondition;
 }
