@@ -10,7 +10,7 @@ import org.springframework.core.annotation.Order;
 @Entity
 @Data
 @Order(1)
-@Table(name = "Company_list")
+@Table(name = "company")
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
