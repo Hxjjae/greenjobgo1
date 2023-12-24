@@ -22,7 +22,7 @@ public class StudentCourseSubjectEntity {
     private Long iStdCosSub;
 
     @ManyToOne
-    @JoinColumn(name = "icourse_subject")
+    @JoinColumn(name = "icourseSubject")
     private CourseSubjectEntity courseSubjectEntity;
 
     @ManyToOne

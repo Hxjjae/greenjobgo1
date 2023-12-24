@@ -1,54 +1,58 @@
-app:
-  auth:
-    header-scheme-name: authorization
-    token-type: Bearer
-    access-secret: DeaguGreenArtAcademyClass502ForJavaSpringBoot
-    accessTokenExpiry: 3_600_000 # 1??
-    refresh-secret: ForJavaSpringBootClass502DaeguGreenArtAcademy
-    refreshTokenExpiry: 1_296_000_000 # 15?
-    redis-access-black-key: "A-AT-BLACK"
-    redis-refresh-key: "A-RT"
-  oauth2:
-    authorized-redirect-uris:
-      - http://localhost:8080/oauth/redirect #?????
-      - http://localhost:8080/oauth/redirect
-
+# 토큰의 암호화 복호화를 위한 secret key로서 이후 HS256 알고리즘을 사용하기 위해, 256비트보다 커야한다.
+# 알파벳은 한단어 당 8bit 이므로 32글자 이상이면 된다.
 springboot:
   jwt:
-    access-secret: DeaguGreenArtAcademyClass502ForJavaSpringBootaaaasdf
+    access-secret: DaeguGreenArtAcademyClass502ForJavaSpringBootaaaasdf
     refresh-secret: HelloWorldRefreshTokenCreateBySecretHaHaaasdfasdf
-    header-scheme-name: authorization
+    header-scheme-name: Authorization
     token-type: Bearer
-
+#DB
 spring:
   servlet:
     multipart:
-      max-file-size: 25MB
-      max-request-size: 50MB
-
-  datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/team_green
-    username: team_green
-    password: green502
-
+      max-file-size: 3MB
+      max-request-size: 12MB
   jpa:
     hibernate:
-      ddl-auto: update # Entity? ??? ?? ???? ???.
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/greenjobgo1
+    username: root
+    password: green502
+  #mybatisz
 
-  data:
-    redis:
-      host: localhost:8080
-      port: 6379
 
-# swagger
+mybatis:
+  type-aliases-package: com.green.greenjobgo1
+  mapper-locations: mapper/**/*.xml
+
+#SWAGGER
 springdoc:
   swagger-ui:
     path: /swagger.html
+    operations-sorter : method
+
 
 file:
-  dir: /home/download
+  dir: /home/smartGradeVer2
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:mariadb://localhost:3306/greenjobgo1_test?allowMultiQueries=true
+    username: root
+    password: green502
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:init/schema.sql
+      data-locations: classpath:init/data.sql

@@ -25,6 +25,10 @@ public class CourseSubjectEntity {
     @Column(updatable = false, nullable = false, length = 20, name = "icourse_subject")
     private Long icourseSubject;
 
+    @ManyToOne
+    @JoinColumn(name = "iclassfication")
+    private CategorySubjectEntity categorySubjectEntity;
+
     @OneToMany(mappedBy = "courseSubjectEntity")
     private List<StudentCourseSubjectEntity> scsList = new ArrayList<>();
 
