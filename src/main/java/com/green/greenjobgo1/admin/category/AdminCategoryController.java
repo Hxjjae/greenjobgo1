@@ -4,6 +4,7 @@ import com.green.greenjobgo1.admin.category.model.*;
 import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.NamedStoredProcedureQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ public class AdminCategoryController {
 
     @Autowired
     private final AdminCategoryService SERVICE;
+
     @PostMapping
     @Operation(summary = "카테고리 추가", description = "")
     public AdminCategoryInsRes postAdminCategory(@RequestBody AdminCategoryInsDto dto) {
@@ -35,9 +37,18 @@ public class AdminCategoryController {
 
     @PutMapping
     @Operation(summary = "카테고리 수정", description = "")
-    public AdminCategoryVo putAdminCategory(@RequestBody AdminCategoryDto dto) {
+    public AdminCategoryVo putAdminCategory(@RequestParam Long iclassification, @RequestParam String classification) {
         CategorySubjectEntity entity = new CategorySubjectEntity();
-        entity.setIclassification(dto.getIclassification());
+        entity.setIclassification(iclassification);
+        entity.setClassification(classification);
         return SERVICE.updAdminCategory(entity);
+    }
+
+    @DeleteMapping
+    @Operation(summary = "카테고리 삭제", description = "")
+    public AdminCategoryVo delAdminCategory(@RequestParam Long iclassification) {
+        CategorySubjectEntity entity = new CategorySubjectEntity();
+        entity.setIclassification(iclassification);
+        return SERVICE.delAdminCategory(entity);
     }
 }

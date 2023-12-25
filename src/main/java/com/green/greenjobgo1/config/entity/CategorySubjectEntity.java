@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.core.annotation.Order;
 
 @Data
@@ -22,6 +23,12 @@ public class CategorySubjectEntity {
     private Long iclassification;
 
     @Column(nullable = false, length = 10)
+    @ColumnDefault("빈 값")
     private String classification;
+
+    @Column(nullable = false, length = 10, name = "del_yn")
+    @ColumnDefault("0")
+    private int delYn;
+
 
 }

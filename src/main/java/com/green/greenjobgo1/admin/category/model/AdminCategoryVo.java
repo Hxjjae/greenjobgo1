@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class AdminCategoryVo {
     private Long iclassification;
     private String classification;
+    private int delYn;
 
 }

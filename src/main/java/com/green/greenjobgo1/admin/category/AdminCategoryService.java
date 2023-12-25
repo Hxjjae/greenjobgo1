@@ -1,12 +1,11 @@
 package com.green.greenjobgo1.admin.category;
 
-import com.green.greenjobgo1.admin.category.model.AdminCategoryDto;
 import com.green.greenjobgo1.admin.category.model.AdminCategoryInsDto;
 import com.green.greenjobgo1.admin.category.model.AdminCategoryInsRes;
 import com.green.greenjobgo1.admin.category.model.AdminCategoryVo;
 import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
+import com.green.greenjobgo1.repository.AdminCategoryRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jdk.jfr.Category;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,15 +45,37 @@ public class AdminCategoryService {
 
 
         if (byId.isPresent()) {
-            CategorySubjectEntity categorySubjectEntity = byId.get();
-            categorySubjectEntity.setClassification(entity.getClassification());
+            if (byId.get().getDelYn() == 0) {
+                CategorySubjectEntity csEntity = byId.get();
+                csEntity.setClassification(entity.getClassification());
 
-            CategorySubjectEntity save = AC_REP.save(categorySubjectEntity);
+                CategorySubjectEntity save = AC_REP.save(csEntity);
 
+                return AdminCategoryVo.builder()
+                        .iclassification(entity.getIclassification())
+                        .classification(save.getClassification())
+                        .build();
+            } else {
+                throw new EntityNotFoundException("해당 컬럼은 삭제된 컬럼 입니다.");
+            }
+
+
+        } else {
+            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
+        }
+    }
+
+    public AdminCategoryVo delAdminCategory(CategorySubjectEntity entity) {
+        Optional<CategorySubjectEntity> byId = AC_REP.findById(entity.getIclassification());
+
+        if (byId.isPresent()) {
+            CategorySubjectEntity csEntity = byId.get();
+            csEntity.setDelYn(1);
+
+            CategorySubjectEntity save = AC_REP.save(csEntity);
             return AdminCategoryVo.builder()
-                    .classification(save.getClassification())
+                    .delYn(save.getDelYn())
                     .build();
-
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
         }

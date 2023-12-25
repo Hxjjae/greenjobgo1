@@ -1,4 +1,4 @@
-package com.green.greenjobgo1.admin.category;
+package com.green.greenjobgo1.repository;
 
 import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

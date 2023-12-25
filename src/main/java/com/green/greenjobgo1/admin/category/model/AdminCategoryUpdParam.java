@@ -5,4 +5,6 @@ import lombok.Data;
 @Data
 public class AdminCategoryUpdParam {
     private Long iclassification;
+    private String classification;
+
 }
