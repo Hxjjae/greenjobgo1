@@ -39,7 +39,9 @@ springdoc:
 
 
 file:
-  dir: /home/smartGradeVer2
+  dir: /home/greenJobGo1
+server:
+  port: 8080
 
 ---
 
