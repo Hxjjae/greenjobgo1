@@ -5,10 +5,13 @@ import com.green.greenjobgo1.admin.companylist.model.CompanylistDto;
 import com.green.greenjobgo1.config.entity.CompanyListEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -27,7 +30,11 @@ public class CompanylistController {
         CompanyListEntity entity = service.companyName(dto);
         return ResponseEntity.ok(entity);
     }
-
+    @PostMapping(value = "/excel",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "엑셀로 입력",description = "리턴값이 1이면 정상입력")
+    public ResponseEntity<Integer> addExcel(@RequestPart MultipartFile file){
+        return ResponseEntity.ok(service.addExcel(file));
+    }
 
     @GetMapping
     @Operation(summary = "회사명 리스트 조회",description = "")

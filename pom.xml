@@ -83,6 +83,12 @@
 			<version>${querydsl.version}</version>
 			<classifier>jakarta</classifier>
 		</dependency>
+		<!-- excel -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
