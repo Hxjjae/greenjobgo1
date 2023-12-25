@@ -1,0 +1,17 @@
+package com.green.greenjobgo1.admin.subject.model;
+
+import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
+import lombok.Builder;
+import lombok.Getter;
+
+import java.time.LocalDate;
+
+@Getter
+@Builder
+public class AdminSubjectInsRes {
+    private Long icourseSubject;
+    private CategorySubjectEntity categorySubject;
+    private String courseSubjectName;
+    private LocalDate startedAt;
+    private LocalDate endedAt;
+}

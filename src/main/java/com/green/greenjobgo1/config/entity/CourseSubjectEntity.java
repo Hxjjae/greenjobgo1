@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.core.annotation.Order;
 
 import java.time.LocalDate;
@@ -43,5 +44,6 @@ public class CourseSubjectEntity {
     private LocalDate endedAt;
 
     @Column(nullable = false, length = 10)
+    @ColumnDefault("0")
     private int subjectCondition;
 }
