@@ -19,7 +19,7 @@ public class CategorySubjectEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false, length = 20)
-    private Long iClassification;
+    private Long iclassification;
 
     @Column(nullable = false, length = 10)
     private String classification;

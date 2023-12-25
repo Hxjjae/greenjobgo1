@@ -1,13 +1,15 @@
 package com.green.greenjobgo1.admin.category.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @Builder
-public class AdminCategoryInsRes {
-
+@NoArgsConstructor
+@AllArgsConstructor
+public class AdminCategoryDto {
     private Long iclassification;
     private String classification;
 

@@ -2,12 +2,10 @@ package com.green.greenjobgo1.admin.category.model;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
-@Getter
+@Data
 @Builder
-public class AdminCategoryInsRes {
-
+public class AdminCategoryUpdRes {
     private Long iclassification;
     private String classification;
 

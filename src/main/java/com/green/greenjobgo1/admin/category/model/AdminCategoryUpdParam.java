@@ -3,9 +3,6 @@ package com.green.greenjobgo1.admin.category.model;
 import lombok.Data;
 
 @Data
-public class AdminCategoryInsDto {
-
+public class AdminCategoryUpdParam {
     private Long iclassification;
-    private String classification;
-
 }
