@@ -31,7 +31,7 @@ public class EmployeeProfileEntity {
     @Column(length = 20, name = "email")
     private String email;
 
-    @Column(length = 20, name = "profile_pic")
+    @Column(length = 50, name = "profile_pic")
     private String profilePic;
 
     @Column(length = 20, name = "kakaoid")
