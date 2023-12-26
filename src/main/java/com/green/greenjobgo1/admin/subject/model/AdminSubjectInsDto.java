@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Data
 public class AdminSubjectInsDto {
     private String courseSubjectName;
-    private CategorySubjectEntity categorySubject;
+    private String classification;
     private LocalDate startedAt;
     private LocalDate endedAt;
 }

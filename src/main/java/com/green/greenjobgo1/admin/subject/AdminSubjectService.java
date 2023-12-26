@@ -6,6 +6,7 @@ import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
 import com.green.greenjobgo1.config.entity.CourseSubjectEntity;
 import com.green.greenjobgo1.repository.AdminCategoryRepository;
 import com.green.greenjobgo1.repository.AdminSubjectRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,31 +21,34 @@ public class AdminSubjectService {
     private final AdminCategoryRepository AC_REP;
 
 //    public AdminSubjectInsRes insAdminSubject(AdminSubjectInsDto dto) {
-//        List<CategorySubjectEntity> csList = AC_REP.findAll();
+//        List<CategorySubjectEntity> categorySubjectEntities = AC_REP.findAll();
+//        List<CourseSubjectEntity> courseSubjectEntities = AS_REP.findAll();
 //
-//        for (CategorySubjectEntity categorySubjectEntity : csList) {
+//        for (int i = 0; i < categorySubjectEntities.size(); i++) {
 //
-//            if (categorySubjectEntity.getClassification().equals(dto.getCategorySubject().getClassification())) {
-//                CourseSubjectEntity entity = new CourseSubjectEntity();
+//            if (categorySubjectEntities.get(i).getClassification().equals(dto.getClassification())) {
 //
-//                entity.setSubjectName(dto.getCourseSubjectName());
-//                entity.setStartedAt(dto.getStartedAt());
-//                entity.setEndedAt(dto.getEndedAt());
-//                entity.setCategorySubjectEntity(dto.getCategorySubject());
+//                courseSubjectEntities.get(i).setSubjectName(dto.getCourseSubjectName());
+//                courseSubjectEntities.get(i).setStartedAt(dto.getStartedAt());
+//                courseSubjectEntities.get(i).setEndedAt(dto.getEndedAt());
 //
-//                CourseSubjectEntity save = AS_REP.save(entity);
+//                if (courseSubjectEntities.get(i).getCategorySubjectEntity() == null) {
+//                    courseSubjectEntities.get(i).setCategorySubjectEntity(new CategorySubjectEntity());
+//                }
 //
-//                return AdminSubjectInsRes.builder()
-//                        .icourseSubject(save.getIcourseSubject())
-//                        .courseSubjectName(save.getSubjectName())
-//                        .startedAt(save.getStartedAt())
-//                        .endedAt(save.getEndedAt())
-//                        .categorySubject(save.getCategorySubjectEntity())
-//                        .build();
+//                courseSubjectEntities.get(i).getCategorySubjectEntity().setClassification(dto.getClassification());
 //
-//            } else {
-//                throw new RuntimeException("올바르지 않은 카테고리 입력입니다.");
+//                break;
 //            }
 //        }
+////        CourseSubjectEntity save = AS_REP.save(categorySubjectEntities);
+//
+//        return AdminSubjectInsRes.builder()
+//                .icourseSubject(save.getIcourseSubject())
+//                .courseSubjectName(save.getSubjectName())
+//                .startedAt(save.getStartedAt())
+//                .endedAt(save.getEndedAt())
+//                .classification(save.getCategorySubjectEntity().getClassification())
+//                .build();
 //    }
 }

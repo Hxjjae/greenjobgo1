@@ -20,9 +20,9 @@ public class AdminSubjectController {
     @Autowired
     private final AdminSubjectService SERVICE;
 
-    @PostMapping
-    @Operation(summary = "수강과목 추가", description = "")
-    public AdminSubjectInsRes postAdminSubject(@RequestBody AdminSubjectInsDto dto) {
-        return SERVICE.insAdminSubject(dto);
-    }
+//    @PostMapping
+//    @Operation(summary = "수강과목 추가", description = "")
+//    public AdminSubjectInsRes postAdminSubject(@RequestBody AdminSubjectInsDto dto) {
+//        return SERVICE.insAdminSubject(dto);
+//    }
 }
