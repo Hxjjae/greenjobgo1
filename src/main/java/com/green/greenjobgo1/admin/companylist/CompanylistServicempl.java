@@ -91,7 +91,7 @@ public class CompanylistServicempl {
             CompanyListEntity entity = new CompanyListEntity();
             entity.setCompanyName(oneUser.getCompanyname());
             CompanyListEntity save = companylistRep.save(entity);
-            if (save == null){
+            if (save.getCompanyCode() == null){
                 return 0;
             }
         }

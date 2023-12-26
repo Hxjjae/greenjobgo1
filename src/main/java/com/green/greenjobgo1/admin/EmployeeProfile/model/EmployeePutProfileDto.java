@@ -1,11 +1,9 @@
 package com.green.greenjobgo1.admin.EmployeeProfile.model;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
-@Builder
-public class EmployeeProfileVo {
+@Data
+public class EmployeePutProfileDto {
     private Long iemply;
     private String name;
     private String phone;
