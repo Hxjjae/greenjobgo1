@@ -2,6 +2,7 @@ package com.green.greenjobgo1.admin.EmployeeProfile;
 
 import com.green.greenjobgo1.admin.EmployeeProfile.model.EmployeeProfileDto;
 import com.green.greenjobgo1.admin.EmployeeProfile.model.EmployeeProfileVo;
+import com.green.greenjobgo1.admin.EmployeeProfile.model.EmployeePutProfileDto;
 import com.green.greenjobgo1.config.entity.EmployeeProfileEntity;
 import com.green.greenjobgo1.repository.EmployeeProfileRepository;
 import com.green.greenjobgo1.common.utils.MyFileUtils;
@@ -46,7 +47,6 @@ public class EmployeeProfileServicempl {
 
 
         EmployeeProfileEntity entity = new EmployeeProfileEntity();
-
         entity.setName(dto.getName());
         entity.setPhone(dto.getPhone());
         entity.setEmail(dto.getEmail());
@@ -55,6 +55,33 @@ public class EmployeeProfileServicempl {
         EmployeeProfileRep.save(entity);
 
         return entity;
+    }
+
+    public EmployeeProfileVo putProfile(EmployeePutProfileDto dto){
+        EmployeeProfileEntity entity = EmployeeProfileRep.findById(dto.getIemply()).get();
+
+        if (dto.getName()!=null){
+            entity.setName(dto.getName());
+        }
+        if (dto.getPhone()!=null){
+            entity.setPhone(dto.getPhone());
+        }
+        if (dto.getEmail()!=null){
+            entity.setEmail(dto.getEmail());
+        }
+        if (dto.getKakaoId()!=null){
+            entity.setKakaoid(dto.getKakaoId());
+        }
+
+        EmployeeProfileRep.save(entity);
+
+        return EmployeeProfileVo.builder().iemply(entity.getIemply())
+                .name(entity.getName())
+                .phone(entity.getPhone())
+                .email(entity.getEmail())
+                .profilePic(entity.getProfilePic())
+                .kakaoId(entity.getKakaoid()).build();
+
     }
 
     public EmployeeProfileVo patchPic(Long number,MultipartFile pic){
