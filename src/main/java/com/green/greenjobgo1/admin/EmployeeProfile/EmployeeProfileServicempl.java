@@ -57,20 +57,23 @@ public class EmployeeProfileServicempl {
         return entity;
     }
 
-    public EmployeeProfileVo putProfile(EmployeePutProfileDto dto){
-        EmployeeProfileEntity entity = EmployeeProfileRep.findById(dto.getIemply()).get();
+    public EmployeeProfileVo putProfile(Long iemply,String name,String phone,String email,String kakaoid){
+        EmployeeProfileEntity entity = EmployeeProfileRep.findById(iemply).get();
 
-        if (dto.getName()!=null){
-            entity.setName(dto.getName());
+        if (iemply !=null){
+            entity.setIemply(iemply);
         }
-        if (dto.getPhone()!=null){
-            entity.setPhone(dto.getPhone());
+        if (name !=null){
+            entity.setName(name);
         }
-        if (dto.getEmail()!=null){
-            entity.setEmail(dto.getEmail());
+        if (phone !=null){
+            entity.setPhone(phone);
         }
-        if (dto.getKakaoId()!=null){
-            entity.setKakaoid(dto.getKakaoId());
+        if (email!=null){
+            entity.setEmail(email);
+        }
+        if (kakaoid!=null){
+            entity.setKakaoid(kakaoid);
         }
 
         EmployeeProfileRep.save(entity);

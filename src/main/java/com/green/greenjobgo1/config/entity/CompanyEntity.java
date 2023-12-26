@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import org.springframework.core.annotation.Order;
+
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -13,6 +16,7 @@ import org.springframework.core.annotation.Order;
 @Table(name = "company")
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 @ToString(callSuper = true)
 public class CompanyEntity {
     @Id
@@ -29,6 +33,11 @@ public class CompanyEntity {
     @Column(nullable = false, length = 20, name = "role")
     private String role;
 
-    @Column(nullable = false, length = 10, name = "viewable_yn")
-    private int viewableYn;
+    @Column(nullable = false, length = 10, name = "start_At")
+    private LocalDate startedAt;
+
+    @Column(nullable = false, length = 10, name = "ended_At")
+    private LocalDate endedAt;
+
+
 }
