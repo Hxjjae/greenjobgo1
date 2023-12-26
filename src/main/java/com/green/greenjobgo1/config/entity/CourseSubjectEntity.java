@@ -46,4 +46,9 @@ public class CourseSubjectEntity {
     @Column(nullable = false, length = 10)
     @ColumnDefault("0")
     private int subjectCondition;
+
+    @Column(nullable = false, length = 10, name = "del_yn")
+    @ColumnDefault("0")
+    private int delYn;
+
 }
