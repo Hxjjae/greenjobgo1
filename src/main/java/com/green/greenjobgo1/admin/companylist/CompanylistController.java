@@ -19,7 +19,7 @@ import java.util.List;
 @Tag(name = "companylist")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/companylist")
+@RequestMapping("/api/admin/companylist")
 public class CompanylistController {
 
     private final CompanylistServicempl service;

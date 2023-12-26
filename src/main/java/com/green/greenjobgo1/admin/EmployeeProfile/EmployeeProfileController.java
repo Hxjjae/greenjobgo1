@@ -19,7 +19,7 @@ import java.util.List;
 @Tag(name = "profile")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/profile")
+@RequestMapping("/api/admin/profile")
 public class EmployeeProfileController {
     private final EmployeeProfileServicempl service;
 
@@ -34,16 +34,21 @@ public class EmployeeProfileController {
     public ResponseEntity<EmployeeProfileEntity> insProfile(@RequestBody EmployeeProfileDto dto){
         return ResponseEntity.ok(service.insProfile(dto));
     }
-    @PatchMapping
-    @Operation(summary = "직원 프로필 입력",description = "")
-    public ResponseEntity<EmployeeProfileVo> putProfile(@RequestBody EmployeePutProfileDto dto){
-        return ResponseEntity.ok(service.putProfile(dto));
+    @PutMapping
+    @Operation(summary = "직원 프로필 수정",description = "")
+    public ResponseEntity<EmployeeProfileVo> putProfile(@RequestParam Long iemply,
+                                                        @RequestParam(required = false) String name,
+                                                        @RequestParam(required = false) String phone,
+                                                        @RequestParam(required = false) String email,
+                                                        @RequestParam(required = false) String kakaoid
+    ){
+        return ResponseEntity.ok(service.putProfile(iemply,name,phone,email,kakaoid));
     }
 
     @PatchMapping(value = "/pic",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "사진 수정",description = "")
-    public ResponseEntity<EmployeeProfileVo> patchPic(@RequestParam Long number,@RequestPart MultipartFile pic){
-        return ResponseEntity.ok(service.patchPic(number,pic));
+    public ResponseEntity<EmployeeProfileVo> patchPic(@RequestParam Long iemply,@RequestPart MultipartFile pic){
+        return ResponseEntity.ok(service.patchPic(iemply,pic));
     }
 
     @PatchMapping("/name")
