@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,35 +21,35 @@ public class AdminSubjectService {
     private final AdminSubjectRepository AS_REP;
     private final AdminCategoryRepository AC_REP;
 
-//    public AdminSubjectInsRes insAdminSubject(AdminSubjectInsDto dto) {
-//        List<CategorySubjectEntity> categorySubjectEntities = AC_REP.findAll();
-//        List<CourseSubjectEntity> courseSubjectEntities = AS_REP.findAll();
-//
-//        for (int i = 0; i < categorySubjectEntities.size(); i++) {
-//
-//            if (categorySubjectEntities.get(i).getClassification().equals(dto.getClassification())) {
-//
-//                courseSubjectEntities.get(i).setSubjectName(dto.getCourseSubjectName());
-//                courseSubjectEntities.get(i).setStartedAt(dto.getStartedAt());
-//                courseSubjectEntities.get(i).setEndedAt(dto.getEndedAt());
-//
-//                if (courseSubjectEntities.get(i).getCategorySubjectEntity() == null) {
-//                    courseSubjectEntities.get(i).setCategorySubjectEntity(new CategorySubjectEntity());
-//                }
-//
-//                courseSubjectEntities.get(i).getCategorySubjectEntity().setClassification(dto.getClassification());
-//
-//                break;
-//            }
-//        }
-////        CourseSubjectEntity save = AS_REP.save(categorySubjectEntities);
-//
-//        return AdminSubjectInsRes.builder()
-//                .icourseSubject(save.getIcourseSubject())
-//                .courseSubjectName(save.getSubjectName())
-//                .startedAt(save.getStartedAt())
-//                .endedAt(save.getEndedAt())
-//                .classification(save.getCategorySubjectEntity().getClassification())
-//                .build();
-//    }
+    public AdminSubjectInsRes insAdminSubject(AdminSubjectInsDto dto) {
+        CourseSubjectEntity entity = new CourseSubjectEntity();
+        List<CategorySubjectEntity> categorySubjectEntities = AC_REP.findAll();
+
+        for (int i = 0; i < categorySubjectEntities.size(); i++) {
+
+            if (categorySubjectEntities.get(i).getClassification().equals(dto.getClassification())) {
+
+                entity.setSubjectName(dto.getCourseSubjectName());
+                entity.setStartedAt(dto.getStartedAt());
+                entity.setEndedAt(dto.getEndedAt());
+
+                if (entity.getCategorySubjectEntity() == null) {
+                    entity.setCategorySubjectEntity(new CategorySubjectEntity());
+                }
+
+                entity.getCategorySubjectEntity().setClassification(dto.getClassification());
+
+                break;
+            }
+        }
+        CourseSubjectEntity save = AS_REP.save(entity);
+
+        return AdminSubjectInsRes.builder()
+                .icourseSubject(save.getIcourseSubject())
+                .courseSubjectName(save.getSubjectName())
+                .startedAt(save.getStartedAt())
+                .endedAt(save.getEndedAt())
+                .classification(save.getCategorySubjectEntity().getClassification())
+                .build();
+    }
 }

@@ -23,7 +23,6 @@ public class CategorySubjectEntity {
     private Long iclassification;
 
     @Column(nullable = false, length = 10)
-    @ColumnDefault("빈 값")
     private String classification;
 
     @Column(nullable = false, length = 10, name = "del_yn")
