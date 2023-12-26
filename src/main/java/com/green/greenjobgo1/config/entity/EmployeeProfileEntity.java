@@ -5,16 +5,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import org.springframework.core.annotation.Order;
 
 @Entity
 @Data
+@SuperBuilder
 @Order(1)
-@Table(name = "EmplySpOfc")
+@Table(name = "EmployeeProfile")
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
-public class EmplySpOfcEntity {
+public class EmployeeProfileEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false,nullable = false,columnDefinition = "BIGINT UNSIGNED",length=100)
@@ -29,7 +31,7 @@ public class EmplySpOfcEntity {
     @Column(length = 20, name = "email")
     private String email;
 
-    @Column(length = 20, name = "profile_pic")
+    @Column(length = 50, name = "profile_pic")
     private String profilePic;
 
     @Column(length = 20, name = "kakaoid")
