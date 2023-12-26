@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class EmployeeProfileVo {
+    private Long iemply;
     private String name;
     private String phone;
     private String email;

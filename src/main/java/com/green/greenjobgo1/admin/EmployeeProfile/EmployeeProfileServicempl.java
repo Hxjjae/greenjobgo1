@@ -33,6 +33,7 @@ public class EmployeeProfileServicempl {
         List<EmployeeProfileEntity> all = EmployeeProfileRep.findAll();
 
         return all.stream().map(profile -> EmployeeProfileVo.builder()
+                .iemply(profile.getIemply())
                 .name(profile.getName())
                 .phone(profile.getPhone())
                 .email(profile.getEmail())
@@ -42,7 +43,10 @@ public class EmployeeProfileServicempl {
     }
 
     public EmployeeProfileEntity insProfile(EmployeeProfileDto dto){
+
+
         EmployeeProfileEntity entity = new EmployeeProfileEntity();
+
         entity.setName(dto.getName());
         entity.setPhone(dto.getPhone());
         entity.setEmail(dto.getEmail());
@@ -53,7 +57,8 @@ public class EmployeeProfileServicempl {
         return entity;
     }
 
-    public int patchPic(Long number,MultipartFile pic){
+    public EmployeeProfileVo patchPic(Long number,MultipartFile pic){
+        EmployeeProfileEntity entity = EmployeeProfileRep.findById(number).get();
         String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
         String centerPath = String.format("%s/Employee/%d", MyFileUtils.getAbsolutePath(fileDir),number);
 
@@ -70,16 +75,81 @@ public class EmployeeProfileServicempl {
         try {
             pic.transferTo(target);
         }catch (Exception e) {
-            return 0;
+            return null;
         }
 
         String img = savedFileName;
-        EmployeeProfileEntity entity = EmployeeProfileRep.findById(number).get();
+
 
         entity.setProfilePic(img);
         EmployeeProfileRep.save(entity);
 
-        return 1;
+        return EmployeeProfileVo.builder().iemply(entity.getIemply())
+                .name(entity.getName())
+                .phone(entity.getPhone())
+                .email(entity.getEmail())
+                .profilePic(entity.getProfilePic())
+                .kakaoId(entity.getKakaoid()).build();
     }
 
+    public EmployeeProfileVo patchName(Long iemply,String name){
+        EmployeeProfileEntity entity = EmployeeProfileRep.findById(iemply).get();
+        entity.setName(name);
+        EmployeeProfileRep.save(entity);
+
+        return EmployeeProfileVo.builder().iemply(entity.getIemply())
+                .name(entity.getName())
+                .phone(entity.getPhone())
+                .email(entity.getEmail())
+                .profilePic(entity.getProfilePic())
+                .kakaoId(entity.getKakaoid()).build();
+    }
+
+    public EmployeeProfileVo patchPhone(Long iemply,String phone){
+        EmployeeProfileEntity entity = EmployeeProfileRep.findById(iemply).get();
+        entity.setPhone(phone);
+        EmployeeProfileRep.save(entity);
+
+        return EmployeeProfileVo.builder().iemply(entity.getIemply())
+                .name(entity.getName())
+                .phone(entity.getPhone())
+                .email(entity.getEmail())
+                .profilePic(entity.getProfilePic())
+                .kakaoId(entity.getKakaoid()).build();
+    }
+
+    public EmployeeProfileVo patchemail(Long iemply,String email){
+        EmployeeProfileEntity entity = EmployeeProfileRep.findById(iemply).get();
+        entity.setEmail(email);
+        EmployeeProfileRep.save(entity);
+
+        return EmployeeProfileVo.builder().iemply(entity.getIemply())
+                .name(entity.getName())
+                .phone(entity.getPhone())
+                .email(entity.getEmail())
+                .profilePic(entity.getProfilePic())
+                .kakaoId(entity.getKakaoid()).build();
+    }
+
+    public EmployeeProfileVo patchKakaoid(Long iemply,String kakaoid){
+        EmployeeProfileEntity entity = EmployeeProfileRep.findById(iemply).get();
+        entity.setKakaoid(kakaoid);
+        EmployeeProfileRep.save(entity);
+
+        return EmployeeProfileVo.builder().iemply(entity.getIemply())
+                .name(entity.getName())
+                .phone(entity.getPhone())
+                .email(entity.getEmail())
+                .profilePic(entity.getProfilePic())
+                .kakaoId(entity.getKakaoid()).build();
+    }
+    public int delprofile(Long iemply){
+        EmployeeProfileEntity entity = EmployeeProfileRep.findById(iemply).get();
+        try {
+            EmployeeProfileRep.delete(entity);
+        }catch (Exception e) {
+            return 0;
+        }
+        return 1;
+    }
 }
