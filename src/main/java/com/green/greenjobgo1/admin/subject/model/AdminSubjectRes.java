@@ -1,16 +1,19 @@
 package com.green.greenjobgo1.admin.subject.model;
 
-import lombok.Builder;
-import lombok.Getter;
+import com.green.greenjobgo1.common.utils.PagingUtils;
+import lombok.*;
 
 import java.time.LocalDate;
 
-@Getter
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AdminSubjectRes {
     private Long icourseSubject;
     private String classification;
     private String courseSubjectName;
     private LocalDate startedAt;
     private LocalDate endedAt;
+    private int delYn;
 }

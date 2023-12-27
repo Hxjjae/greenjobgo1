@@ -1,6 +1,7 @@
 package com.green.greenjobgo1.admin.subject;
 
 import com.green.greenjobgo1.admin.subject.model.*;
+import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
 import com.green.greenjobgo1.config.entity.CourseSubjectEntity;
 import com.green.greenjobgo1.repository.AdminCategoryRepository;
@@ -9,7 +10,8 @@ import com.green.greenjobgo1.repository.AdminSubjectRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +25,9 @@ import java.util.Optional;
 public class AdminSubjectService {
     private final AdminSubjectRepository AS_REP;
     private final AdminCategoryRepository AC_REP;
+
     private final AdminSubjectQdsl adminSubjectQdsl;
+
 
     public AdminSubjectInsRes insAdminSubject(AdminSubjectInsDto dto) {
         List<CategorySubjectEntity> categorySubjectEntities = AC_REP.findAll();
@@ -50,8 +54,24 @@ public class AdminSubjectService {
 
     }
 
-    public List<AdminSubjectRes> selAdminSubject() {
+    public ResponseEntity<AdminSubjectFindRes> selAdminSubject(AdminSubjectDto dto, Pageable pageable) {
+        long maxPage = AS_REP.count();
+        PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
+        dto.setStaIdx(utils.getStaIdx());
 
+        List<AdminSubjectRes> list = adminSubjectQdsl.subjectVos(dto, pageable);
+
+        AdminSubjectFindRes build = AdminSubjectFindRes.builder()
+                .page(utils)
+                .res(list.stream().map(item -> AdminSubjectRes.builder()
+                        .courseSubjectName(item.getCourseSubjectName())
+                        .classification(item.getClassification())
+                        .icourseSubject(item.getIcourseSubject())
+                        .startedAt(item.getStartedAt())
+                        .endedAt(item.getEndedAt())
+                        .build()).toList())
+                .build();
+        return ResponseEntity.ok(build);
     }
 
     @Transactional
@@ -108,7 +128,7 @@ public class AdminSubjectService {
         Optional<CourseSubjectEntity> byId = AS_REP.findById(dto.getIcourseSubject());
         if (byId.isPresent()) {
             CourseSubjectEntity courseSubjectEntity = byId.get();
-            courseSubjectEntity.setDelYn(dto.getDelYn());
+            courseSubjectEntity.setDelYn(1);
 
             CourseSubjectEntity save = AS_REP.save(courseSubjectEntity);
             return AdminSubjectDelRes.builder()
