@@ -24,25 +24,26 @@ public class EmployeeProfileController {
     private final EmployeeProfileServicempl service;
 
     @GetMapping
-    @Operation(summary = "직원 프로필 리스트",description = "사진위치/home/greenjobgo1/Employee/pk번호/")
+    @Operation(summary = "직원 프로필 리스트",description = "사진위치: /home/greenjobgo1/Employee/pk번호/")
     public ResponseEntity<List<EmployeeProfileVo>> getProfile(){
         return ResponseEntity.ok(service.getProfile());
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "직원 프로필 입력",description = "")
-    public ResponseEntity<EmployeeProfileEntity> insProfile(@RequestBody EmployeeProfileDto dto){
-        return ResponseEntity.ok(service.insProfile(dto));
+    public ResponseEntity<EmployeeProfileEntity> insProfile(EmployeeProfileDto dto,
+                                                            @RequestPart MultipartFile pic){
+        return ResponseEntity.ok(service.insProfile(dto,pic));
     }
-    @PutMapping
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "직원 프로필 수정",description = "")
     public ResponseEntity<EmployeeProfileVo> putProfile(@RequestParam Long iemply,
                                                         @RequestParam(required = false) String name,
                                                         @RequestParam(required = false) String phone,
                                                         @RequestParam(required = false) String email,
-                                                        @RequestParam(required = false) String kakaoid
-    ){
-        return ResponseEntity.ok(service.putProfile(iemply,name,phone,email,kakaoid));
+                                                        @RequestParam(required = false) String kakaoid,
+                                                        @RequestPart MultipartFile pic){
+        return ResponseEntity.ok(service.putProfile(iemply,name,phone,email,kakaoid,pic));
     }
 
     @PatchMapping(value = "/pic",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

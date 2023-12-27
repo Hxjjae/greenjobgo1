@@ -43,7 +43,7 @@ public class EmployeeProfileServicempl {
 
     }
 
-    public EmployeeProfileEntity insProfile(EmployeeProfileDto dto){
+    public EmployeeProfileEntity insProfile(EmployeeProfileDto dto,MultipartFile pic){
 
 
         EmployeeProfileEntity entity = new EmployeeProfileEntity();
@@ -54,15 +54,40 @@ public class EmployeeProfileServicempl {
 
         EmployeeProfileRep.save(entity);
 
+        String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
+        String centerPath = String.format("%s/Employee/%d", MyFileUtils.getAbsolutePath(fileDir),entity.getProfilePic());
+
+        File dic = new File(centerPath);
+        if(!dic.exists()){
+            dic.mkdirs();
+        }
+
+        String originFileName = pic.getOriginalFilename();
+        String savedFileName = MyFileUtils.makeRandomFileNm(originFileName);
+        String savedFilePath = String.format("%s/%s",centerPath, savedFileName);
+
+        File target = new File(savedFilePath);
+        try {
+            pic.transferTo(target);
+        }catch (Exception e) {
+            return null;
+        }
+
+        String img = savedFileName;
+
+
+        entity.setProfilePic(img);
+        EmployeeProfileRep.save(entity);
+
+
         return entity;
     }
 
-    public EmployeeProfileVo putProfile(Long iemply,String name,String phone,String email,String kakaoid){
+    public EmployeeProfileVo putProfile(Long iemply,String name,String phone,String email,String kakaoid,MultipartFile pic){
         EmployeeProfileEntity entity = EmployeeProfileRep.findById(iemply).get();
 
-        if (iemply !=null){
-            entity.setIemply(iemply);
-        }
+
+        entity.setIemply(iemply);
         if (name !=null){
             entity.setName(name);
         }
@@ -76,7 +101,31 @@ public class EmployeeProfileServicempl {
             entity.setKakaoid(kakaoid);
         }
 
+        String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
+        String centerPath = String.format("%s/Employee/%d", MyFileUtils.getAbsolutePath(fileDir),iemply);
+
+        File dic = new File(centerPath);
+        if(!dic.exists()){
+            dic.mkdirs();
+        }
+
+        String originFileName = pic.getOriginalFilename();
+        String savedFileName = MyFileUtils.makeRandomFileNm(originFileName);
+        String savedFilePath = String.format("%s/%s",centerPath, savedFileName);
+
+        File target = new File(savedFilePath);
+        try {
+            pic.transferTo(target);
+        }catch (Exception e) {
+            return null;
+        }
+
+        String img = savedFileName;
+
+
+        entity.setProfilePic(img);
         EmployeeProfileRep.save(entity);
+
 
         return EmployeeProfileVo.builder().iemply(entity.getIemply())
                 .name(entity.getName())
