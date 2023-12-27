@@ -1,17 +1,14 @@
 package com.green.greenjobgo1.admin.subject.model;
 
-import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDate;
+
 @Data
-@Builder
-public class AdminSubjectUpdRes {
+public class AdminSubjectUpdDto {
     private Long icourseSubject;
-    private String classification;
     private String courseSubjectName;
+    private Long iclassification;
     private LocalDate startedAt;
     private LocalDate endedAt;
 }

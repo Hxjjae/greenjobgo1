@@ -29,7 +29,7 @@ public class AdminSubjectQdsl {
     QCourseSubjectEntity cos = QCourseSubjectEntity.courseSubjectEntity;
     QCategorySubjectEntity cas = QCategorySubjectEntity.categorySubjectEntity;
 
-    public Long updSubject(CourseSubjectEntity entity) {
+    public void updSubject(CourseSubjectEntity entity) {
         JPAUpdateClause query = jpaQueryFactory
                 .update(cos).where(cos.icourseSubject.eq(entity.getIcourseSubject()));
         if (entity.getCategorySubjectEntity().getClassification() != null) {
@@ -44,8 +44,7 @@ public class AdminSubjectQdsl {
         if (entity.getEndedAt() != null) {
             query.set(cos.endedAt, entity.getEndedAt());
         }
-        return query.execute();
-
+        query.execute();
 
     }
 

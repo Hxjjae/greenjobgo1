@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.core.annotation.Order;
 
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ import java.util.List;
 @ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicUpdate
 public class CourseSubjectEntity {
 
     @Id
@@ -26,7 +28,7 @@ public class CourseSubjectEntity {
     @Column(updatable = false, nullable = false, length = 20, name = "icourse_subject")
     private Long icourseSubject;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "iclassfication")
     private CategorySubjectEntity categorySubjectEntity;
 

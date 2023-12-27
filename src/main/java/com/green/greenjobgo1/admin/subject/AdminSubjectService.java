@@ -3,15 +3,19 @@ package com.green.greenjobgo1.admin.subject;
 import com.green.greenjobgo1.admin.category.model.AdminCategoryVo;
 import com.green.greenjobgo1.admin.subject.model.AdminSubjectInsDto;
 import com.green.greenjobgo1.admin.subject.model.AdminSubjectInsRes;
+import com.green.greenjobgo1.admin.subject.model.AdminSubjectUpdDto;
 import com.green.greenjobgo1.admin.subject.model.AdminSubjectUpdRes;
 import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
 import com.green.greenjobgo1.config.entity.CourseSubjectEntity;
 import com.green.greenjobgo1.repository.AdminCategoryRepository;
 import com.green.greenjobgo1.repository.AdminSubjectRepository;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +27,8 @@ import java.util.Optional;
 public class AdminSubjectService {
     private final AdminSubjectRepository AS_REP;
     private final AdminCategoryRepository AC_REP;
-    private final AdminSubjectQdsl subjectQdsl;
+    private final AdminSubjectQdsl SUBJECT_QDSL;
+    private final EntityManager EM;
 
     public AdminSubjectInsRes insAdminSubject(AdminSubjectInsDto dto) {
         List<CategorySubjectEntity> categorySubjectEntities = AC_REP.findAll();
@@ -50,29 +55,28 @@ public class AdminSubjectService {
 
     }
 
-    public AdminSubjectUpdRes updAdminSubject(CourseSubjectEntity entity) {
-        List<CategorySubjectEntity> categorySubjectEntities = AC_REP.findAll();
-        Optional<CourseSubjectEntity> byId = AS_REP.findById(entity.getIcourseSubject());
+    @Transactional
+    public AdminSubjectUpdRes updAdminSubject(AdminSubjectUpdDto dto) {
+        Optional<CategorySubjectEntity> byCategorySubject = AC_REP.findById(dto.getIclassification());
+        Optional<CourseSubjectEntity> byCourseSubject = AS_REP.findById(dto.getIcourseSubject());
 
-        if (byId.isPresent()) {
-            for (CategorySubjectEntity categorySubjectEntity : categorySubjectEntities) {
-                if (categorySubjectEntity.getClassification().equals(entity.getCategorySubjectEntity().getClassification())) {
+        if (byCourseSubject.isPresent()) {
+                byCourseSubject.get().setSubjectName(dto.getCourseSubjectName());
+                byCourseSubject.get().getCategorySubjectEntity().setClassification(byCategorySubject.get().getClassification());
+                byCourseSubject.get().setStartedAt(dto.getStartedAt());
+                byCourseSubject.get().setEndedAt(dto.getEndedAt());
 
-                    byId.get().setSubjectName(entity.getSubjectName());
-                    byId.get().setCategorySubjectEntity(categorySubjectEntity);
-                    byId.get().setStartedAt(entity.getStartedAt());
-                    byId.get().setEndedAt(entity.getEndedAt());
-
-                    break;
-                }
+            } else {
+                throw new RuntimeException("해당 아이디에 대한 데이터를 찾을 수 없습니다.");
             }
-        }
-        CourseSubjectEntity save = AS_REP.save(entity);
+        CourseSubjectEntity save = AS_REP.save(byCourseSubject.get());
         return AdminSubjectUpdRes.builder()
                 .icourseSubject(save.getIcourseSubject())
                 .courseSubjectName(save.getSubjectName())
                 .startedAt(save.getStartedAt())
                 .endedAt(save.getEndedAt())
+                .classification(save.getCategorySubjectEntity().getClassification())
                 .build();
+
     }
 }
