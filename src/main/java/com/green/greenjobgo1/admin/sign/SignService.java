@@ -61,16 +61,21 @@ public class SignService {
             String birthdaysecond = "-"+birthday.substring(2,4);
             String birthdaythird = "-"+birthday.substring(4,6);
             LocalDate birth= LocalDate.parse((birthdayfirst + birthdaysecond + birthdaythird));
+
+            String pwfirst = birthday.substring(0, 6);
+            String phone = user.getPhone();
+            String pwsecond = phone.substring(9, 13);
+
+
             if (user.getAge().equals("남")){
                 student.setGender(1);
             }else {
                 student.setGender(0);
             }
-            String phone = user.getPhone();
-            String phonesub = phone.substring(8, 12);
+
 
             student.setId(user.getEmail());
-            student.setPw(birthday+phonesub);
+            student.setPw(pwfirst+pwsecond);
             student.setMobileNumber(user.getPhone());
             student.setName(user.getStudentName());
             student.setBirthday(birth);
@@ -78,9 +83,9 @@ public class SignService {
             student.setAddressDetail(user.getAddress());
             student.setEducation(user.getAddress());
             student.setRole("student");
-            student.setHuntJobYn(1);
-            student.setStorageYn(1);
-            student.setEditableYn(1);
+            student.setHuntJobYn(0);
+            student.setStorageYn(0);
+            student.setEditableYn(0);
 
             StudentEntity save = stdRep.save(student);
 

@@ -4,7 +4,9 @@ import lombok.Data;
 
 @Data
 public class CompanyExcel {
-    private String num;
-    private String date;
+    private String dateConslusion;
     private String companyname;
+    private String phoneNumber;
+    private String manger;
+    private String sector;
 }
