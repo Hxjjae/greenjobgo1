@@ -1,8 +1,6 @@
 package com.green.greenjobgo1.admin.subject;
 
-import com.green.greenjobgo1.admin.subject.model.AdminSubjectInsDto;
-import com.green.greenjobgo1.admin.subject.model.AdminSubjectInsRes;
-import com.green.greenjobgo1.admin.subject.model.AdminSubjectUpdRes;
+import com.green.greenjobgo1.admin.subject.model.*;
 import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
 import com.green.greenjobgo1.config.entity.CourseSubjectEntity;
 import com.green.greenjobgo1.config.entity.QCategorySubjectEntity;
@@ -16,11 +14,12 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Slf4j
+
 @Component
 @RequiredArgsConstructor
 public class AdminSubjectQdsl {
@@ -29,23 +28,15 @@ public class AdminSubjectQdsl {
     QCourseSubjectEntity cos = QCourseSubjectEntity.courseSubjectEntity;
     QCategorySubjectEntity cas = QCategorySubjectEntity.categorySubjectEntity;
 
-    public void updSubject(CourseSubjectEntity entity) {
-        JPAUpdateClause query = jpaQueryFactory
-                .update(cos).where(cos.icourseSubject.eq(entity.getIcourseSubject()));
-        if (entity.getCategorySubjectEntity().getClassification() != null) {
-            query.set(cos.categorySubjectEntity.classification, entity.getCategorySubjectEntity().getClassification());
-        }
-        if (entity.getSubjectName() != null) {
-            query.set(cos.subjectName, entity.getSubjectName());
-        }
-        if (entity.getStartedAt() != null) {
-            query.set(cos.startedAt, entity.getStartedAt());
-        }
-        if (entity.getEndedAt() != null) {
-            query.set(cos.endedAt, entity.getEndedAt());
-        }
-        query.execute();
-
+    public List<AdminSubjectRes> subjectVos(AdminSubjectDto dto, Pageable pageable) {
+        JPAQuery<AdminSubjectRes> query = jpaQueryFactory.select(Projections.bean(AdminSubjectRes.class, cos.icourseSubject, cos.subjectName
+                , cos.categorySubjectEntity.classification, cos.startedAt, cos.endedAt, cos.delYn))
+                .from(cos)
+                .where(cos.delYn.eq(0))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(cos.icourseSubject.desc());
+        return query.fetch();
     }
 
     private BooleanExpression eqclassification(String classification) {
