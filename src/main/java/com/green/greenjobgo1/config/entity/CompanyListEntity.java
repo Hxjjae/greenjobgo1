@@ -25,4 +25,16 @@ public class CompanyListEntity {
 
     @Column(nullable = false, length = 20, name = "company_name")
     private String companyName;
+
+    @Column(length = 50, name = "sector")
+    private String sector;
+
+    @Column(length = 20, name = "manager")
+    private String manager;
+
+    @Column(length = 20, name = "phone_number")
+    private String phoneNumber;
+
+    @Column(length = 30, name = "date_conslusion")
+    private String dateConslusion;
 }

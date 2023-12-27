@@ -1,8 +1,6 @@
 package com.green.greenjobgo1.admin.companylist;
 
-import com.green.greenjobgo1.admin.companylist.model.CompanyExcel;
-import com.green.greenjobgo1.admin.companylist.model.CompanyNameDto;
-import com.green.greenjobgo1.admin.companylist.model.CompanylistDto;
+import com.green.greenjobgo1.admin.companylist.model.*;
 import com.green.greenjobgo1.common.utils.ExcelUtil;
 import com.green.greenjobgo1.config.entity.CompanyListEntity;
 import com.green.greenjobgo1.config.entity.QCompanyListEntity;
@@ -11,14 +9,12 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -32,6 +28,10 @@ public class CompanylistServicempl {
 
     public CompanyListEntity companyName(CompanyNameDto dto) {
         CompanyListEntity entity = new CompanyListEntity();
+        entity.setManager(dto.getManger());
+        entity.setSector(dto.getManger());
+        entity.setPhoneNumber(dto.getPhoneNumber());
+        entity.setDateConslusion(dto.getDateConslusion());
         entity.setCompanyName(dto.getCompanyName());
 
         companylistRep.save(entity);
@@ -39,19 +39,65 @@ public class CompanylistServicempl {
         return entity;
     }
 
-    public List<CompanyListEntity> companyList() {
-        List<CompanyListEntity> companylist = jpaQueryFactory.select(Projections.constructor(CompanyListEntity.class, qCompanyList.companyCode, qCompanyList.companyName))
+    public CompanylistVo companyList(Pageable page) {
+        List<CompanyListEntity> companylist = jpaQueryFactory.select(Projections.constructor(CompanyListEntity.class,
+                        qCompanyList.companyCode,
+                        qCompanyList.companyName,
+                        qCompanyList.dateConslusion,
+                        qCompanyList.manager,
+                        qCompanyList.sector,
+                        qCompanyList.phoneNumber))
                 .from(qCompanyList)
+                .offset(page.getOffset())
+                .limit(page.getPageSize())
                 .fetch();
+        Long count = jpaQueryFactory.select(qCompanyList.companyCode.count())
+                .from(qCompanyList)
+                .fetchOne();
 
-        return companylist;
+        int pageSize = page.getPageSize();
+        int currentPage = page.getPageNumber();
+        int startItem = currentPage * pageSize;
+
+        //순번 넣기
+        for (int i = 0; i < companylist.size(); i++) {
+            companylist.get(i).getCompanyCode();
+            companylist.get(i).setCompanyCode((long) i+1);
+        }
+        int maxpage = (int) Math.ceil((double) count / page.getPageSize());
+        log.info("maxpage:{}",maxpage);
+
+        List<CompanylistRes> list = companylist.stream().map(item ->
+                CompanylistRes.builder().companyCode(item.getCompanyCode())
+                        .companyName(item.getCompanyName())
+                        .phoneNumber(item.getPhoneNumber())
+                        .manger(item.getManager())
+                        .dateConslusion(item.getDateConslusion())
+                        .sector(item.getSector()).build()).toList();
+
+        return CompanylistVo.builder().list(list).maxpage(maxpage).build();
 
     }
 
-    public CompanyListEntity patchCompanyName(CompanylistDto dto) {
-        CompanyListEntity entity = new CompanyListEntity();
-        entity.setCompanyCode(dto.getCompanyCode());
-        entity.setCompanyName(dto.getCompanyName());
+    public CompanyListEntity patchCompanyName(Long companyCode, String companyName, String sector,String manger,String phoneNumber,String dateConslusion ) {
+        CompanyListEntity entity = companylistRep.findById(companyCode).get();
+        entity.setCompanyCode(companyCode);
+        if (companyName!=null){
+            entity.setCompanyName(companyName);
+        }
+        if (sector!=null){
+            entity.setSector(sector);
+        }
+        if (manger!=null){
+            entity.setManager(manger);
+        }
+        if (phoneNumber!=null){
+            entity.setPhoneNumber(phoneNumber);
+        }
+        if (dateConslusion!=null){
+            entity.setDateConslusion(dateConslusion);
+        }
+
         companylistRep.save(entity);
         return entity;
     }
@@ -73,15 +119,15 @@ public class CompanylistServicempl {
         List<CompanyExcel> listUser = new ArrayList<>();
 
         // 엑셀의 셀데이터를 객체에 담기
-        List<Map<String, Object>> listMap = excelUtil.getListData(file, 1, 3);
+        List<Map<String, Object>> listMap = excelUtil.getListData(file, 1, 5);
 
         for (Map<String, Object> map : listMap) {
             CompanyExcel company = new CompanyExcel();
 
             // 각 셀의 데이터를 VO에 set한다.
-            company.setNum(map.get("0").toString());
-            company.setDate(map.get("1").toString());
+            company.setDateConslusion(map.get("1").toString());
             company.setCompanyname(map.get("2").toString());
+            company.setSector(map.get("5").toString());
 
             listUser.add(company);
         }
@@ -90,6 +136,9 @@ public class CompanylistServicempl {
         for (CompanyExcel oneUser : listUser) {
             CompanyListEntity entity = new CompanyListEntity();
             entity.setCompanyName(oneUser.getCompanyname());
+            entity.setDateConslusion(oneUser.getDateConslusion());
+            entity.setSector(oneUser.getSector());
+
             CompanyListEntity save = companylistRep.save(entity);
             if (save.getCompanyCode() == null){
                 return 0;
