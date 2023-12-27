@@ -49,7 +49,10 @@ public class SignService {
             student.setPhone(map.get("7").toString());
             student.setEmail(map.get("8").toString());
             student.setAddress(map.get("9").toString());
-            student.setAge(map.get("11").toString());
+            student.setGender(map.get("11").toString());
+            student.setAge(map.get("12").toString());
+            student.setEducation(map.get("13").toString());
+
             studentlist.add(student);
         }
 
@@ -67,7 +70,7 @@ public class SignService {
             String pwsecond = phone.substring(9, 13);
 
 
-            if (user.getAge().equals("남")){
+            if (user.getGender().equals("남")){
                 student.setGender(1);
             }else {
                 student.setGender(0);
@@ -80,8 +83,8 @@ public class SignService {
             student.setName(user.getStudentName());
             student.setBirthday(birth);
             student.setAddress(user.getAddress());
-            student.setAddressDetail(user.getAddress());
-            student.setEducation(user.getAddress());
+            student.setEducation(user.getEducation());
+            student.setAge(Integer.parseInt(user.getAge()));
             student.setRole("student");
             student.setHuntJobYn(0);
             student.setStorageYn(0);

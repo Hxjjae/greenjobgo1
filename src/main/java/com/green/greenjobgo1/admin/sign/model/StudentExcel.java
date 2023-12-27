@@ -20,6 +20,7 @@ public class StudentExcel {
     private String teacherName;
     private String gender;
     private String age;
+    private String education;
     private int resume;
     private int portfolio;
 

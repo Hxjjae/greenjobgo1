@@ -40,8 +40,9 @@ public class CompanylistController {
 
     @GetMapping
     @Operation(summary = "회사명 리스트 조회",description = "")
-    public ResponseEntity<CompanylistVo> companyList(Pageable page){
-        return ResponseEntity.ok(service.companyList(page));
+    public ResponseEntity<CompanylistVo> companyList(Pageable page,
+                                                     @RequestParam(required = false) String companyName){
+        return ResponseEntity.ok(service.companyList(page,companyName));
     }
 
     @PatchMapping
