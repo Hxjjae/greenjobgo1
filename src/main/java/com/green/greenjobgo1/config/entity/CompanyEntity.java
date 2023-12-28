@@ -33,10 +33,10 @@ public class CompanyEntity {
     @Column(nullable = false, length = 20, name = "role")
     private String role;
 
-    @Column(nullable = false, length = 10, name = "start_At")
+    @Column(nullable = false, length = 10, name = "started_at")
     private LocalDate startedAt;
 
-    @Column(nullable = false, length = 10, name = "ended_At")
+    @Column(nullable = false, length = 10, name = "ended_at")
     private LocalDate endedAt;
 
 
