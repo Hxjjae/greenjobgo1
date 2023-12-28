@@ -1,9 +1,7 @@
 package com.green.greenjobgo1.admin.sign;
 
-import com.green.greenjobgo1.admin.companylist.model.CompanyExcel;
 import com.green.greenjobgo1.admin.sign.model.StudentExcel;
 import com.green.greenjobgo1.common.utils.ExcelUtil;
-import com.green.greenjobgo1.config.entity.CompanyListEntity;
 import com.green.greenjobgo1.config.entity.StudentEntity;
 import com.green.greenjobgo1.repository.StudentRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -21,7 +19,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SignService {
+public class BulkSignService {
     private final StudentRepository stdRep;
     private final JPAQueryFactory jpaQueryFactory;
     private final ExcelUtil excelUtil;
