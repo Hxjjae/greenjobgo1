@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class AdminSubjectDto {
     private Long icourseSubject;
-    private CategorySubjectEntity categorySubject;
+    private CategorySubjectEntity categorySubjectEntity;
     private String subjectName;
     private LocalDate startedAt;
     private LocalDate endedAt;

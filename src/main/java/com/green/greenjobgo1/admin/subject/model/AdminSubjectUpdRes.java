@@ -15,4 +15,6 @@ public class AdminSubjectUpdRes {
     private LocalDate startedAt;
     private LocalDate endedAt;
     private int subjectCondition;
+    private String instructor;
+    private String lectureRoom;
 }

@@ -1,5 +1,6 @@
 package com.green.greenjobgo1.admin.subject;
 
+import com.green.greenjobgo1.admin.category.model.AdminCategoryDto;
 import com.green.greenjobgo1.admin.subject.model.*;
 import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
 import com.green.greenjobgo1.config.entity.CourseSubjectEntity;
@@ -33,22 +34,35 @@ public class AdminSubjectQdsl {
     QCourseSubjectEntity cos = QCourseSubjectEntity.courseSubjectEntity;
     QCategorySubjectEntity cas = QCategorySubjectEntity.categorySubjectEntity;
 
-    public List<AdminSubjectRes> subjectVos(AdminSubjectDto dto, Pageable pageable) {
+    public List<AdminSubjectRes> subjectVos(AdminSubjectDto dto, AdminCategoryDto categoryDto, Pageable pageable) {
         JPAQuery<AdminSubjectRes> query = jpaQueryFactory.select(Projections.bean(AdminSubjectRes.class, cos.icourseSubject, cos.subjectName.as("courseSubjectName")
-                , cos.categorySubjectEntity.classification, cos.startedAt, cos.endedAt, cos.delYn))
+                , cas.iclassification, cos.instructor, cos.lectureRoom, cos.startedAt, cos.endedAt,cos.subjectCondition, cos.delYn))
                 .from(cos)
-                .where(cos.delYn.eq(0))
+                .where(eqDelYn(dto.getDelYn())
+                        ,eqIclassification(categoryDto.getIclassification())
+                        ,eqCondition(dto.getSubjectCondition())
+                        ,eqSubjectName(dto.getSubjectName())
+                )
+                .join(cos.categorySubjectEntity, cas)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(cos.icourseSubject.desc());
         return query.fetch();
     }
 
-    private BooleanExpression eqclassification(String classification) {
-        if (StringUtils.isNullOrEmpty(classification)) {
-            return null;
-        }
-        return cas.classification.eq(classification);
+    private BooleanExpression eqIclassification(Long iclassification) {
+        return iclassification != null ? cas.iclassification.eq(iclassification) : null;
     }
 
+    private BooleanExpression eqCondition(Integer condition) {
+        return condition != null ? cos.subjectCondition.eq(condition) : null;
+    }
+
+    private BooleanExpression eqSubjectName(String subjectName) {
+        return subjectName != null ? cos.subjectName.contains(subjectName) : null;
+    }
+
+    private BooleanExpression eqDelYn(Integer delYn) {
+        return delYn != null ? cos.delYn.eq(delYn) : null;
+    }
 }

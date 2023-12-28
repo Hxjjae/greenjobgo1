@@ -12,4 +12,6 @@ public class AdminSubjectInsDto {
     private String classification;
     private LocalDate startedAt;
     private LocalDate endedAt;
+    private String instructor;
+    private String lectureRoom;
 }

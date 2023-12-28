@@ -1,5 +1,6 @@
 package com.green.greenjobgo1.admin.subject;
 
+import com.green.greenjobgo1.admin.category.model.AdminCategoryDto;
 import com.green.greenjobgo1.admin.subject.model.*;
 import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
@@ -37,6 +38,8 @@ public class AdminSubjectService {
         for (CategorySubjectEntity categorySubjectEntity : categorySubjectEntities) {
             if (categorySubjectEntity.getClassification().equals(dto.getClassification())) {
 
+                courseSubjectEntity.setInstructor(dto.getInstructor());
+                courseSubjectEntity.setLectureRoom(dto.getLectureRoom());
                 courseSubjectEntity.setSubjectName(dto.getCourseSubjectName());
                 courseSubjectEntity.setCategorySubjectEntity(categorySubjectEntity);
                 courseSubjectEntity.setStartedAt(dto.getStartedAt());
@@ -52,25 +55,30 @@ public class AdminSubjectService {
                 .classification(save.getCategorySubjectEntity().getClassification())
                 .startedAt(save.getStartedAt())
                 .endedAt(save.getEndedAt())
+                .instructor(save.getInstructor())
+                .lectureRoom(save.getLectureRoom())
                 .build();
 
     }
 
-    public ResponseEntity<AdminSubjectFindRes> selAdminSubject(AdminSubjectDto dto, Pageable pageable) {
+    public ResponseEntity<AdminSubjectFindRes> selAdminSubject(AdminSubjectDto dto, AdminCategoryDto categoryDto, Pageable pageable) {
         long maxPage = AS_REP.count();
         PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
         dto.setStaIdx(utils.getStaIdx());
 
-        List<AdminSubjectRes> list = adminSubjectQdsl.subjectVos(dto, pageable);
+        List<AdminSubjectRes> list = adminSubjectQdsl.subjectVos(dto, categoryDto, pageable);
 
         AdminSubjectFindRes build = AdminSubjectFindRes.builder()
                 .page(utils)
                 .res(list.stream().map(item -> AdminSubjectRes.builder()
                         .courseSubjectName(item.getCourseSubjectName())
-                        .classification(item.getClassification())
+                        .iclassification(item.getIclassification())
                         .icourseSubject(item.getIcourseSubject())
                         .startedAt(item.getStartedAt())
                         .endedAt(item.getEndedAt())
+                        .lectureRoom(item.getLectureRoom())
+                        .instructor(item.getInstructor())
+                        .subjectCondition(item.getSubjectCondition())
                         .build()).toList())
                 .build();
         return ResponseEntity.ok(build);
@@ -94,6 +102,12 @@ public class AdminSubjectService {
             if (dto.getEndedAt() != null) {
                 byCourseSubject.get().setEndedAt(dto.getEndedAt());
             }
+            if (dto.getInstructor() != null) {
+                byCourseSubject.get().setInstructor(dto.getInstructor());
+            }
+            if (dto.getLectureRoom() != null) {
+                byCourseSubject.get().setLectureRoom(dto.getLectureRoom());
+            }
 
         } else {
             throw new RuntimeException("해당 아이디에 대한 데이터를 찾을 수 없습니다.");
@@ -105,6 +119,8 @@ public class AdminSubjectService {
                 .startedAt(save.getStartedAt())
                 .endedAt(save.getEndedAt())
                 .classification(save.getCategorySubjectEntity().getClassification())
+                .instructor(save.getInstructor())
+                .lectureRoom(save.getLectureRoom())
                 .build();
 
     }

@@ -11,9 +11,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class AdminSubjectRes {
     private Long icourseSubject;
-    private String classification;
+    private Long iclassification;
     private String courseSubjectName;
     private LocalDate startedAt;
     private LocalDate endedAt;
+    private String instructor;
+    private String lectureRoom;
+    private int subjectCondition;
     private int delYn;
+
 }

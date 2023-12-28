@@ -1,5 +1,6 @@
 package com.green.greenjobgo1.admin.subject;
 
+import com.green.greenjobgo1.admin.category.model.AdminCategoryDto;
 import com.green.greenjobgo1.admin.subject.model.*;
 import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
 import com.green.greenjobgo1.config.entity.CourseSubjectEntity;
@@ -35,14 +36,19 @@ public class AdminSubjectController {
     @GetMapping
     @Operation(summary = "수강과목 보기", description = "")
     public ResponseEntity<AdminSubjectFindRes> getAdminSubject(@ParameterObject @PageableDefault(sort = "icourseSubject", direction = Sort.Direction.ASC) Pageable pageable,
+                                                               @RequestParam(required = false) Long iclassification,
                                                                @RequestParam(required = false) String subjectName,
-                                                               @RequestParam(required = false) Integer delYn) {
-        AdminSubjectDto dto = new AdminSubjectDto();
-        dto.setSubjectName(subjectName);
-        dto.setDelYn(delYn);
-        dto.setPage(pageable.getPageNumber());
-        dto.setSize(pageable.getPageSize());
-        return SERVICE.selAdminSubject(dto, pageable);
+                                                               @RequestParam(required = false, defaultValue = "0") Integer condition,
+                                                               @RequestParam(required = false, defaultValue = "0") Integer delYn) {
+        AdminSubjectDto subjectDto = new AdminSubjectDto();
+        AdminCategoryDto categoryDto = new AdminCategoryDto();
+        categoryDto.setIclassification(iclassification);
+        subjectDto.setSubjectName(subjectName);
+        subjectDto.setDelYn(delYn);
+        subjectDto.setSubjectCondition(condition);
+        subjectDto.setPage(pageable.getPageNumber());
+        subjectDto.setSize(pageable.getPageSize());
+        return SERVICE.selAdminSubject(subjectDto, categoryDto,pageable);
     }
 
     @PutMapping

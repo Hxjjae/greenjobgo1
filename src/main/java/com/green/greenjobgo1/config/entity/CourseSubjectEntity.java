@@ -52,7 +52,7 @@ public class CourseSubjectEntity {
     @Column(nullable = false, length = 10)
     private String instructor;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 10,name = "lecture_room")
     private String lectureRoom;
 
     @Column(nullable = false, length = 10, name = "del_yn")

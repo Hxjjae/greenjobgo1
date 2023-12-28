@@ -11,4 +11,6 @@ public class AdminSubjectUpdDto {
     private Long iclassification;
     private LocalDate startedAt;
     private LocalDate endedAt;
+    private String instructor;
+    private String lectureRoom;
 }
