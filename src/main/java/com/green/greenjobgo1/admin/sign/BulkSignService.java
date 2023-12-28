@@ -118,7 +118,7 @@ public class BulkSignService {
             throw new RuntimeException("비밀번호 불일치");
         }
 
-        String redisKey = String.format("c:RT(%s):%s:%s", "Server", user.getId(), ip);
+        String redisKey = String.format("c:RT(%s):%s:%s", "Server", user.getIstudent(), ip);
 
         if (redisService.getValues(redisKey)!=null){
             redisService.deleteValues(redisKey);
