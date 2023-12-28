@@ -11,9 +11,23 @@
     </insert>
 
     <select id="getByUid">
-        SELECT iuser, uid, upw, name, role, secret_key secretKey
-        FROM t_user
-        WHERE uid = #{uid}
+        <if test='role.equalsIgnoreCase("ROLE_ADMIN")'>
+            SELECT iadmin iuser, admin_id uid, admin_pw upw, role,secret_key secretKey
+            FROM admin
+            WHERE admin_id = #{uid} AND role = "ROLE_ADMIN"
+        </if>
+
+        <if test='role.equalsIgnoreCase("ROLE_COMPANY")'>
+            SELECT icompany iuser, id uid, password upw, role,secret_key secretKey
+            FROM company
+            WHERE icompany = #{uid}
+        </if>
+
+        <if test='role.equalsIgnoreCase("ROLE_STUDENT")'>
+            SELECT istudent iuser, student_id uid, studend_pw upw, role, secret_key secretKey
+            FROM student
+            WHERE student_id = #{uid}
+        </if>
     </select>
 
     <update id="updSecretKey">

@@ -30,7 +30,7 @@ public class SecurityConfiguration {
                                             , "/"
                                             , "/index.html"
                                             , "/static/**"
-                                            , "/api/admin/sign/**"
+
                                             ,"/sign-api/sign-in"
                                             , "/sign-api/sign-up"
                                             , "/sign-api/exception"
@@ -45,7 +45,7 @@ public class SecurityConfiguration {
                                     .requestMatchers(HttpMethod.GET, "/product/**").permitAll()
                                     .requestMatchers(HttpMethod.POST, "/product/**").permitAll()
                                     .requestMatchers("**exception**").permitAll()
-                                    .requestMatchers("/todo-api").hasAnyRole("STUDENT", "COMPANY", "ADMIN")
+                                    .requestMatchers("/todo-api").hasAnyRole("USER", "COMPANY", "ADMIN")
                                     .anyRequest().hasRole("ADMIN")
 
                 ) //사용 권한 체크
