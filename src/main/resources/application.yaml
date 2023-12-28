@@ -6,6 +6,8 @@ springboot:
     refresh-secret: HelloWorldRefreshTokenCreateBySecretHaHaaasdfasdf
     header-scheme-name: Authorization
     token-type: Bearer
+    redis-access-black-key: "A-AT-BLACK"
+    redis-refresh-key: "A-RT"
 #DB
 spring:
   servlet:
@@ -24,6 +26,10 @@ spring:
     url: jdbc:mariadb://localhost:3306/greenjobgo1
     username: root
     password: green502
+  data:
+    redis:
+      host: localhost
+      port: 6379
   #mybatisz
 
 
@@ -53,6 +59,9 @@ spring:
     url: jdbc:mariadb://localhost:3306/greenjobgo1_test?allowMultiQueries=true
     username: root
     password: green502
+  data:
+    redis:
+      host: 192.168.0.144
   sql:
     init:
       mode: always
