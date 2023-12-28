@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class RedisService {
     private final RedisTemplate<String, String> redisTemplate;
 
+
     public void setValues(String key, String value){
         redisTemplate.opsForValue().set(key, value);
     }
