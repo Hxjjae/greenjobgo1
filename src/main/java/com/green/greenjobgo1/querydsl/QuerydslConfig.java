@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 
 @Configuration
-@ComponentScan(basePackages = "com.green.greenjobgo1")
 @EnableJpaAuditing
 public class QuerydslConfig {
 

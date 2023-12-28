@@ -12,17 +12,22 @@ import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-
+@Slf4j
 @Component
 @RequiredArgsConstructor
+
 public class AdminSubjectQdsl {
+
     private final JPAQueryFactory jpaQueryFactory;
 
     QCourseSubjectEntity cos = QCourseSubjectEntity.courseSubjectEntity;

@@ -8,8 +8,11 @@ import com.green.greenjobgo1.repository.AdminCategoryRepository;
 import com.green.greenjobgo1.repository.AdminSubjectRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,7 +28,6 @@ import java.util.Optional;
 public class AdminSubjectService {
     private final AdminSubjectRepository AS_REP;
     private final AdminCategoryRepository AC_REP;
-
     private final AdminSubjectQdsl adminSubjectQdsl;
 
 

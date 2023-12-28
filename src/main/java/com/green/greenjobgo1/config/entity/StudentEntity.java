@@ -78,6 +78,8 @@ public class StudentEntity {
     @ColumnDefault("0")
     private int editableYn;
 
+    @Column(nullable = false, length = 4)
+    @ColumnDefault("0")
     private int delYn;
 
 
