@@ -54,9 +54,6 @@ public class StudentEntity {
     @Column(nullable = false, length = 20)
     private String address;
 
-    @Column(length = 20, name = "address_detail")
-    private String addressDetail;
-
     @Column(nullable = false, length = 20)
     private String education;
 
@@ -78,9 +75,19 @@ public class StudentEntity {
     @ColumnDefault("0")
     private int editableYn;
 
-    @Column(nullable = false, length = 4)
+    @Column(nullable = false, length = 10, name = "del_yn")
     @ColumnDefault("0")
     private int delYn;
+
+    @Column(name = "started_at")
+    private int startedAt;
+
+    @Column(name = "ended_at")
+    private int endedAt;
+
+    @Column(name = "age")
+    private int age;
+
 
 
 

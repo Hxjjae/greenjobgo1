@@ -5,7 +5,9 @@ import com.green.greenjobgo1.common.utils.ExcelUtil;
 import com.green.greenjobgo1.config.entity.CompanyListEntity;
 import com.green.greenjobgo1.config.entity.QCompanyListEntity;
 import com.green.greenjobgo1.repository.CompanylistRepository;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +41,7 @@ public class CompanylistServicempl {
         return entity;
     }
 
-    public CompanylistVo companyList(Pageable page) {
+    public CompanylistVo companyList(Pageable page,String companyName) {
         List<CompanyListEntity> companylist = jpaQueryFactory.select(Projections.constructor(CompanyListEntity.class,
                         qCompanyList.companyCode,
                         qCompanyList.companyName,
@@ -48,12 +50,17 @@ public class CompanylistServicempl {
                         qCompanyList.sector,
                         qCompanyList.phoneNumber))
                 .from(qCompanyList)
+                .where(eqCompanyName(companyName))
                 .offset(page.getOffset())
                 .limit(page.getPageSize())
                 .fetch();
+
         Long count = jpaQueryFactory.select(qCompanyList.companyCode.count())
                 .from(qCompanyList)
+                .where()
+                .where(eqCompanyName(companyName))
                 .fetchOne();
+
 
         int pageSize = page.getPageSize();
         int currentPage = page.getPageNumber();
@@ -76,6 +83,13 @@ public class CompanylistServicempl {
                         .sector(item.getSector()).build()).toList();
 
         return CompanylistVo.builder().list(list).maxpage(maxpage).build();
+
+    }
+    private BooleanExpression eqCompanyName(String companyName) {
+        if(companyName == null || companyName.isEmpty()) {
+            return null;
+        }
+        return qCompanyList.companyName.like("%"+companyName+"%");
 
     }
 
