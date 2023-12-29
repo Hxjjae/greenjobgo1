@@ -67,10 +67,10 @@ public class CompanylistServicempl {
         int startItem = currentPage * pageSize;
 
         //순번 넣기
-        for (int i = 0; i < companylist.size(); i++) {
-            companylist.get(i).getCompanyCode();
-            companylist.get(i).setCompanyCode((long) i+1);
-        }
+//        for (int i = 0; i < companylist.size(); i++) {
+//            companylist.get(i).getCompanyCode();
+//            companylist.get(i).setCompanyCode((long) i+1);
+//        }
         int maxpage = (int) Math.ceil((double) count / page.getPageSize());
         log.info("maxpage:{}",maxpage);
 
