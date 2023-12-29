@@ -28,7 +28,7 @@ public class JwtTokenProvider {
     public final String TOKEN_TYPE;
 
     //public final long ACCESS_TOKEN_VALID_MS = 3_600_000L; // 1000L * 60 * 60 -> 1시간
-    public final long ACCESS_TOKEN_VALID_MS = 2_000_000L; // 1000L * 60 * 60 -> 200초
+    public final long ACCESS_TOKEN_VALID_MS = 60_000L; // 1000L * 60 * 60 -> 200초
     public final long REFRESH_TOKEN_VALID_MS = 1_296_000_000L; // 1000L * 60 * 60 * 24 * 15 -> 15일
 
     private final RedisService redisService;
