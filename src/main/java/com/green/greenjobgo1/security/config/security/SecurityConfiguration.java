@@ -31,6 +31,7 @@ public class SecurityConfiguration {
                                             , "/index.html"
                                             , "/static/**"
                                             , "/api/admin/sign/**"
+                                            , "/api/student/sign/**"
                                             ,"/sign-api/sign-in"
                                             , "/sign-api/sign-up"
                                             , "/sign-api/exception"
