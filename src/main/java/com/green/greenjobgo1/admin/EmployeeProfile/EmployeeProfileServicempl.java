@@ -58,7 +58,7 @@ public class EmployeeProfileServicempl {
         EmployeeProfileRep.save(entity);
 
         String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
-        String centerPath = String.format("%s/Employee/%d", MyFileUtils.getAbsolutePath(fileDir),entity.getProfilePic());
+        String centerPath = String.format("%s/Employee/%d", MyFileUtils.getAbsolutePath(fileDir),entity.getIemply());
 
         File dic = new File(centerPath);
         if(!dic.exists()){
@@ -111,9 +111,12 @@ public class EmployeeProfileServicempl {
         }
 
         if (pic != null) {
-            //MyFileUtils.delFolder(entity.getProfilePic());
             String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
             String centerPath = String.format("%s/Employee/%d", MyFileUtils.getAbsolutePath(fileDir), iemply);
+
+            File file = new File(centerPath+"/"+entity.getProfilePic());
+            log.info("file :{}",file);
+            file.delete();
 
             File dic = new File(centerPath);
             if (!dic.exists()) {
@@ -132,8 +135,6 @@ public class EmployeeProfileServicempl {
             }
 
             String img = savedFileName;
-
-
             entity.setProfilePic(img);
         }
         EmployeeProfileRep.save(entity);
