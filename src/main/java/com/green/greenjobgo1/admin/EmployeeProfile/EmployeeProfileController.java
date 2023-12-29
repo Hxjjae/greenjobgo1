@@ -24,7 +24,7 @@ public class EmployeeProfileController {
     private final EmployeeProfileServicempl service;
 
     @GetMapping
-    @Operation(summary = "직원 프로필 리스트",description = "사진위치: /home/greenjobgo1/Employee/pk번호/")
+    @Operation(summary = "직원 프로필 리스트",description = "사진위치: /home/download/Employee/pk번호/")
     public ResponseEntity<List<EmployeeProfileVo>> getProfile(){
         return ResponseEntity.ok(service.getProfile());
     }

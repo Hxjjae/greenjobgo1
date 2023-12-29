@@ -1,12 +1,22 @@
 package com.green.greenjobgo1.admin.sign;
 
+import com.green.greenjobgo1.admin.AdminRepository;
+import com.green.greenjobgo1.admin.sign.model.AdminParam;
+import com.green.greenjobgo1.admin.sign.model.AdminSigInParam;
 import com.green.greenjobgo1.admin.sign.model.StudentExcel;
 import com.green.greenjobgo1.common.utils.ExcelUtil;
+import com.green.greenjobgo1.common.utils.ResultUtils;
+import com.green.greenjobgo1.config.entity.AdminEntity;
 import com.green.greenjobgo1.config.entity.StudentEntity;
 import com.green.greenjobgo1.repository.StudentRepository;
 import com.green.greenjobgo1.security.config.RedisService;
+import com.green.greenjobgo1.security.config.security.AuthenticationFacade;
 import com.green.greenjobgo1.security.config.security.JwtTokenProvider;
+import com.green.greenjobgo1.security.config.security.model.MyUserDetails;
+import com.green.greenjobgo1.security.sign.model.SignInResultDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -25,8 +38,11 @@ import java.util.Map;
 public class BulkSignService {
     private final StudentRepository stdRep;
     private final PasswordEncoder PW_ENCODER;
-    private final JwtTokenProvider JWT_PROVIDER;
     private final ExcelUtil excelUtil;
+    private final AdminRepository AdminRep;
+    private final RedisService redisService;
+    private final JwtTokenProvider JWT_PROVIDER;
+    private final AuthenticationFacade facade;
 
     @Transactional
     public int addExcel(MultipartFile file) {
@@ -85,20 +101,131 @@ public class BulkSignService {
             student.setAddress(user.getAddress());
             student.setEducation(user.getEducation());
             student.setAge(Integer.parseInt(user.getAge()));
-            student.setRole("ROLE_ADMIN");
-            //student.setRole("ROLE_USER");
+            //student.setRole("ROLE_ADMIN");
+            student.setRole("ROLE_USER");
             student.setHuntJobYn(0);
             student.setStorageYn(0);
             student.setEditableYn(0);
+            StudentEntity studententity = stdRep.findById(user.getEmail());
+            if (studententity == null){
+                StudentEntity save = stdRep.save(student);
 
-            StudentEntity save = stdRep.save(student);
-
-            if (save.getId() == null){
-                return 0;
+                if (save.getId() == null){
+                    return 0;
+                }
             }
+
         }
         return 1;
     }
 
+    public AdminEntity signUp(AdminParam p) {
+        final String ADMIN = "ROLE_ADMIN";
+        AdminEntity adminEntity = AdminRep.findById(p.getId());
+
+        if (adminEntity == null) {
+            return AdminRep.save(AdminEntity.builder()
+                    .id(p.getId())
+                    .pw(PW_ENCODER.encode(p.getPw()))
+                    .role(ADMIN).build());
+        }
+        return null;
+    }
+    public SignInResultDto signIn(AdminSigInParam p, String ip) {
+        final String ADMIN = "ROLE_ADMIN";
+        AdminEntity adminEntity = AdminRep.findById(p.getId());
+
+        if (adminEntity == null) {
+            throw new RuntimeException("존재하지 않는 이메일");
+        }
+        if (!PW_ENCODER.matches(p.getPw(), adminEntity.getPw())) {
+            throw new RuntimeException("비밀번호 불일치");
+        }
+
+        String redisKey = String.format("c:RT(%s):ADMIN:%s:%s", "Server", adminEntity.getIadmin(), ip);
+        if (redisService.getValues(redisKey) != null) {
+            redisService.deleteValues(redisKey);
+        }
+
+        String accessToken = JWT_PROVIDER.generateJwtToken(String.valueOf(adminEntity.getIadmin()),
+                Collections.singletonList(ADMIN), JWT_PROVIDER.ACCESS_TOKEN_VALID_MS, JWT_PROVIDER.ACCESS_KEY);
+        String refreshToken = JWT_PROVIDER.generateJwtToken(String.valueOf(adminEntity.getIadmin()),
+                Collections.singletonList(ADMIN), JWT_PROVIDER.REFRESH_TOKEN_VALID_MS, JWT_PROVIDER.REFRESH_KEY);
+
+        redisService.setValues(redisKey, refreshToken);
+
+        SignInResultDto dto = SignInResultDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .role(ADMIN)
+                .build();
+
+        ResultUtils.setSuccessResult(dto);
+        return dto;
+    }
+
+    public String refreshToken(HttpServletRequest req, String refreshToken) throws RuntimeException {
+        String error = "유효하지 않은 토큰";
+        if(!(JWT_PROVIDER.isValidateToken(refreshToken, JWT_PROVIDER.REFRESH_KEY))) { return error; }
+
+        Claims claims = null;
+        try {
+            claims = JWT_PROVIDER.getClaims(refreshToken, JWT_PROVIDER.REFRESH_KEY);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (claims == null) {
+            return error;
+        }
+
+        String strIuser = claims.getSubject();
+        Long iuser = Long.valueOf(strIuser);
+        String ip = req.getRemoteAddr();
+        List<String> roles = (List<String>)claims.get("roles");
+
+        String redisKey = "ROLE_ADMIN".equals(roles.get(0)) ?
+                String.format("c:RT(%s):ADMIN:%s:%s", "Server", iuser, ip) :
+                String.format("c:RT(%s):%s:%s", "Server", iuser, ip);
+
+        String redisRt = redisService.getValues(redisKey);
+        if (redisRt == null) {
+            return error;
+        }
+
+        try {
+            if (!redisRt.equals(refreshToken)) {
+                return error;
+            }
+
+            return JWT_PROVIDER.generateJwtToken(strIuser, roles,
+                    JWT_PROVIDER.ACCESS_TOKEN_VALID_MS, JWT_PROVIDER.ACCESS_KEY);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return error;
+    }
+
+    public void logout(HttpServletRequest req) {
+        String accessToken = JWT_PROVIDER.resolveToken(req, JWT_PROVIDER.TOKEN_TYPE);
+        Long iuser = facade.getLoginUserPk();
+        String ip = req.getRemoteAddr();
+        MyUserDetails userDetails = facade.getLoginUser();
+
+        String redisKey = "ROLE_ADMIN".equals(userDetails.getRoles().get(0)) ?
+                String.format("c:RT(%s):ADMIN:%s:%s", "Server", iuser, ip) :
+                String.format("c:RT(%s):%s:%s", "Server", iuser, ip);
+
+        String refreshTokenInRedis = redisService.getValues(redisKey);
+        if (refreshTokenInRedis != null) {
+            redisService.deleteValues(redisKey);
+        }
+
+        long expiration = JWT_PROVIDER.getTokenExpirationTime(accessToken, JWT_PROVIDER.ACCESS_KEY) -
+                LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        log.info("expiration: {}", expiration);
+        log.info("localDateTime-getTime(): {}", LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+
+        redisService.setValuesWithTimeout(accessToken, "logout", expiration);
+    }
 
 }

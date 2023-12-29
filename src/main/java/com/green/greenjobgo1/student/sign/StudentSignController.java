@@ -1,17 +1,18 @@
 package com.green.greenjobgo1.student.sign;
 
+import com.green.greenjobgo1.security.sign.model.SignUpResultDto;
 import com.green.greenjobgo1.student.sign.model.SignInParam;
 import com.green.greenjobgo1.security.CommonRes;
 import com.green.greenjobgo1.security.sign.model.SignInResultDto;
+import com.green.greenjobgo1.student.sign.model.TokenDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Tag(name = "수강생 로그인,로그아웃")
@@ -35,5 +36,26 @@ public class StudentSignController {
         }
 
         return dto;
+    }
+
+    @PostMapping("/refresh-token")
+    @Operation(summary = "accessToken 재발행")
+    public String refreshToken(HttpServletRequest req, @RequestBody TokenDto token) {
+        return service.refreshToken(req, token.getRefreshToken());
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃")
+    public ResponseEntity<?> logout(HttpServletRequest req) {
+        service.logout(req);
+        ResponseCookie responseCookie = ResponseCookie.from("refresh-token", "")
+                .maxAge(0)
+                .path("/")
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .build();
     }
 }

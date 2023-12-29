@@ -1,16 +1,14 @@
 package com.green.greenjobgo1.config.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 @Data
 @Table(name = "admin")
 @Entity
 @ToString(callSuper = true)
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminEntity{
@@ -37,8 +35,5 @@ public class AdminEntity{
     @Column(nullable = false, length = 10, name = "del_yn")
     @ColumnDefault("0")
     private int delYn;
-
-    @Column(length = 100, name = "secret_key")
-    private String secretKey;
 
 }
