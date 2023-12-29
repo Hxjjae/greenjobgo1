@@ -26,6 +26,9 @@ public class BulkSignService {
     private final StudentRepository stdRep;
     private final PasswordEncoder PW_ENCODER;
     private final JwtTokenProvider JWT_PROVIDER;
+    private final StudentRepository studentRepository;
+    private final RedisService redisService;
+    private final JPAQueryFactory jpaQueryFactory;
     private final ExcelUtil excelUtil;
 
     @Transactional
