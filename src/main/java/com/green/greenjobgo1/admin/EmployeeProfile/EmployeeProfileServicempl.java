@@ -111,6 +111,7 @@ public class EmployeeProfileServicempl {
         }
 
         if (pic != null) {
+            //MyFileUtils.delFolder(entity.getProfilePic());
             String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
             String centerPath = String.format("%s/Employee/%d", MyFileUtils.getAbsolutePath(fileDir), iemply);
 
@@ -139,7 +140,9 @@ public class EmployeeProfileServicempl {
 
 
         return EmployeeProfileVo.builder().iemply(entity.getIemply())
+                .oneWord(entity.getOneWord())
                 .name(entity.getName())
+                .conuselingNumber(entity.getConuselingNumber())
                 .phoneNumber(entity.getPhoneNumber())
                 .email(entity.getEmail())
                 .profilePic(entity.getProfilePic())
