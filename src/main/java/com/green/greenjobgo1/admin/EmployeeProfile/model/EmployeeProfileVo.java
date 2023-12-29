@@ -7,8 +7,10 @@ import lombok.Getter;
 @Builder
 public class EmployeeProfileVo {
     private Long iemply;
+    private String oneWord;
     private String name;
-    private String phone;
+    private String conuselingNumber;
+    private String phoneNumber;
     private String email;
     private String profilePic;
     private String kakaoId;

@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Slf4j
-@Tag(name = "profile")
+@Tag(name = "Admin-profile")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/profile")
@@ -38,12 +38,14 @@ public class EmployeeProfileController {
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "직원 프로필 수정",description = "")
     public ResponseEntity<EmployeeProfileVo> putProfile(@RequestParam Long iemply,
+                                                        @RequestParam(required = false) String oneWord,
                                                         @RequestParam(required = false) String name,
+                                                        @RequestParam(required = false) String conuselingNumber,
                                                         @RequestParam(required = false) String phone,
                                                         @RequestParam(required = false) String email,
                                                         @RequestParam(required = false) String kakaoid,
                                                         @RequestPart MultipartFile pic){
-        return ResponseEntity.ok(service.putProfile(iemply,name,phone,email,kakaoid,pic));
+        return ResponseEntity.ok(service.putProfile(iemply,name,oneWord,conuselingNumber,phone,email,kakaoid,pic));
     }
 
     @PatchMapping(value = "/pic",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

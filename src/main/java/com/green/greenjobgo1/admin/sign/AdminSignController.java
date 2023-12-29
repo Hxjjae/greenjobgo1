@@ -20,8 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/sign")
-public class BulkSignController {
-    private final BulkSignService service;
+public class AdminSignController {
+    private final AdminSignService service;
 
     @PostMapping(value = "/excel",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "엑셀로 수강생을 회원가입합니다.",description = "리턴값이 1이면 회원가입완료")

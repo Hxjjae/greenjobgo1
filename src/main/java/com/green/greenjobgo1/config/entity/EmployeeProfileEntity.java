@@ -22,11 +22,16 @@ public class EmployeeProfileEntity {
     @Column(updatable = false,nullable = false,columnDefinition = "BIGINT UNSIGNED",length=100)
     private Long iemply;
 
+    @Column(length = 20, name = "one_word")
+    private String oneWord;
+
     @Column(nullable = false, length = 20, name = "name")
     private String name;
+    @Column(length = 20, name = "conuseling_number")
+    private String conuselingNumber;
 
-    @Column(nullable = false, length = 20, name = "phone")
-    private String phone;
+    @Column(nullable = false, length = 20, name = "phone_number")
+    private String phoneNumber;
 
     @Column(length = 20, name = "email")
     private String email;
@@ -36,4 +41,8 @@ public class EmployeeProfileEntity {
 
     @Column(length = 20, name = "kakaoid")
     private String kakaoid;
+
+
+
+
 }
