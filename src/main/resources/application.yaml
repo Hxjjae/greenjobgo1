@@ -10,6 +10,61 @@ springboot:
     redis-refresh-key: "A-RT"
 #DB
 spring:
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 250MB
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://112.222.157.156:55/greenjobgo1
+    username: root
+    password: greendev1
+
+#mybatis
+
+mybatis:
+  type-aliases-package: com.green.greenjobgo1
+  mapper-locations: mapper/**/*.xml
+
+#SWAGGER
+springdoc:
+  swagger-ui:
+    path: /swagger.html
+    operations-sorter: method
+
+file:
+  dir: /home/download
+---
+
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:mariadb://localhost:3306/greenjobgo1
+    username: root
+    password: green502
+  data:
+    redis:
+      host: localhost:3306
+      port: 8080
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:init/schema.sql
+      data-locations: classpath:init/data.sql
+
+---
+
+#DB
+spring:
   config:
     activate:
       on-profile: "prod"
@@ -17,7 +72,7 @@ spring:
     hibernate:
       ddl-auto: none
   datasource:
-    jdbc-url: jdbc:mariadb://192.168.0.27:55/greenjobgo1
+    jdbc-url: jdbc:mariadb://112.222.157.156:55/greenjobgo1
     username: root
     password: greendev1
   data:
@@ -36,22 +91,3 @@ file:
 
 server:
   port: 8080
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: test
-  datasource:
-    url: jdbc:mariadb://localhost:3306/greenjobgo1?allowMultiQueries=true
-    username: root
-    password: green502
-  data:
-    redis:
-      host: 192.168.0.144
-  sql:
-    init:
-      mode: always
-      schema-locations: classpath:init/schema.sql
-      data-locations: classpath:init/data.sql
