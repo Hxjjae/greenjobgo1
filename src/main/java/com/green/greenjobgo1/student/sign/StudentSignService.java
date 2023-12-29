@@ -56,12 +56,14 @@ public class StudentSignService {
         String refreshToken = JWT_PROVIDER.generateJwtToken(String.valueOf(user.getIstudent()),
                 Collections.singletonList(user.getRole()),
                 JWT_PROVIDER.REFRESH_TOKEN_VALID_MS, JWT_PROVIDER.REFRESH_KEY);
+        Long accessTokenTime = JWT_PROVIDER.ACCESS_TOKEN_VALID_MS;
 
         redisService.setValues(redisKey, refreshToken);
 
         log.info("[getSignInResult] SignInResultDto 객체 생성");
         SignInResultDto dto = SignInResultDto.builder()
                 .accessToken(accessToken)
+                .accessTokenTime(accessTokenTime)
                 .refreshToken(refreshToken)
                 .role(user.getRole())
                 .build();

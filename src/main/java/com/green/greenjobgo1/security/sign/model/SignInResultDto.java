@@ -9,6 +9,7 @@ import lombok.ToString;
 @Getter
 public class SignInResultDto extends SignUpResultDto {
     private String accessToken;
+    private Long accessTokenTime;
     private String refreshToken;
     private String role;
 }

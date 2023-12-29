@@ -151,11 +151,12 @@ public class BulkSignService {
                 Collections.singletonList(ADMIN), JWT_PROVIDER.ACCESS_TOKEN_VALID_MS, JWT_PROVIDER.ACCESS_KEY);
         String refreshToken = JWT_PROVIDER.generateJwtToken(String.valueOf(adminEntity.getIadmin()),
                 Collections.singletonList(ADMIN), JWT_PROVIDER.REFRESH_TOKEN_VALID_MS, JWT_PROVIDER.REFRESH_KEY);
-
+        Long accessTokenTime = JWT_PROVIDER.ACCESS_TOKEN_VALID_MS;
         redisService.setValues(redisKey, refreshToken);
 
         SignInResultDto dto = SignInResultDto.builder()
                 .accessToken(accessToken)
+                .accessTokenTime(accessTokenTime)
                 .refreshToken(refreshToken)
                 .role(ADMIN)
                 .build();
