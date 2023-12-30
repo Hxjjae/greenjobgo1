@@ -27,8 +27,8 @@ public class AdminStudentController {
     @GetMapping
     @Operation(summary = "학생 조회")
     public ResponseEntity<AdminStudentFindRes> getStudentList(@ParameterObject @PageableDefault(sort = "icourseSubject", direction = Sort.Direction.ASC) Pageable pageable,
-                                                              @RequestParam Long icategory,
-                                                              @RequestParam String subjectName
+                                                              @RequestParam(required = false) Long icategory,
+                                                              @RequestParam(required = false) String subjectName
     ) {
         AdminStudentDto dto = new AdminStudentDto();
             dto.setIcategory(icategory);
