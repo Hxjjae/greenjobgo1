@@ -12,6 +12,7 @@ public class CompanylistRes {
     private String companyName;
     private String sector;
     private String leaderName;
+    private String jobField;
     private String manger;
     private String phoneNumber;
     private String dateConslusion;

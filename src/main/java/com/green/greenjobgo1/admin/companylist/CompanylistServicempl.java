@@ -30,16 +30,20 @@ public class CompanylistServicempl {
     QCompanyListEntity qCompanyList = QCompanyListEntity.companyListEntity;
 
     public CompanyListEntity companyName(CompanyNameDto dto) {
-        CompanyListEntity entity = new CompanyListEntity();
-        entity.setManager(dto.getManger());
-        entity.setSector(dto.getManger());
-        entity.setPhoneNumber(dto.getPhoneNumber());
-        entity.setDateConslusion(dto.getDateConslusion());
-        entity.setCompanyName(dto.getCompanyName());
 
-        companylistRep.save(entity);
+        CompanyListEntity companyListEntity = CompanyListEntity.builder()
+                .area(dto.getArea())
+                .companyName(dto.getCompanyName())
+                .sector(dto.getSector())
+                .leaderName(dto.getLeaderName())
+                .jobField(dto.getJobField())
+                .manager(dto.getManger())
+                .phoneNumber(dto.getPhoneNumber())
+                .dateConslusion(dto.getDateConslusion()).build();
 
-        return entity;
+        companylistRep.save(companyListEntity);
+
+        return companyListEntity;
     }
 
     public CompanylistVo companyList(int page,int size,String companyName) {
@@ -53,6 +57,7 @@ public class CompanylistServicempl {
                         qCompanyList.companyName,
                         qCompanyList.sector,
                         qCompanyList.leaderName,
+                        qCompanyList.jobField,
                         qCompanyList.manager,
                         qCompanyList.phoneNumber,
                         qCompanyList.dateConslusion))

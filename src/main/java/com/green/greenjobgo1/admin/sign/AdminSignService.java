@@ -186,8 +186,7 @@ public class AdminSignService {
         String redisKey;
         if ("ROLE_ADMIN".equals(roles.get(0))){
             redisKey = String.format("c:RT(%s):ADMIN:%s:%s", "Server", iuser, ip);
-        }
-        if ("ROLE_USER".equals(roles.get(0))){
+        }else if ("ROLE_USER".equals(roles.get(0))){
             redisKey = String.format("c:RT(%s):USER:%s:%s", "Server", iuser, ip);
         }else {
             redisKey = String.format("c:RT(%s):COMPANY:%s:%s", "Server", iuser, ip);
