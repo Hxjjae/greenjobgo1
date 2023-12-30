@@ -10,8 +10,10 @@ import lombok.Setter;
 public class CompanylistRes {
     private Long companyCode;
     private Long companyNumber;
+    private String area;
     private String companyName;
     private String sector;
+    private String leaderName;
     private String manger;
     private String phoneNumber;
     private String dateConslusion;

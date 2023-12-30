@@ -40,19 +40,21 @@ public class CompanylistController {
     }
     @PostMapping(value = "/excel",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "엑셀로 추가",description = "리턴값이 1이면 정상 추가 됨")
-    public ResponseEntity<Integer> addExcel(@RequestPart MultipartFile file){
-        return ResponseEntity.ok(service.addExcel(file));
+    public ResponseEntity<Integer> addExcel(@RequestPart MultipartFile companyfile){
+        return ResponseEntity.ok(service.addExcel(companyfile));
     }
 
     @GetMapping
     @Operation(summary = "회사명 리스트 조회",
             description = "companyCode: DB 회사 pk값 <br>" +
-            "companynumber: 순번 번호 <br>"+
-            "companyName: 회사 명 <br>"+
-            "sector : 업종 <br>"+
-            "manger : 담당자 <br>"+
-            "phonenumber : 전화번호 <br>"+
-            "dateConslusion: 체결일자 <br>")
+                    "area: 지역 <br>"+
+                    "companynumber: 순번 번호 <br>"+
+                    "leaderName: 대표이름 <br>"+
+                    "companyName: 회사 명 <br>"+
+                    "sector : 업종 <br>"+
+                    "manger : 담당자 <br>"+
+                    "phonenumber : 전화번호 <br>"+
+                    "dateConslusion: 체결일자 <br>")
     public ResponseEntity<CompanylistVo> companyList(@RequestParam int page,
                                                      @RequestParam int size,
                                                      @RequestParam(required = false) String companyName){

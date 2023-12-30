@@ -50,11 +50,14 @@ public class CompanylistServicempl {
 
         List<CompanyListEntity> companylist = jpaQueryFactory.select(Projections.constructor(CompanyListEntity.class,
                         qCompanyList.companyCode,
+                        qCompanyList.area,
                         qCompanyList.companyName,
-                        qCompanyList.dateConslusion,
+                        qCompanyList.sector,
+                        qCompanyList.leaderName,
                         qCompanyList.manager,
                         qCompanyList.phoneNumber,
-                        qCompanyList.sector))
+                        qCompanyList.dateConslusion
+                        ))
                 .from(qCompanyList)
                 .where(eqCompanyName(companyName))
                 .offset(pageable.getOffset())
@@ -77,9 +80,11 @@ public class CompanylistServicempl {
         List<CompanylistRes> list = companylist.stream().map(item ->
                 CompanylistRes.builder().companyCode(item.getCompanyCode())
                         .companyName(item.getCompanyName())
-                        .phoneNumber(item.getPhoneNumber())
-                        .manger(item.getManager())
+                        .area(item.getArea())
+                        .leaderName(item.getLeaderName())
                         .dateConslusion(item.getDateConslusion())
+                        .manger(item.getManager())
+                        .phoneNumber(item.getPhoneNumber())
                         .sector(item.getSector()).build()).toList();
 
 
@@ -147,6 +152,7 @@ public class CompanylistServicempl {
             // 각 셀의 데이터를 VO에 set한다.
             company.setDateConslusion(map.get("1").toString());
             company.setCompanyname(map.get("2").toString());
+            company.setLeaderName(map.get("3").toString());
             company.setSector(map.get("5").toString());
 
             listUser.add(company);
