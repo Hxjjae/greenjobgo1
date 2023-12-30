@@ -139,12 +139,12 @@ public class CompanylistServicempl {
     }
 
     @Transactional
-    public int addExcel(MultipartFile file) {
+    public int addExcel(MultipartFile companyfile) {
 
         List<CompanyExcel> listUser = new ArrayList<>();
 
         // 엑셀의 셀데이터를 객체에 담기
-        List<Map<String, Object>> listMap = excelUtil.getListData(file, 1, 5);
+        List<Map<String, Object>> listMap = excelUtil.getListData(companyfile, 1, 5);
 
         for (Map<String, Object> map : listMap) {
             CompanyExcel company = new CompanyExcel();
@@ -164,6 +164,7 @@ public class CompanylistServicempl {
             entity.setCompanyName(oneUser.getCompanyname());
             entity.setDateConslusion(oneUser.getDateConslusion());
             entity.setSector(oneUser.getSector());
+            entity.setLeaderName(oneUser.getLeaderName());
 
             CompanyListEntity save = companylistRep.save(entity);
             if (save.getCompanyCode() == null){

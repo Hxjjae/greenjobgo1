@@ -30,6 +30,7 @@ public class CompanylistController {
     @Operation(summary = "회사명 추가",description = "companyCode: DB 회사 pk값 <br>" +
             "companynumber: 순번 번호 <br>"+
             "companyName: 회사 명 <br>"+
+            "JobField: 채용(직업)분야 <br>"+
             "sector : 업종 <br>"+
             "manger : 담당자 <br>"+
             "phonenumber : 전화번호 <br>"+

@@ -2,10 +2,7 @@ package com.green.greenjobgo1.config.entity;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.core.annotation.Order;
@@ -16,6 +13,7 @@ import org.springframework.core.annotation.Order;
 @Table(name = "Company_list")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @ToString(callSuper = true)
 public class CompanyListEntity {
     @Id
@@ -23,7 +21,7 @@ public class CompanyListEntity {
     @Column(updatable = false,nullable = false,columnDefinition = "BIGINT UNSIGNED",length=100)
     private Long companyCode;
 
-    @Column(nullable = false, length = 20, name = "area")
+    @Column(length = 20, name = "area")
     private String area;
 
     @Column(nullable = false, length = 20, name = "company_name")
