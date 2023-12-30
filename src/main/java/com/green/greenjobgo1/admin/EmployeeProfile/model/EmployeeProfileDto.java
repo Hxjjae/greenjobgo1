@@ -4,8 +4,10 @@ import lombok.Data;
 
 @Data
 public class EmployeeProfileDto {
+    private String oneWord;
     private String name;
-    private String phone;
+    private String conuselingNumber;
+    private String phoneNumber;
     private String email;
     private String kakaoid;
 }

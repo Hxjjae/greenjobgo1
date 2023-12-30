@@ -31,12 +31,13 @@ public class EmployeeProfileServicempl {
 
 
     public List<EmployeeProfileVo> getProfile(){
-        List<EmployeeProfileEntity> all = EmployeeProfileRep.findAll();
+        List<EmployeeProfileEntity> entityList = EmployeeProfileRep.findAll();
 
-        return all.stream().map(profile -> EmployeeProfileVo.builder()
+        return entityList.stream().map(profile -> EmployeeProfileVo.builder()
                 .iemply(profile.getIemply())
+                .conuselingNumber(profile.getConuselingNumber())
                 .name(profile.getName())
-                .phone(profile.getPhone())
+                .phoneNumber(profile.getPhoneNumber())
                 .email(profile.getEmail())
                 .profilePic(profile.getProfilePic())
                 .kakaoId(profile.getKakaoid()).build()).toList();
@@ -48,14 +49,16 @@ public class EmployeeProfileServicempl {
 
         EmployeeProfileEntity entity = new EmployeeProfileEntity();
         entity.setName(dto.getName());
-        entity.setPhone(dto.getPhone());
+        entity.setOneWord(dto.getOneWord());
+        entity.setConuselingNumber(dto.getConuselingNumber());
+        entity.setPhoneNumber(dto.getPhoneNumber());
         entity.setEmail(dto.getEmail());
         entity.setKakaoid(dto.getKakaoid());
 
         EmployeeProfileRep.save(entity);
 
         String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
-        String centerPath = String.format("%s/Employee/%d", MyFileUtils.getAbsolutePath(fileDir),entity.getProfilePic());
+        String centerPath = String.format("%s/Employee/%d", MyFileUtils.getAbsolutePath(fileDir),entity.getIemply());
 
         File dic = new File(centerPath);
         if(!dic.exists()){
@@ -83,16 +86,22 @@ public class EmployeeProfileServicempl {
         return entity;
     }
 
-    public EmployeeProfileVo putProfile(Long iemply,String name,String phone,String email,String kakaoid,MultipartFile pic){
+    public EmployeeProfileVo putProfile(Long iemply,String oneWord,String name,String conuselingNumber,String phone,String email,String kakaoid,MultipartFile pic){
         EmployeeProfileEntity entity = EmployeeProfileRep.findById(iemply).get();
 
 
         entity.setIemply(iemply);
+        if (oneWord !=null){
+            entity.setOneWord(oneWord);
+        }
+        if (conuselingNumber !=null){
+            entity.setConuselingNumber(conuselingNumber);
+        }
         if (name !=null){
             entity.setName(name);
         }
         if (phone !=null){
-            entity.setPhone(phone);
+            entity.setPhoneNumber(phone);
         }
         if (email!=null){
             entity.setEmail(email);
@@ -101,35 +110,41 @@ public class EmployeeProfileServicempl {
             entity.setKakaoid(kakaoid);
         }
 
-        String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
-        String centerPath = String.format("%s/Employee/%d", MyFileUtils.getAbsolutePath(fileDir),iemply);
+        if (pic != null) {
+            String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
+            String centerPath = String.format("%s/Employee/%d", MyFileUtils.getAbsolutePath(fileDir), iemply);
 
-        File dic = new File(centerPath);
-        if(!dic.exists()){
-            dic.mkdirs();
+            File file = new File(centerPath+"/"+entity.getProfilePic());
+            log.info("file :{}",file);
+            file.delete();
+
+            File dic = new File(centerPath);
+            if (!dic.exists()) {
+                dic.mkdirs();
+            }
+
+            String originFileName = pic.getOriginalFilename();
+            String savedFileName = MyFileUtils.makeRandomFileNm(originFileName);
+            String savedFilePath = String.format("%s/%s", centerPath, savedFileName);
+
+            File target = new File(savedFilePath);
+            try {
+                pic.transferTo(target);
+            } catch (Exception e) {
+                return null;
+            }
+
+            String img = savedFileName;
+            entity.setProfilePic(img);
         }
-
-        String originFileName = pic.getOriginalFilename();
-        String savedFileName = MyFileUtils.makeRandomFileNm(originFileName);
-        String savedFilePath = String.format("%s/%s",centerPath, savedFileName);
-
-        File target = new File(savedFilePath);
-        try {
-            pic.transferTo(target);
-        }catch (Exception e) {
-            return null;
-        }
-
-        String img = savedFileName;
-
-
-        entity.setProfilePic(img);
         EmployeeProfileRep.save(entity);
 
 
         return EmployeeProfileVo.builder().iemply(entity.getIemply())
+                .oneWord(entity.getOneWord())
                 .name(entity.getName())
-                .phone(entity.getPhone())
+                .conuselingNumber(entity.getConuselingNumber())
+                .phoneNumber(entity.getPhoneNumber())
                 .email(entity.getEmail())
                 .profilePic(entity.getProfilePic())
                 .kakaoId(entity.getKakaoid()).build();
@@ -165,7 +180,7 @@ public class EmployeeProfileServicempl {
 
         return EmployeeProfileVo.builder().iemply(entity.getIemply())
                 .name(entity.getName())
-                .phone(entity.getPhone())
+                .phoneNumber(entity.getPhoneNumber())
                 .email(entity.getEmail())
                 .profilePic(entity.getProfilePic())
                 .kakaoId(entity.getKakaoid()).build();
@@ -178,7 +193,7 @@ public class EmployeeProfileServicempl {
 
         return EmployeeProfileVo.builder().iemply(entity.getIemply())
                 .name(entity.getName())
-                .phone(entity.getPhone())
+                .phoneNumber(entity.getPhoneNumber())
                 .email(entity.getEmail())
                 .profilePic(entity.getProfilePic())
                 .kakaoId(entity.getKakaoid()).build();
@@ -186,12 +201,12 @@ public class EmployeeProfileServicempl {
 
     public EmployeeProfileVo patchPhone(Long iemply,String phone){
         EmployeeProfileEntity entity = EmployeeProfileRep.findById(iemply).get();
-        entity.setPhone(phone);
+        entity.setPhoneNumber(phone);
         EmployeeProfileRep.save(entity);
 
         return EmployeeProfileVo.builder().iemply(entity.getIemply())
                 .name(entity.getName())
-                .phone(entity.getPhone())
+                .phoneNumber(entity.getPhoneNumber())
                 .email(entity.getEmail())
                 .profilePic(entity.getProfilePic())
                 .kakaoId(entity.getKakaoid()).build();
@@ -204,7 +219,7 @@ public class EmployeeProfileServicempl {
 
         return EmployeeProfileVo.builder().iemply(entity.getIemply())
                 .name(entity.getName())
-                .phone(entity.getPhone())
+                .phoneNumber(entity.getPhoneNumber())
                 .email(entity.getEmail())
                 .profilePic(entity.getProfilePic())
                 .kakaoId(entity.getKakaoid()).build();
@@ -217,7 +232,7 @@ public class EmployeeProfileServicempl {
 
         return EmployeeProfileVo.builder().iemply(entity.getIemply())
                 .name(entity.getName())
-                .phone(entity.getPhone())
+                .phoneNumber(entity.getPhoneNumber())
                 .email(entity.getEmail())
                 .profilePic(entity.getProfilePic())
                 .kakaoId(entity.getKakaoid()).build();

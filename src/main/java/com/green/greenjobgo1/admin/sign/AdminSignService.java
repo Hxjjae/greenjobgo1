@@ -14,7 +14,6 @@ import com.green.greenjobgo1.security.config.security.AuthenticationFacade;
 import com.green.greenjobgo1.security.config.security.JwtTokenProvider;
 import com.green.greenjobgo1.security.config.security.model.MyUserDetails;
 import com.green.greenjobgo1.security.sign.model.SignInResultDto;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class BulkSignService {
+public class AdminSignService {
     private final StudentRepository stdRep;
     private final PasswordEncoder PW_ENCODER;
     private final ExcelUtil excelUtil;
