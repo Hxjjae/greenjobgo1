@@ -28,7 +28,6 @@ public class CompanylistController {
 
     @PostMapping
     @Operation(summary = "회사명 추가",description = "companyCode: DB 회사 pk값 <br>" +
-            "companynumber: 순번 번호 <br>"+
             "companyName: 회사 명 <br>"+
             "JobField: 채용(직업)분야 <br>"+
             "sector : 업종 <br>"+
@@ -49,7 +48,6 @@ public class CompanylistController {
     @Operation(summary = "회사명 리스트 조회",
             description = "companyCode: DB 회사 pk값 <br>" +
                     "area: 지역 <br>"+
-                    "companynumber: 순번 번호 <br>"+
                     "leaderName: 대표이름 <br>"+
                     "companyName: 회사 명 <br>"+
                     "sector : 업종 <br>"+
@@ -70,12 +68,15 @@ public class CompanylistController {
             "phonenumber : 전화번호 <br>"+
             "dateConslusion: 체결일자 <br>")
     public ResponseEntity<CompanyListEntity> patchCompanyName(@RequestParam Long companyCode,
+                                                              @RequestParam (required = false) String area,
                                                               @RequestParam (required = false) String companyName,
                                                               @RequestParam (required = false) String sector,
                                                               @RequestParam (required = false) String manger,
+                                                              @RequestParam (required = false) String leaderName,
+                                                              @RequestParam (required = false) String jobField,
                                                               @RequestParam (required = false) String phoneNumber,
                                                               @RequestParam (required = false) String dateConslusion){
-        CompanyListEntity entity = service.patchCompanyName(companyCode,companyName,sector,manger,phoneNumber,dateConslusion);
+        CompanyListEntity entity = service.patchCompanyName(companyCode,area,companyName,sector,manger,leaderName,jobField,phoneNumber,dateConslusion);
         return ResponseEntity.ok(entity);
     }
 

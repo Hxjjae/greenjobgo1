@@ -103,24 +103,21 @@ public class CompanylistServicempl {
 
     }
 
-    public CompanyListEntity patchCompanyName(Long companyCode, String companyName, String sector,String manger,String phoneNumber,String dateConslusion ) {
+    public CompanyListEntity patchCompanyName(Long companyCode,String area, String companyName, String sector,String manger
+            ,String leaderName,String jobField,String phoneNumber,String dateConslusion ) {
         CompanyListEntity entity = companylistRep.findById(companyCode).get();
         entity.setCompanyCode(companyCode);
-        if (companyName!=null){
-            entity.setCompanyName(companyName);
-        }
-        if (sector!=null){
-            entity.setSector(sector);
-        }
-        if (manger!=null){
-            entity.setManager(manger);
-        }
-        if (phoneNumber!=null){
-            entity.setPhoneNumber(phoneNumber);
-        }
-        if (dateConslusion!=null){
-            entity.setDateConslusion(dateConslusion);
-        }
+
+
+        // null이 아닌 경우에만 값이 들어갑니다.
+        Optional.ofNullable(area).ifPresent(entity::setArea);
+        Optional.ofNullable(companyName).ifPresent(entity::setCompanyName);
+        Optional.ofNullable(sector).ifPresent(entity::setSector);
+        Optional.ofNullable(manger).ifPresent(entity::setManager);
+        Optional.ofNullable(leaderName).ifPresent(entity::setManager);
+        Optional.ofNullable(jobField).ifPresent(entity::setJobField);
+        Optional.ofNullable(phoneNumber).ifPresent(entity::setPhoneNumber);
+        Optional.ofNullable(dateConslusion).ifPresent(entity::setDateConslusion);
 
         companylistRep.save(entity);
         return entity;
