@@ -21,6 +21,10 @@ public class CertificateEntity {
     @Column(updatable = false, nullable = false, length = 20)
     private Long icertifiacate;
 
+    @ManyToOne
+    @JoinColumn(name = "istudent")
+    private StudentEntity studentEntity;
+
     @Column(length = 30)
     private String certificate;
 }
