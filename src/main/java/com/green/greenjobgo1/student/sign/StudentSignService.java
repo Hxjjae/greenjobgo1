@@ -43,7 +43,7 @@ public class StudentSignService {
             throw new RuntimeException("비밀번호 불일치");
         }
 
-        String redisKey = String.format("c:RT(%s):%s:%s", "Server", user.getIstudent(), ip);
+        String redisKey = String.format("c:RT(%s):USER:%s:%s", "Server", user.getIstudent(), ip);
 
         if (redisService.getValues(redisKey)!=null){
             redisService.deleteValues(redisKey);
@@ -92,9 +92,15 @@ public class StudentSignService {
         String ip = req.getRemoteAddr();
         List<String> roles = (List<String>)claims.get("roles");
 
-        String redisKey = "ROLE_ADMIN".equals(roles.get(0)) ?
-                String.format("c:RT(%s):ADMIN:%s:%s", "Server", iuser, ip) :
-                String.format("c:RT(%s):%s:%s", "Server", iuser, ip);
+        String redisKey;
+        if ("ROLE_ADMIN".equals(roles.get(0))){
+            redisKey = String.format("c:RT(%s):ADMIN:%s:%s", "Server", iuser, ip);
+        }
+        if ("ROLE_USER".equals(roles.get(0))){
+            redisKey = String.format("c:RT(%s):USER:%s:%s", "Server", iuser, ip);
+        }else {
+            redisKey = String.format("c:RT(%s):COMPANY:%s:%s", "Server", iuser, ip);
+        }
 
         String redisRt = redisService.getValues(redisKey);
         if (redisRt == null) {
@@ -120,9 +126,15 @@ public class StudentSignService {
         String ip = req.getRemoteAddr();
         MyUserDetails userDetails = facade.getLoginUser();
 
-        String redisKey = "ROLE_ADMIN".equals(userDetails.getRoles().get(0)) ?
-                String.format("c:RT(%s):ADMIN:%s:%s", "Server", iuser, ip) :
-                String.format("c:RT(%s):%s:%s", "Server", iuser, ip);
+
+        String redisKey;
+        if ("ROLE_ADMIN".equals(userDetails.getRoles().get(0))){
+            redisKey = String.format("c:RT(%s):ADMIN:%s:%s", "Server", iuser, ip);
+        }else if ("ROLE_USER".equals(userDetails.getRoles().get(0))){
+            redisKey = String.format("c:RT(%s):USER:%s:%s", "Server", iuser, ip);
+        }else {
+            redisKey = String.format("c:RT(%s):COMPANY:%s:%s", "Server", iuser, ip);
+        }
 
         String refreshTokenInRedis = redisService.getValues(redisKey);
         if (refreshTokenInRedis != null) {

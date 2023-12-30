@@ -23,11 +23,17 @@ public class CompanyListEntity {
     @Column(updatable = false,nullable = false,columnDefinition = "BIGINT UNSIGNED",length=100)
     private Long companyCode;
 
+    @Column(nullable = false, length = 20, name = "area")
+    private String area;
+
     @Column(nullable = false, length = 20, name = "company_name")
     private String companyName;
 
     @Column(length = 50, name = "sector")
     private String sector;
+
+    @Column(length = 20, name = "leader_name")
+    private String leaderName;
 
     @Column(length = 20, name = "manager")
     private String manager;
@@ -37,4 +43,5 @@ public class CompanyListEntity {
 
     @Column(length = 30, name = "date_conslusion")
     private String dateConslusion;
+
 }
