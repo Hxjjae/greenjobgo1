@@ -39,7 +39,7 @@ public class CompanylistController {
         return ResponseEntity.ok(entity);
     }
     @PostMapping(value = "/excel",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "엑셀로 입력",description = "리턴값이 1이면 정상입력")
+    @Operation(summary = "엑셀로 추가",description = "리턴값이 1이면 정상 추가 됨")
     public ResponseEntity<Integer> addExcel(@RequestPart MultipartFile file){
         return ResponseEntity.ok(service.addExcel(file));
     }
