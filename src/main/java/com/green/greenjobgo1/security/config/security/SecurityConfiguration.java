@@ -45,7 +45,7 @@ public class SecurityConfiguration {
                                     ).permitAll()
                                     .requestMatchers(HttpMethod.GET, "/sign-api/refresh-token").permitAll()
                                     .requestMatchers(HttpMethod.GET, "/product/**").permitAll()
-                                    .requestMatchers(HttpMethod.GET, "/api/admin/companylist").permitAll()
+                                    .requestMatchers(HttpMethod.GET, "/api/admin/companylist").hasAnyRole("USER", "COMPANY", "ADMIN")
                                     .requestMatchers(HttpMethod.POST, "/product/**").permitAll()
                                     .requestMatchers("**exception**").permitAll()
                                     .requestMatchers("/todo-api").hasAnyRole("USER", "COMPANY", "ADMIN")
