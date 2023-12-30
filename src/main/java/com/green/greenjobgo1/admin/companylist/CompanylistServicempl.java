@@ -11,6 +11,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,18 +42,23 @@ public class CompanylistServicempl {
         return entity;
     }
 
-    public CompanylistVo companyList(Pageable page,String companyName) {
+    public CompanylistVo companyList(int page,int size,String companyName) {
+        //page 값이 1이상인 경우 -1
+        int page2 = (page > 0) ? (page - 1) : 0;
+
+        Pageable pageable = PageRequest.of(page2, size);
+
         List<CompanyListEntity> companylist = jpaQueryFactory.select(Projections.constructor(CompanyListEntity.class,
                         qCompanyList.companyCode,
                         qCompanyList.companyName,
                         qCompanyList.dateConslusion,
                         qCompanyList.manager,
-                        qCompanyList.sector,
-                        qCompanyList.phoneNumber))
+                        qCompanyList.phoneNumber,
+                        qCompanyList.sector))
                 .from(qCompanyList)
                 .where(eqCompanyName(companyName))
-                .offset(page.getOffset())
-                .limit(page.getPageSize())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         Long count = jpaQueryFactory.select(qCompanyList.companyCode.count())
@@ -62,16 +68,10 @@ public class CompanylistServicempl {
                 .fetchOne();
 
 
-        int pageSize = page.getPageSize();
-        int currentPage = page.getPageNumber();
-        int startItem = currentPage * pageSize;
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
 
-        //순번 넣기
-//        for (int i = 0; i < companylist.size(); i++) {
-//            companylist.get(i).getCompanyCode();
-//            companylist.get(i).setCompanyCode((long) i+1);
-//        }
-        int maxpage = (int) Math.ceil((double) count / page.getPageSize());
+        int maxpage = (int) Math.ceil((double) count / pageable.getPageSize());
         log.info("maxpage:{}",maxpage);
 
         List<CompanylistRes> list = companylist.stream().map(item ->
@@ -81,6 +81,12 @@ public class CompanylistServicempl {
                         .manger(item.getManager())
                         .dateConslusion(item.getDateConslusion())
                         .sector(item.getSector()).build()).toList();
+
+
+        // 순번 넣기
+        for (int i = 0; i < companylist.size(); i++) {
+            list.get(i).setCompanyNumber(i+1L);
+        }
 
         return CompanylistVo.builder().list(list).maxpage(maxpage).build();
 
