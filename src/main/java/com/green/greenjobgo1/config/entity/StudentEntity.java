@@ -35,7 +35,10 @@ public class StudentEntity {
     @OneToMany(mappedBy = "studentEntity")
     private List<FileEntity> files = new ArrayList<>();
 
-    @Column(nullable = false, length = 20, name = "student_id", unique = true )
+    @OneToMany(mappedBy = "studentEntity")
+    private List<CertificateEntity> certificates = new ArrayList<>();
+
+    @Column(nullable = false, length = 20, name = "student_id", unique = true)
     private String id;
 
     @Column(nullable = false, length = 100, name = "student_pw")
