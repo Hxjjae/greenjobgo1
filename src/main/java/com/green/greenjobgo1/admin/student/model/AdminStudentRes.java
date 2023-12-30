@@ -18,9 +18,10 @@ public class AdminStudentRes {
     private LocalDate startedAt;
     private LocalDate endedAt;
     private String name;
-    private String gender;
+    private int gender;
     private String address;
     private String mobileNumber;
     private String education;
     private String certificate;
+    private String file;
 }
