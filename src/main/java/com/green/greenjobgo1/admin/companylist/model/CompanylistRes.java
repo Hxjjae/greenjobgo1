@@ -5,11 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 @Builder
 public class CompanylistRes {
     private Long companyCode;
-    private Long companyNumber;
     private String area;
     private String companyName;
     private String sector;

@@ -9,5 +9,6 @@ import java.util.List;
 @Builder
 public class CompanylistVo {
     private int maxpage;
+    private int totalcount;
     private List<CompanylistRes> list;
 }
