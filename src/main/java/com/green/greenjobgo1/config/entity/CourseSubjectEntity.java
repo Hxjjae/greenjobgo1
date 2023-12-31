@@ -36,7 +36,7 @@ public class CourseSubjectEntity {
     private List<StudentCourseSubjectEntity> scsList = new ArrayList<>();
 
 
-    @Column(nullable = false, length = 20, name = "subject_name")
+    @Column(nullable = false, length = 50, name = "subject_name")
     private String subjectName;
 
     @Column(nullable = false, name = "started_at")

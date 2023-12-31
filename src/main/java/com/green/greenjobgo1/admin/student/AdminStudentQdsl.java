@@ -33,11 +33,11 @@ public class AdminStudentQdsl {
                 .select(Projections.bean(AdminStudentRes.class, stu.istudent, cas.classification, cos.subjectName,
                         cos.startedAt, cos.endedAt, stu.name, stu.gender, stu.address, stu.mobileNumber
                         , stu.education, certificate.certificate ,file.file))
-                .from(stu)
-                .join(stu.scsList, scs)
+                .from(scs)
+                .join(scs.studentEntity, stu)
+                .join(scs.courseSubjectEntity, cos)
                 .join(stu.files, file)
                 .join(stu.certificates, certificate)
-                .join(scs.courseSubjectEntity, cos)
                 .join(cos.categorySubjectEntity, cas)
                 .where(eqIclassification(dto.getIcategory()),
                         eqSubjectName(dto.getSubjectName())
