@@ -29,12 +29,14 @@ public class CompanylistController {
 
     @PostMapping
     @Operation(summary = "회사명 추가",description = "companyCode: DB 회사 pk값 <br>" +
+            "area: 지역 명 ex) 대구,서울 <br>"+
             "companyName: 회사 명 <br>"+
+            "leaderName: 대표 이름 <br>"+
             "JobField: 채용(직업)분야 <br>"+
-            "sector : 업종 <br>"+
-            "manger : 담당자 <br>"+
+            "manger : 담당자 이름 <br>"+
             "phonenumber : 전화번호 <br>"+
-            "dateConslusion: 체결일자 <br>")
+            "dateConslusion: 체결일자 <br>"+
+            "sector : 업종 <br>")
     public ResponseEntity<CompanyListEntity> companyName(@RequestBody CompanyNameDto dto){
         CompanyListEntity entity = service.companyName(dto);
         return ResponseEntity.ok(entity);
@@ -49,10 +51,10 @@ public class CompanylistController {
     @Operation(summary = "회사명 리스트 조회",
             description = "companyCode: DB 회사 pk값 <br>" +
                     "area: 지역 <br>"+
-                    "leaderName: 대표이름 <br>"+
+                    "leaderName: 대표 이름 <br>"+
                     "companyName: 회사 명 <br>"+
                     "sector : 업종 <br>"+
-                    "manger : 담당자 <br>"+
+                    "manger : 담당자 이름<br>"+
                     "phonenumber : 전화번호 <br>"+
                     "dateConslusion: 체결일자 <br>")
     public ResponseEntity<CompanylistVo> companyList(@RequestParam int page,
@@ -63,6 +65,7 @@ public class CompanylistController {
 
     @PatchMapping
     @Operation(summary = "회사명 수정",description = "companyCode: DB 회사 pk값 <br>" +
+            "area: 지역 <br>"+
             "companyName: 회사 명 <br>"+
             "sector : 업종 <br>"+
             "manger : 담당자 <br>"+
