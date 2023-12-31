@@ -63,9 +63,29 @@ public class AdminStudentService {
                     .addressDetail(byId.get().getAddressDetail())
                     .education(byId.get().getEducation())
                     .email(byId.get().getId())
+                    .mobileNumber(byId.get().getMobileNumber())
                     .build();
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
         }
+    }
+
+    public ResponseEntity<AdminStorageStudentFindRes> selStorage(AdminStorageStudentDto dto, Pageable pageable) {
+        long maxPage = STU_REP.count();
+        PagingUtils utils = new PagingUtils(dto.getPage(), (int) maxPage);
+        dto.setStaIdx(utils.getStaIdx());
+
+        List<AdminStorageStudentRes> list = adminStudentQdsl.storageVos(pageable);
+
+        AdminStorageStudentFindRes build = AdminStorageStudentFindRes.builder()
+                .page(utils)
+                .res(list.stream().map(item -> AdminStorageStudentRes.builder()
+                        .ifile(item.getIfile())
+                        .file(item.getFile())
+                        .studentName(item.getStudentName())
+                        .subjectName(item.getSubjectName())
+                        .build()).toList())
+                .build();
+        return ResponseEntity.ok(build);
     }
 }

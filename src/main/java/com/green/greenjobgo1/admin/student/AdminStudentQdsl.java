@@ -1,5 +1,6 @@
 package com.green.greenjobgo1.admin.student;
 
+import com.green.greenjobgo1.admin.student.model.AdminStorageStudentRes;
 import com.green.greenjobgo1.admin.student.model.AdminStudentDto;
 import com.green.greenjobgo1.admin.student.model.AdminStudentRes;
 import com.green.greenjobgo1.config.entity.*;
@@ -28,11 +29,12 @@ public class AdminStudentQdsl {
     QFileEntity file = QFileEntity.fileEntity;
 
     QCertificateEntity certificate = QCertificateEntity.certificateEntity;
+
     public List<AdminStudentRes> studentVos(AdminStudentDto dto, Pageable pageable) {
         JPAQuery<AdminStudentRes> query = jpaQueryFactory
                 .select(Projections.bean(AdminStudentRes.class, stu.istudent, cas.classification, cos.subjectName,
                         cos.startedAt, cos.endedAt, stu.name, stu.gender, stu.address, stu.mobileNumber
-                        , stu.education, certificate.certificate ,file.file))
+                        , stu.education, certificate.certificate, file.file))
                 .from(scs)
                 .join(scs.studentEntity, stu)
                 .join(scs.courseSubjectEntity, cos)
@@ -41,7 +43,22 @@ public class AdminStudentQdsl {
                 .join(cos.categorySubjectEntity, cas)
                 .where(eqIclassification(dto.getIcategory()),
                         eqSubjectName(dto.getSubjectName())
-                        )
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(stu.istudent.desc());
+        return query.fetch();
+    }
+
+    public List<AdminStorageStudentRes> storageVos(Pageable pageable) {
+        JPAQuery<AdminStorageStudentRes> query = jpaQueryFactory
+                .select(Projections.bean(AdminStorageStudentRes.class
+                        , file.ifile, file.file, stu.istudent, stu.name.as("studentName"), cos.subjectName))
+                .from(stu)
+                .join(stu.files, file)
+                .join(stu.scsList, scs)
+                .join(scs.courseSubjectEntity, cos)
+                .where(stu.storageYn.eq(1))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(stu.istudent.desc());
