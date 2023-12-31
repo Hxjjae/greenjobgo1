@@ -28,15 +28,14 @@ public class CompanylistController {
     private final CompanylistServicempl service;
 
     @PostMapping
-    @Operation(summary = "회사명 추가",description = "companyCode: DB 회사 pk값 <br>" +
+    @Operation(summary = "회사명 추가",description =
             "area: 지역 명 ex) 대구,서울 <br>"+
             "companyName: 회사 명 <br>"+
             "leaderName: 대표 이름 <br>"+
             "JobField: 채용(직업)분야 <br>"+
             "manger : 담당자 이름 <br>"+
             "phonenumber : 전화번호 <br>"+
-            "dateConslusion: 체결일자 <br>"+
-            "sector : 업종 <br>")
+            "dateConslusion: 체결일자 <br>")
     public ResponseEntity<CompanyListEntity> companyName(@RequestBody CompanyNameDto dto){
         CompanyListEntity entity = service.companyName(dto);
         return ResponseEntity.ok(entity);
@@ -74,13 +73,12 @@ public class CompanylistController {
     public ResponseEntity<CompanyListEntity> patchCompanyName(@RequestParam Long companyCode,
                                                               @RequestParam (required = false) String area,
                                                               @RequestParam (required = false) String companyName,
-                                                              @RequestParam (required = false) String sector,
                                                               @RequestParam (required = false) String manger,
                                                               @RequestParam (required = false) String leaderName,
                                                               @RequestParam (required = false) String jobField,
                                                               @RequestParam (required = false) String phoneNumber,
                                                               @RequestParam (required = false) LocalDate dateConslusion){
-        CompanyListEntity entity = service.patchCompanyName(companyCode,area,companyName,sector,manger,leaderName,jobField,phoneNumber,dateConslusion);
+        CompanyListEntity entity = service.patchCompanyName(companyCode,area,companyName,manger,leaderName,jobField,phoneNumber,dateConslusion);
         return ResponseEntity.ok(entity);
     }
 

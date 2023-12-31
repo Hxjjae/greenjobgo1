@@ -35,7 +35,6 @@ public class CompanylistServicempl {
         CompanyListEntity companyListEntity = CompanyListEntity.builder()
                 .area(dto.getArea())
                 .companyName(dto.getCompanyName())
-                .sector(dto.getSector())
                 .leaderName(dto.getLeaderName())
                 .jobField(dto.getJobField())
                 .manager(dto.getManger())
@@ -56,7 +55,6 @@ public class CompanylistServicempl {
                         qCompanyList.companyCode,
                         qCompanyList.area,
                         qCompanyList.companyName,
-                        qCompanyList.sector,
                         qCompanyList.leaderName,
                         qCompanyList.jobField,
                         qCompanyList.manager,
@@ -91,8 +89,7 @@ public class CompanylistServicempl {
                         .jobField(item.getJobField())
                         .dateConslusion(item.getDateConslusion())
                         .manger(item.getManager())
-                        .phoneNumber(item.getPhoneNumber())
-                        .sector(item.getSector()).build()).toList();
+                        .phoneNumber(item.getPhoneNumber()).build()).toList();
 
         return CompanylistVo.builder().list(list).maxpage(maxpage).totalcount(totalcount).build();
 
@@ -105,7 +102,7 @@ public class CompanylistServicempl {
 
     }
 
-    public CompanyListEntity patchCompanyName(Long companyCode, String area, String companyName, String sector, String manger
+    public CompanyListEntity patchCompanyName(Long companyCode, String area, String companyName, String manger
             , String leaderName, String jobField, String phoneNumber, LocalDate dateConslusion ) {
         CompanyListEntity entity = companylistRep.findById(companyCode).get();
         entity.setCompanyCode(companyCode);
@@ -114,7 +111,6 @@ public class CompanylistServicempl {
         // null이 아닌 경우에만 값이 들어갑니다.
         Optional.ofNullable(area).ifPresent(entity::setArea);
         Optional.ofNullable(companyName).ifPresent(entity::setCompanyName);
-        Optional.ofNullable(sector).ifPresent(entity::setSector);
         Optional.ofNullable(manger).ifPresent(entity::setManager);
         Optional.ofNullable(leaderName).ifPresent(entity::setLeaderName);
         Optional.ofNullable(jobField).ifPresent(entity::setJobField);
@@ -156,7 +152,6 @@ public class CompanylistServicempl {
             company.setDateConslusion(map.get("1").toString());
             company.setCompanyname(map.get("2").toString());
             company.setLeaderName(map.get("3").toString());
-            company.setSector(map.get("5").toString());
 
             listUser.add(company);
         }
@@ -170,7 +165,6 @@ public class CompanylistServicempl {
             CompanyListEntity entity = new CompanyListEntity();
             entity.setCompanyName(oneUser.getCompanyname());
             entity.setDateConslusion(date);
-            entity.setSector(oneUser.getSector());
             entity.setLeaderName(oneUser.getLeaderName());
 
             CompanyListEntity save = companylistRep.save(entity);

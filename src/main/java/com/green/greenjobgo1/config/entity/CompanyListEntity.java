@@ -29,9 +29,6 @@ public class CompanyListEntity {
     @Column(nullable = false, length = 20, name = "company_name")
     private String companyName;
 
-    @Column(length = 50, name = "sector")
-    private String sector;
-
     @Column(length = 20, name = "leader_name")
     private String leaderName;
 

@@ -13,6 +13,5 @@ public class CompanyNameDto {
     private String manger;
     private String phoneNumber;
     private LocalDate dateConslusion;
-    private String sector;
 }
 
