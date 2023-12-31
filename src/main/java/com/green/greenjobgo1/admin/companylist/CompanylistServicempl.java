@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Slf4j
@@ -87,6 +88,7 @@ public class CompanylistServicempl {
                         .companyName(item.getCompanyName())
                         .area(item.getArea())
                         .leaderName(item.getLeaderName())
+                        .jobField(item.getJobField())
                         .dateConslusion(item.getDateConslusion())
                         .manger(item.getManager())
                         .phoneNumber(item.getPhoneNumber())
@@ -103,8 +105,8 @@ public class CompanylistServicempl {
 
     }
 
-    public CompanyListEntity patchCompanyName(Long companyCode,String area, String companyName, String sector,String manger
-            ,String leaderName,String jobField,String phoneNumber,String dateConslusion ) {
+    public CompanyListEntity patchCompanyName(Long companyCode, String area, String companyName, String sector, String manger
+            , String leaderName, String jobField, String phoneNumber, LocalDate dateConslusion ) {
         CompanyListEntity entity = companylistRep.findById(companyCode).get();
         entity.setCompanyCode(companyCode);
 
@@ -114,7 +116,7 @@ public class CompanylistServicempl {
         Optional.ofNullable(companyName).ifPresent(entity::setCompanyName);
         Optional.ofNullable(sector).ifPresent(entity::setSector);
         Optional.ofNullable(manger).ifPresent(entity::setManager);
-        Optional.ofNullable(leaderName).ifPresent(entity::setManager);
+        Optional.ofNullable(leaderName).ifPresent(entity::setLeaderName);
         Optional.ofNullable(jobField).ifPresent(entity::setJobField);
         Optional.ofNullable(phoneNumber).ifPresent(entity::setPhoneNumber);
         Optional.ofNullable(dateConslusion).ifPresent(entity::setDateConslusion);
@@ -146,6 +148,11 @@ public class CompanylistServicempl {
             CompanyExcel company = new CompanyExcel();
 
             // 각 셀의 데이터를 VO에 set한다.
+
+
+
+
+
             company.setDateConslusion(map.get("1").toString());
             company.setCompanyname(map.get("2").toString());
             company.setLeaderName(map.get("3").toString());
@@ -156,9 +163,13 @@ public class CompanylistServicempl {
 
         //DB에 저장
         for (CompanyExcel oneUser : listUser) {
+            int dateConslusion = Integer.parseInt(oneUser.getDateConslusion());
+
+            LocalDate date = LocalDate.of(1900, 1, 1).plusDays( dateConslusion- 2);
+
             CompanyListEntity entity = new CompanyListEntity();
             entity.setCompanyName(oneUser.getCompanyname());
-            entity.setDateConslusion(oneUser.getDateConslusion());
+            entity.setDateConslusion(date);
             entity.setSector(oneUser.getSector());
             entity.setLeaderName(oneUser.getLeaderName());
 

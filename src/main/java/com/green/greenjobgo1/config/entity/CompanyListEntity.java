@@ -7,6 +7,8 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.core.annotation.Order;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 @Order(1)
@@ -43,6 +45,6 @@ public class CompanyListEntity {
     private String phoneNumber;
 
     @Column(length = 30, name = "date_conslusion")
-    private String dateConslusion;
+    private LocalDate dateConslusion;
 
 }

@@ -2,6 +2,8 @@ package com.green.greenjobgo1.admin.companylist.model;
 
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class CompanyNameDto {
     private String area;
@@ -10,7 +12,7 @@ public class CompanyNameDto {
     private String jobField;
     private String manger;
     private String phoneNumber;
-    private String dateConslusion;
+    private LocalDate dateConslusion;
     private String sector;
 }
 

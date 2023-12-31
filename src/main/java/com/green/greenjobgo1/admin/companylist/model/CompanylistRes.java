@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Builder
 public class CompanylistRes {
@@ -15,5 +17,5 @@ public class CompanylistRes {
     private String jobField;
     private String manger;
     private String phoneNumber;
-    private String dateConslusion;
+    private LocalDate dateConslusion;
 }

@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -75,7 +76,7 @@ public class CompanylistController {
                                                               @RequestParam (required = false) String leaderName,
                                                               @RequestParam (required = false) String jobField,
                                                               @RequestParam (required = false) String phoneNumber,
-                                                              @RequestParam (required = false) String dateConslusion){
+                                                              @RequestParam (required = false) LocalDate dateConslusion){
         CompanyListEntity entity = service.patchCompanyName(companyCode,area,companyName,sector,manger,leaderName,jobField,phoneNumber,dateConslusion);
         return ResponseEntity.ok(entity);
     }

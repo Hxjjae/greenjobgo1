@@ -2,6 +2,8 @@ package com.green.greenjobgo1.admin.companylist.model;
 
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class CompanyExcel {
     private String area;
