@@ -1,8 +1,6 @@
 package com.green.greenjobgo1.admin.student;
 
-import com.green.greenjobgo1.admin.student.model.AdminStudentDto;
-import com.green.greenjobgo1.admin.student.model.AdminStudentFindRes;
-import com.green.greenjobgo1.admin.student.model.AdminStudentRes;
+import com.green.greenjobgo1.admin.student.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +32,13 @@ public class AdminStudentController {
             dto.setIcategory(icategory);
             dto.setSubjectName(subjectName);
         return SERVICE.selStudentList(dto, pageable);
+    }
+
+    @GetMapping("/detail")
+    @Operation(summary = "학생 상세 조회")
+    public AdminStudentDetailRes getStudentDetail(@RequestParam Long istudent) {
+        AdminStudentDetailDto dto = new AdminStudentDetailDto();
+        dto.setIstudent(istudent);
+        return SERVICE.selStudentDetail(dto);
     }
 }

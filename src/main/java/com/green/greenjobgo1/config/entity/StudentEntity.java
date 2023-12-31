@@ -59,6 +59,9 @@ public class StudentEntity {
     @Column(nullable = false, length = 20)
     private String address;
 
+    @Column(length = 50, name = "address_detail")
+    private String addressDetail;
+
     @Column(nullable = false, length = 20)
     private String education;
 
@@ -85,21 +88,15 @@ public class StudentEntity {
     private int delYn;
 
     @Column(name = "started_at")
-    private int startedAt;
+    private LocalDate startedAt;
 
     @Column(name = "ended_at")
-    private int endedAt;
+    private LocalDate endedAt;
 
     @Column(name = "age")
     private int age;
 
-
-
-
-
-
-
-
-
+    @Column(name = "major_yn")
+    private int majorYn;
 
 }
