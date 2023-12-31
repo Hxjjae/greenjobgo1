@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin-student")
@@ -40,5 +42,14 @@ public class AdminStudentController {
         AdminStudentDetailDto dto = new AdminStudentDetailDto();
         dto.setIstudent(istudent);
         return SERVICE.selStudentDetail(dto);
+    }
+
+    @GetMapping("/storage")
+    @Operation(summary = "보관함 학생 조회")
+    public ResponseEntity<AdminStorageStudentFindRes> getStorage(Pageable pageable) {
+        AdminStorageStudentDto dto = new AdminStorageStudentDto();
+        dto.setPage(pageable.getPageNumber());
+        dto.setSize(pageable.getPageSize());
+        return SERVICE.selStorage(dto, pageable);
     }
 }
