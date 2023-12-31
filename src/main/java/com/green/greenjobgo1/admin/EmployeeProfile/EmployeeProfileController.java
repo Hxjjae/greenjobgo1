@@ -2,7 +2,6 @@ package com.green.greenjobgo1.admin.EmployeeProfile;
 
 import com.green.greenjobgo1.admin.EmployeeProfile.model.EmployeeProfileDto;
 import com.green.greenjobgo1.admin.EmployeeProfile.model.EmployeeProfileVo;
-import com.green.greenjobgo1.admin.EmployeeProfile.model.EmployeePutProfileDto;
 import com.green.greenjobgo1.config.entity.EmployeeProfileEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/profile")
 public class EmployeeProfileController {
-    private final EmployeeProfileServicempl service;
+    private final EmployeeProfileService service;
 
     @GetMapping
     @Operation(summary = "직원 프로필 리스트",description = "사진위치: /home/download/Employee/pk번호/ <br>" +

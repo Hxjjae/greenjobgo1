@@ -2,7 +2,6 @@ package com.green.greenjobgo1.admin.EmployeeProfile;
 
 import com.green.greenjobgo1.admin.EmployeeProfile.model.EmployeeProfileDto;
 import com.green.greenjobgo1.admin.EmployeeProfile.model.EmployeeProfileVo;
-import com.green.greenjobgo1.admin.EmployeeProfile.model.EmployeePutProfileDto;
 import com.green.greenjobgo1.config.entity.EmployeeProfileEntity;
 import com.green.greenjobgo1.repository.EmployeeProfileRepository;
 import com.green.greenjobgo1.common.utils.MyFileUtils;
@@ -14,15 +13,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class EmployeeProfileServicempl {
+public class EmployeeProfileService {
     @Value("${file.dir}")
     private String FILE_DIR;
 

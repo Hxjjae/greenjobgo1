@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CompanyServicempl {
+public class CompanyService {
 
     public CompanyVo inscompany(CompanyDto dto){
         CompanyEntity entity = new CompanyEntity();

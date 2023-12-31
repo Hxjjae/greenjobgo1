@@ -7,7 +7,11 @@ import com.green.greenjobgo1.admin.sign.model.StudentExcel;
 import com.green.greenjobgo1.common.utils.ExcelUtil;
 import com.green.greenjobgo1.common.utils.ResultUtils;
 import com.green.greenjobgo1.config.entity.AdminEntity;
+import com.green.greenjobgo1.config.entity.CourseSubjectEntity;
+import com.green.greenjobgo1.config.entity.StudentCourseSubjectEntity;
 import com.green.greenjobgo1.config.entity.StudentEntity;
+import com.green.greenjobgo1.repository.AdminSubjectRepository;
+import com.green.greenjobgo1.repository.StudentCourseSubjectRepository;
 import com.green.greenjobgo1.repository.StudentRepository;
 import com.green.greenjobgo1.security.config.RedisService;
 import com.green.greenjobgo1.security.config.security.AuthenticationFacade;
@@ -36,6 +40,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AdminSignService {
     private final StudentRepository stdRep;
+    private final AdminSubjectRepository subjectRep;
+    private final StudentCourseSubjectRepository studentSubjectRep;
     private final PasswordEncoder PW_ENCODER;
     private final ExcelUtil excelUtil;
     private final AdminRepository AdminRep;
@@ -44,13 +50,11 @@ public class AdminSignService {
     private final AuthenticationFacade facade;
 
     @Transactional
-    public int addExcel(MultipartFile file) {
-
-
+    public int addExcel(MultipartFile studentfile) {
         List<StudentExcel> studentlist = new ArrayList<>();
 
         // 엑셀의 셀데이터를 객체에 담기 4번째 행부터 5번째 열까지
-        List<Map<String, Object>> listMap = excelUtil.getListData(file, 3, 15);
+        List<Map<String, Object>> listMap = excelUtil.getListData(studentfile, 3, 15);
 
         for (Map<String, Object> map : listMap) {
             StudentExcel student = new StudentExcel();
@@ -87,11 +91,18 @@ public class AdminSignService {
             String pwsecond = phone.substring(9, 13);
 
             log.info("비밀번호:{}",pwfirst+pwsecond);
-            if (user.getGender().equals("남")){
-                student.setGender(1);
-            }else {
-                student.setGender(0);
-            }
+
+            int start = Integer.parseInt(user.getStartedAt());
+            int end = Integer.parseInt(user.getEndedAt());
+
+            LocalDate startedAt = LocalDate.of(1900, 1, 1).plusDays(start - 2);
+            LocalDate endedAt = LocalDate.of(1900, 1, 1).plusDays(end - 2);
+
+            log.info("startedAt: {}",startedAt);
+            log.info("endedAt: {}",endedAt);
+
+
+            student.setGender(user.getGender().equals("남") ? 1 : 0);
             student.setId(user.getEmail());
             student.setPw(PW_ENCODER.encode(pwfirst+pwsecond));
             student.setMobileNumber(user.getPhone());
@@ -100,14 +111,31 @@ public class AdminSignService {
             student.setAddress(user.getAddress());
             student.setEducation(user.getEducation());
             student.setAge(Integer.parseInt(user.getAge()));
-            //student.setRole("ROLE_ADMIN");
             student.setRole("ROLE_USER");
+            student.setStartedAt(startedAt);
+            student.setEndedAt(endedAt);
             student.setHuntJobYn(0);
             student.setStorageYn(0);
             student.setEditableYn(0);
+
+
             StudentEntity studententity = stdRep.findById(user.getEmail());
             if (studententity == null){
                 StudentEntity save = stdRep.save(student);
+                //StudentEntity studentEntity = stdRep.findById(save.getId());
+
+                log.info("ID:{}",save.getIstudent());
+                //학생이 소속된 과목table 정보 가져오기
+                CourseSubjectEntity subjectentity = subjectRep.findBySubjectName(user.getSubjectName());
+
+                if (subjectentity == null) {
+                    throw new RuntimeException("존재하지 않는 과목입니다");
+                }
+                StudentCourseSubjectEntity entity = StudentCourseSubjectEntity.builder()
+                        .studentEntity(save)
+                        .courseSubjectEntity(subjectentity).build();
+
+                studentSubjectRep.save(entity);
 
                 if (save.getId() == null){
                     return 0;

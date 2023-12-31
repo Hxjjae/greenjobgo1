@@ -1,10 +1,7 @@
 package com.green.greenjobgo1.config.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.core.annotation.Order;
 
 @Data
@@ -13,6 +10,7 @@ import org.springframework.core.annotation.Order;
 @Entity
 @ToString(callSuper = true)
 @NoArgsConstructor
+@Builder
 @AllArgsConstructor
 public class StudentCourseSubjectEntity {
 

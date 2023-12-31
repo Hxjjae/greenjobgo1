@@ -13,6 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/admin/company")
 public class CompanyController {
 
-    private final CompanyServicempl service;
+    private final CompanyService service;
 
 }
