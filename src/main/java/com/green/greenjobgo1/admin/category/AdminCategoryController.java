@@ -29,7 +29,10 @@ public class AdminCategoryController {
     }
 
     @GetMapping
-    @Operation(summary = "카테고리 리스트 보기", description = "")
+    @Operation(summary = "카테고리 리스트 보기", description = "Responses : \n" +
+            "\niclassification = 대분류 pk\n" +
+            "\nclassification = 대분류 이름\n" +
+            "\ndelYn = 삭제 여부")
     public ResponseEntity<List<AdminCategoryVo>> getAdminCategory() {
         List<AdminCategoryVo> adminCategoryVoList = SERVICE.selCategoryList();
         return ResponseEntity.ok().body(adminCategoryVoList);

@@ -34,7 +34,22 @@ public class AdminSubjectController {
     }
 
     @GetMapping
-    @Operation(summary = "수강과목 보기", description = "")
+    @Operation(summary = "수강과목 보기", description = "iclassficiation = 대분류 pk\n" +
+                                        "subjectName = 과정 이름\n" +
+                                        "condition = 과정 상태\n" +
+                                        "delYn = 삭제 여부\n" +
+                                        "\nResponses : " +
+            "\npage = 현재 페이지\n" +
+            "\nmaxPage = 최대 페이지\n" +
+            "\nrow = 행 갯수(10고정)\n" +
+            "\nicourseSubject = 과정 pk\n" +
+            "\niclassfication = 대분류 pk\n" +
+            "\ncourseSubjectName = 과정 이름\n" +
+            "\nstartedAt = 시작일자\n" +
+            "\nendedAt = 종료일자\n" +
+            "\ninstructor = 강사명\n" +
+            "\nlectureRoom = 강의실\n" +
+            "\ndelYn = 삭제 여부\n")
     public ResponseEntity<AdminSubjectFindRes> getAdminSubject(@ParameterObject @PageableDefault(sort = "icourseSubject", direction = Sort.Direction.ASC) Pageable pageable,
                                                                @RequestParam(required = false) Long iclassification,
                                                                @RequestParam(required = false) String subjectName,
@@ -52,7 +67,11 @@ public class AdminSubjectController {
     }
 
     @PutMapping
-    @Operation(summary = "수강과목 수정", description = "")
+    @Operation(summary = "수강과목 수정", description = "\nicourseSubject = 과정 pk\n" +
+                            "\niclassfication = 대분류 pk\n" +
+                        "\ncourseSubjectName = 과정 이름\n" +
+                        "\nstartedAt = 시작일자\n" +
+                        "\nendedAt = 종료일자\n")
 
     public AdminSubjectUpdRes putAdminSubject(@RequestParam Long icourseSubject,
                                               @RequestParam(required = false) Long iclassification,
@@ -69,7 +88,8 @@ public class AdminSubjectController {
     }
 
     @PatchMapping
-    @Operation(summary = "수강과목 상태 변경", description = "")
+    @Operation(summary = "수강과목 상태 변경", description = "icourseSubject = 과정 pk\n" +
+            "\ncondition = 과정 상태 (0 = 시작전 , 1 = 진행중, 2 = 종료)\n")
     public AdminSubjectPatchRes patchAdminSubject(@RequestParam Long icourseSubject,
                                                   @RequestParam int condition) {
         AdminSubjectPatchDto dto = new AdminSubjectPatchDto();
