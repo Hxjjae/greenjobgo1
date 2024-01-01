@@ -1,14 +1,11 @@
 package com.green.greenjobgo1.admin.company;
 
-import com.green.greenjobgo1.admin.company.model.CompanyDto;
 import com.green.greenjobgo1.admin.company.model.CompanyParam;
 import com.green.greenjobgo1.admin.company.model.CompanyVo;
 import com.green.greenjobgo1.config.entity.CompanyEntity;
-import com.green.greenjobgo1.config.entity.CompanyListEntity;
 import com.green.greenjobgo1.repository.CompanyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +16,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CompanyService {
+public class AdminCompanyService {
 
     private final PasswordEncoder PW_ENCODER;
     private final CompanyRepository companyRep;
@@ -58,8 +55,6 @@ public class CompanyService {
         if (pw!=null){
             encode = PW_ENCODER.encode(pw);
         }
-
-
         // null이 아닌 경우에만 값이 들어갑니다.
         Optional.ofNullable(encode).ifPresent(entity::setPassword);
         Optional.ofNullable(startedAt).ifPresent(entity::setStartedAt);
@@ -67,5 +62,14 @@ public class CompanyService {
 
         companyRep.save(entity);
         return entity;
+    }
+    public int delCompany(Long icompany){
+        Optional<CompanyEntity> optEntity = companyRep.findById(icompany);
+        if (optEntity.isPresent()) {
+            companyRep.deleteById(icompany);
+        } else {
+            return 0;
+        }
+        return 1;
     }
 }

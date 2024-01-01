@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
-@Tag(name = "ADMIN-sign")
+@Tag(name = "관리자 로그인,회원가입 및 수강생 엑셀 회원가입")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/sign")
