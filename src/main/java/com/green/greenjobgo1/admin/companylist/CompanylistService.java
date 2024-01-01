@@ -5,7 +5,6 @@ import com.green.greenjobgo1.common.utils.ExcelUtil;
 import com.green.greenjobgo1.config.entity.CompanyListEntity;
 import com.green.greenjobgo1.config.entity.QCompanyListEntity;
 import com.green.greenjobgo1.repository.CompanylistRepository;
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -23,7 +22,7 @@ import java.util.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CompanylistServicempl {
+public class CompanylistService {
     private final JPAQueryFactory jpaQueryFactory;
     private final CompanylistRepository companylistRep;
     private final ExcelUtil excelUtil;

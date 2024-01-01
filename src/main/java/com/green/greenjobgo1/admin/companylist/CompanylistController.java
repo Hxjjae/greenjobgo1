@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping("/api/admin/companylist")
 public class CompanylistController {
 
-    private final CompanylistServicempl service;
+    private final CompanylistService service;
 
     @PostMapping
     @Operation(summary = "회사 추가",description =
