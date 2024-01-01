@@ -61,14 +61,13 @@ public class AdminSubjectService {
 
     }
 
-    public ResponseEntity<AdminSubjectFindRes> selAdminSubject(AdminSubjectDto dto, AdminCategoryDto categoryDto, Pageable pageable) {
+    public AdminSubjectFindRes selAdminSubject(AdminSubjectDto dto, AdminCategoryDto categoryDto, Pageable pageable) {
         long maxPage = AS_REP.count();
-        PagingUtils utils = new PagingUtils(dto.getPage(), (int)maxPage);
-        dto.setStaIdx(utils.getStaIdx());
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber()+1, (int)maxPage+1, 10);
 
         List<AdminSubjectRes> list = adminSubjectQdsl.subjectVos(dto, categoryDto, pageable);
 
-        AdminSubjectFindRes build = AdminSubjectFindRes.builder()
+        return AdminSubjectFindRes.builder()
                 .page(utils)
                 .res(list.stream().map(item -> AdminSubjectRes.builder()
                         .courseSubjectName(item.getCourseSubjectName())
@@ -82,7 +81,6 @@ public class AdminSubjectService {
                         .subjectCondition(item.getSubjectCondition())
                         .build()).toList())
                 .build();
-        return ResponseEntity.ok(build);
     }
 
     @Transactional

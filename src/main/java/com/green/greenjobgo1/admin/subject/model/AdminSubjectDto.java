@@ -19,9 +19,4 @@ public class AdminSubjectDto {
     private LocalDate endedAt;
     private int subjectCondition;
     private int delYn;
-    private int page;
-    private int staIdx;
-    private int size;
-
-
 }

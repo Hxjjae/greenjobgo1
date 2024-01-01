@@ -2,6 +2,7 @@ package com.green.greenjobgo1.admin.subject;
 
 import com.green.greenjobgo1.admin.category.model.AdminCategoryDto;
 import com.green.greenjobgo1.admin.subject.model.*;
+import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
 import com.green.greenjobgo1.config.entity.CourseSubjectEntity;
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,7 +51,7 @@ public class AdminSubjectController {
             "\ninstructor = 강사명\n" +
             "\nlectureRoom = 강의실\n" +
             "\ndelYn = 삭제 여부\n")
-    public ResponseEntity<AdminSubjectFindRes> getAdminSubject(@ParameterObject @PageableDefault(sort = "icourseSubject", direction = Sort.Direction.ASC) Pageable pageable,
+    public ResponseEntity<AdminSubjectFindRes> getAdminSubject(@ParameterObject @PageableDefault(sort = "icourseSubject", page = 1) Pageable pageable,
                                                                @RequestParam(required = false) Long iclassification,
                                                                @RequestParam(required = false) String subjectName,
                                                                @RequestParam(required = false, defaultValue = "0") Integer condition,
@@ -61,9 +62,8 @@ public class AdminSubjectController {
         subjectDto.setSubjectName(subjectName);
         subjectDto.setDelYn(delYn);
         subjectDto.setSubjectCondition(condition);
-        subjectDto.setPage(pageable.getPageNumber());
-        subjectDto.setSize(pageable.getPageSize());
-        return SERVICE.selAdminSubject(subjectDto, categoryDto,pageable);
+        AdminSubjectFindRes res = SERVICE.selAdminSubject(subjectDto, categoryDto, pageable);
+        return ResponseEntity.ok().body(res);
     }
 
     @PutMapping

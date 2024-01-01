@@ -10,6 +10,10 @@ springboot:
     redis-refresh-key: "A-RT"
 #DB
 spring:
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
   servlet:
     multipart:
       max-file-size: 50MB

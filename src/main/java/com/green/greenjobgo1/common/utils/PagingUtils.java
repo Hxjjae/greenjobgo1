@@ -2,7 +2,7 @@ package com.green.greenjobgo1.common.utils;
 
 
 public  class PagingUtils {
-    private final int ROW ;
+    private int row;
 
     private int staIdx;
     private int page;
@@ -10,28 +10,27 @@ public  class PagingUtils {
     private int isMore;
 
     public PagingUtils(){
-        this.ROW = 10;
+        this.row = 10;
     }
 
 
     public PagingUtils(int page, int maxPage) {
-        this.ROW=10;
+        this.row =10;
         this.page=page;
         makePage(page,maxPage);
     }
     public PagingUtils(int page, int maxPage, int row) {
-        this.ROW=row;
+        this.row =row;
         this.page=page;
         makePage(page,maxPage);
     }
 
     public  void startIdx(int page){
-        int result = page;
-        this.staIdx =result*ROW;
+        this.staIdx = page * row;
     }
 
     public  void maxPage(int maxPage){
-        this.maxPage=((int) Math.ceil((double) maxPage / ROW))-1;
+        this.maxPage=((int) Math.ceil((double) maxPage / row))-1;
     }
 
     public void isMore(int maxPage,int page){
@@ -61,7 +60,7 @@ public  class PagingUtils {
         return page;
     }
 
-    public int getROW() {
-        return ROW;
+    public int getRow() {
+        return row;
     }
 }
