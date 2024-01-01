@@ -73,6 +73,7 @@ public class AdminSubjectService {
                 .res(list.stream().map(item -> AdminSubjectRes.builder()
                         .courseSubjectName(item.getCourseSubjectName())
                         .iclassification(item.getIclassification())
+                        .classification(item.getClassification())
                         .icourseSubject(item.getIcourseSubject())
                         .startedAt(item.getStartedAt())
                         .endedAt(item.getEndedAt())

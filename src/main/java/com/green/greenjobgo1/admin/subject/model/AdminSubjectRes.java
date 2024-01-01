@@ -12,6 +12,7 @@ import java.time.LocalDate;
 public class AdminSubjectRes {
     private Long icourseSubject;
     private Long iclassification;
+    private String classification;
     private String courseSubjectName;
     private LocalDate startedAt;
     private LocalDate endedAt;
