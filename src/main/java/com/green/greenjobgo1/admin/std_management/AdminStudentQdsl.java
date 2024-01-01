@@ -1,8 +1,8 @@
-package com.green.greenjobgo1.admin.student;
+package com.green.greenjobgo1.admin.std_management;
 
-import com.green.greenjobgo1.admin.student.model.AdminStorageStudentRes;
-import com.green.greenjobgo1.admin.student.model.AdminStudentDto;
-import com.green.greenjobgo1.admin.student.model.AdminStudentRes;
+import com.green.greenjobgo1.admin.std_management.model.AdminStorageStudentRes;
+import com.green.greenjobgo1.admin.std_management.model.AdminStudentDto;
+import com.green.greenjobgo1.admin.std_management.model.AdminStudentRes;
 import com.green.greenjobgo1.config.entity.*;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;

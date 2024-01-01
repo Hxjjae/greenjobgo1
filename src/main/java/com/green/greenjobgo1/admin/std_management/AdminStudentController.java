@@ -1,6 +1,6 @@
-package com.green.greenjobgo1.admin.student;
+package com.green.greenjobgo1.admin.std_management;
 
-import com.green.greenjobgo1.admin.student.model.*;
+import com.green.greenjobgo1.admin.std_management.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -9,12 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,8 +26,8 @@ public class AdminStudentController {
                                                               @RequestParam(required = false) String subjectName
     ) {
         AdminStudentDto dto = new AdminStudentDto();
-            dto.setIcategory(icategory);
-            dto.setSubjectName(subjectName);
+        dto.setIcategory(icategory);
+        dto.setSubjectName(subjectName);
         return SERVICE.selStudentList(dto, pageable);
     }
 
@@ -46,10 +41,18 @@ public class AdminStudentController {
 
     @GetMapping("/storage")
     @Operation(summary = "보관함 학생 조회")
-    public ResponseEntity<AdminStorageStudentFindRes> getStorage(@ParameterObject @PageableDefault(sort = "istudent", direction = Sort.Direction.ASC)Pageable pageable) {
+    public ResponseEntity<AdminStorageStudentFindRes> getStorage(@ParameterObject @PageableDefault(sort = "istudent", direction = Sort.Direction.ASC) Pageable pageable) {
         AdminStorageStudentDto dto = new AdminStorageStudentDto();
         dto.setPage(pageable.getPageNumber());
         dto.setSize(pageable.getPageSize());
         return SERVICE.selStorage(dto, pageable);
+    }
+
+    @PatchMapping("/storage")
+    @Operation(summary = "보관 여부 결정")
+    public AdminStorageStudentPatchRes patchStorage(@RequestParam Long istudent) {
+        AdminStorageStudentPatchDto dto = new AdminStorageStudentPatchDto();
+        dto.setIstudent(istudent);
+        return SERVICE.patchStorage(dto);
     }
 }

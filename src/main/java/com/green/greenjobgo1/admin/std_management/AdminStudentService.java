@@ -1,6 +1,6 @@
-package com.green.greenjobgo1.admin.student;
+package com.green.greenjobgo1.admin.std_management;
 
-import com.green.greenjobgo1.admin.student.model.*;
+import com.green.greenjobgo1.admin.std_management.model.*;
 import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.config.entity.StudentEntity;
 import com.green.greenjobgo1.repository.StudentRepository;
@@ -87,5 +87,18 @@ public class AdminStudentService {
                         .build()).toList())
                 .build();
         return ResponseEntity.ok(build);
+    }
+
+    public AdminStorageStudentPatchRes patchStorage(AdminStorageStudentPatchDto dto) {
+        Optional<StudentEntity> byId = STU_REP.findById(dto.getIstudent());
+
+        if (byId.isPresent()) {
+            return AdminStorageStudentPatchRes.builder()
+                    .istudent(byId.get().getIstudent())
+                    .storageYn(1)
+                    .build();
+        } else {
+            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
+        }
     }
 }
