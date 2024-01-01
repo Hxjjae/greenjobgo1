@@ -121,15 +121,17 @@ public class CompanylistServicempl {
         return entity;
     }
 
-    public int delCompanyName(Long companyCode) {
-        Optional<CompanyListEntity> optEntity = companylistRep.findById(companyCode);
-
-        if (optEntity.isPresent()) {
-            companylistRep.deleteById(companyCode);
-            return 1;
-        } else {
-            return 0;
+    public int delCompanyName(List<Long> companyCode) {
+        for (int i = 0; i <companyCode.size(); i++) {
+            Optional<CompanyListEntity> optEntity = companylistRep.findById(companyCode.get(i));
+            if (optEntity.isPresent()) {
+                companylistRep.deleteById(companyCode.get(i));
+            } else {
+                return 0;
+            }
         }
+            return 1;
+
     }
 
     @Transactional
@@ -144,10 +146,6 @@ public class CompanylistServicempl {
             CompanyExcel company = new CompanyExcel();
 
             // 각 셀의 데이터를 VO에 set한다.
-
-
-
-
 
             company.setDateConslusion(map.get("1").toString());
             company.setCompanyname(map.get("2").toString());

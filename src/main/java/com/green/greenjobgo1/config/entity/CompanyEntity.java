@@ -24,7 +24,7 @@ public class CompanyEntity {
     @Column(updatable = false,nullable = false,columnDefinition = "BIGINT UNSIGNED",length=100)
     private Long icompany;
 
-    @Column(nullable = false, length = 20, name = "id")
+    @Column(nullable = false, length = 20, name = "id",unique = true)
     private String id;
 
     @Column(nullable = false, length = 100, name = "password")

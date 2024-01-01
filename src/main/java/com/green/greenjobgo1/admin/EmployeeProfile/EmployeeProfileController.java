@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Slf4j
-@Tag(name = "Admin-profile")
+@Tag(name = "취업관리실 프로필")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/profile")

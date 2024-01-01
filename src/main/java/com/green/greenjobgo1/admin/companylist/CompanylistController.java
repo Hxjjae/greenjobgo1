@@ -1,15 +1,12 @@
 package com.green.greenjobgo1.admin.companylist;
 
 import com.green.greenjobgo1.admin.companylist.model.CompanyNameDto;
-import com.green.greenjobgo1.admin.companylist.model.CompanylistDto;
 import com.green.greenjobgo1.admin.companylist.model.CompanylistVo;
 import com.green.greenjobgo1.config.entity.CompanyListEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +25,7 @@ public class CompanylistController {
     private final CompanylistServicempl service;
 
     @PostMapping
-    @Operation(summary = "회사명 추가",description =
+    @Operation(summary = "회사 추가",description =
             "area: 지역 명 ex) 대구,서울 <br>"+
             "companyName: 회사 명 <br>"+
             "leaderName: 대표 이름 <br>"+
@@ -41,13 +38,13 @@ public class CompanylistController {
         return ResponseEntity.ok(entity);
     }
     @PostMapping(value = "/excel",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "엑셀로 추가",description = "리턴값이 1이면 정상 추가 됨")
+    @Operation(summary = "엑셀로 추가",description = "엑셀파일을 넣어주세요 <br> 리턴값이 1이면 정상 추가 됨")
     public ResponseEntity<Integer> addExcel(@RequestPart MultipartFile companyfile){
         return ResponseEntity.ok(service.addExcel(companyfile));
     }
 
     @GetMapping
-    @Operation(summary = "회사명 리스트 조회",
+    @Operation(summary = "회사 리스트 조회",
             description = "companyCode: DB 회사 pk값 <br>" +
                     "area: 지역 <br>"+
                     "leaderName: 대표 이름 <br>"+
@@ -63,7 +60,7 @@ public class CompanylistController {
     }
 
     @PatchMapping
-    @Operation(summary = "회사명 수정",description = "companyCode: DB 회사 pk값 <br>" +
+    @Operation(summary = "회사정보 수정",description = "companyCode: DB 회사 pk값 <br>" +
             "area: 지역 <br>"+
             "companyName: 회사 명 <br>"+
             "sector : 업종 <br>"+
@@ -83,8 +80,9 @@ public class CompanylistController {
     }
 
     @DeleteMapping("/{companyCode}")
-    @Operation(summary = "회사명 삭제",description = "리턴값이 1이면 삭제완료")
-    public ResponseEntity<Integer> delCompanyName(@PathVariable Long companyCode){
+    @Operation(summary = "회사 삭제",description = "리턴값이 1이면 삭제완료"+
+            "companyCode: PK값 보내주시면 됩니다. <br>")
+    public ResponseEntity<Integer> delCompanyName(@PathVariable List<Long> companyCode){
         return ResponseEntity.ok(service.delCompanyName(companyCode));
     }
 }
