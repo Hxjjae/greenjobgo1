@@ -23,59 +23,40 @@ public class EmployeeProfileController {
     private final EmployeeProfileService service;
 
     @GetMapping
-    @Operation(summary = "직원 프로필 리스트",description = "사진위치: /home/download/Employee/pk번호/ <br>" +
-            "oneword: 한마디 " +
-            "conuselingNumber: 상담 전화 <br>")
+    @Operation(summary = "직원 프로필 리스트",description = "사진위치: /home/download/Employee/pk번호/사진 <br>" +
+            "oneWord: 한마디 <br>"+
+            "name: 직원 이름"+
+            "counselingNumber : 상담 전화 <br>"+
+            "phone : 휴대폰 번호 <br>"+
+            "email : 이메일 <br>")
     public ResponseEntity<List<EmployeeProfileVo>> getProfile(){
         return ResponseEntity.ok(service.getProfile());
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "직원 프로필 입력",description = "")
+    @Operation(summary = "직원 프로필 추가",description = "oneWord: 한마디 <br>"+
+            "name: 직원 이름"+
+            "counselingNumber : 상담 전화 <br>"+
+            "phone : 휴대폰 번호 <br>"+
+            "email : 이메일 <br>")
     public ResponseEntity<EmployeeProfileEntity> insProfile(EmployeeProfileDto dto,
                                                             @RequestPart MultipartFile pic){
         return ResponseEntity.ok(service.insProfile(dto,pic));
     }
-    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "직원 프로필 수정",description = "")
-    public ResponseEntity<EmployeeProfileVo> putProfile(@RequestParam Long iemply,
+    @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "직원 프로필 수정", description = "oneWord: 한마디 <br>"+
+            "name: 직원 이름"+
+            "counselingNumber : 상담 전화 <br>"+
+            "phone : 휴대폰 번호 <br>"+
+            "email : 이메일 <br>")
+    public ResponseEntity<EmployeeProfileVo> patchProfile(@RequestParam Long iemply,
                                                         @RequestParam(required = false) String oneWord,
                                                         @RequestParam(required = false) String name,
-                                                        @RequestParam(required = false) String conuselingNumber,
+                                                        @RequestParam(required = false) String counselingNumber,
                                                         @RequestParam(required = false) String phone,
                                                         @RequestParam(required = false) String email,
-                                                        @RequestParam(required = false) String kakaoid,
-                                                        @RequestPart MultipartFile pic){
-        return ResponseEntity.ok(service.putProfile(iemply,name,oneWord,conuselingNumber,phone,email,kakaoid,pic));
-    }
-
-    @PatchMapping(value = "/pic",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "사진 수정",description = "")
-    public ResponseEntity<EmployeeProfileVo> patchPic(@RequestParam Long iemply,@RequestPart MultipartFile pic){
-        return ResponseEntity.ok(service.patchPic(iemply,pic));
-    }
-
-    @PatchMapping("/name")
-    @Operation(summary = "이름 수정",description = "")
-    public ResponseEntity<EmployeeProfileVo> patchPic(@RequestParam Long iemply,@RequestParam String name){
-        return ResponseEntity.ok(service.patchName(iemply,name));
-    }
-
-    @PatchMapping("/phone")
-    @Operation(summary = "전화번호 수정",description = "")
-    public ResponseEntity<EmployeeProfileVo> patchPhone(@RequestParam Long iemply,@RequestParam String phone){
-        return ResponseEntity.ok(service.patchPhone(iemply,phone));
-    }
-    @PatchMapping("/email")
-    @Operation(summary = "이메일 수정",description = "")
-    public ResponseEntity<EmployeeProfileVo> patchEmail(@RequestParam Long iemply,@RequestParam String email){
-        return ResponseEntity.ok(service.patchemail(iemply,email));
-    }
-
-    @PatchMapping("/kakaoid")
-    @Operation(summary = "카카오아이디 수정",description = "")
-    public ResponseEntity<EmployeeProfileVo> patchKakaoid(@RequestParam Long iemply,@RequestParam String kakaoid){
-        return ResponseEntity.ok(service.patchKakaoid(iemply,kakaoid));
+                                                        @RequestPart(required = false) MultipartFile pic){
+        return ResponseEntity.ok(service.patchProfile(iemply,name,oneWord,counselingNumber,phone,email,pic));
     }
 
     @DeleteMapping("/{iemply}")

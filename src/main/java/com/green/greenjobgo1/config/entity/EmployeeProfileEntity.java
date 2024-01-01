@@ -27,8 +27,8 @@ public class EmployeeProfileEntity {
 
     @Column(nullable = false, length = 20, name = "name")
     private String name;
-    @Column(length = 20, name = "conuseling_number")
-    private String conuselingNumber;
+    @Column(length = 20, name = "counseling_number")
+    private String counselingNumber;
 
     @Column(nullable = false, length = 20, name = "phone_number")
     private String phoneNumber;
@@ -38,11 +38,4 @@ public class EmployeeProfileEntity {
 
     @Column(length = 50, name = "profile_pic")
     private String profilePic;
-
-    @Column(length = 20, name = "kakaoid")
-    private String kakaoid;
-
-
-
-
 }

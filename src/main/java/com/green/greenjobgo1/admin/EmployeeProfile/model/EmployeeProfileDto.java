@@ -6,8 +6,7 @@ import lombok.Data;
 public class EmployeeProfileDto {
     private String oneWord;
     private String name;
-    private String conuselingNumber;
+    private String counselingNumber;
     private String phoneNumber;
     private String email;
-    private String kakaoid;
 }
