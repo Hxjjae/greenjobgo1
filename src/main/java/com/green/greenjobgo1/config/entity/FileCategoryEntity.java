@@ -27,7 +27,6 @@ public class FileCategoryEntity {
     @OneToMany(mappedBy = "fileCategoryEntity")
     private List<FileEntity> files = new ArrayList<>();
 
-
     @Column(length = 100)
     private String file;
 
@@ -40,5 +39,10 @@ public class FileCategoryEntity {
     @Column(length = 100)
     private String portFolio;
 
+    @Column(length = 100)
+    private String portfolioLink;
 
+
+    @Column(length = 100)
+    private String thumbnail;
 }
