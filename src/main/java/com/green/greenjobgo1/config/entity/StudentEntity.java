@@ -29,7 +29,7 @@ public class StudentEntity {
     @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long istudent;
 
-    @OneToMany(mappedBy = "studentEntity")
+    @OneToMany(mappedBy = "studentEntity", fetch = FetchType.LAZY)
     private List<StudentCourseSubjectEntity> scsList = new ArrayList<>();
 
     @OneToMany(mappedBy = "studentEntity")

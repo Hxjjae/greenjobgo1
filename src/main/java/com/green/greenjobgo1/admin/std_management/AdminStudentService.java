@@ -2,8 +2,12 @@ package com.green.greenjobgo1.admin.std_management;
 
 import com.green.greenjobgo1.admin.std_management.model.*;
 import com.green.greenjobgo1.common.utils.PagingUtils;
-import com.green.greenjobgo1.config.entity.StudentEntity;
+import com.green.greenjobgo1.config.entity.*;
+import com.green.greenjobgo1.repository.CourseSubjectRepository;
+import com.green.greenjobgo1.repository.FileRepository;
+import com.green.greenjobgo1.repository.StudentCourseSubjectRepository;
 import com.green.greenjobgo1.repository.StudentRepository;
+import com.green.greenjobgo1.security.config.security.model.UserEntity;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +24,12 @@ import java.util.Optional;
 public class AdminStudentService {
 
     private final StudentRepository STU_REP;
+    private final CourseSubjectRepository COS_REP;
+    private final FileRepository FILE_REP;
+    private final StudentCourseSubjectRepository SCS_REP;
     private final AdminStudentQdsl adminStudentQdsl;
+
+
 
     public ResponseEntity<AdminStudentFindRes> selStudentList(AdminStudentDto dto, Pageable pageable) {
         long maxPage = STU_REP.count();
@@ -88,6 +97,37 @@ public class AdminStudentService {
         return ResponseEntity.ok(build);
     }
 
+    public AdminStorageStudentDetailRes detailStorage(AdminStorageStudentDetailDto dto) {
+        StudentEntity stdEntity = new StudentEntity();
+        stdEntity.setIstudent(dto.getIstudent());
+        Optional<StudentCourseSubjectEntity> scsId = SCS_REP.findByStudentEntity(stdEntity);
+        Optional<StudentEntity> stuId = STU_REP.findById(scsId.get().getStudentEntity().getIstudent());
+        Optional<CourseSubjectEntity> cosId = COS_REP.findById(scsId.get().getCourseSubjectEntity().getIcourseSubject());
+        List<FileEntity> fileRepAll = FILE_REP.findAll();
+
+        if (stuId.isPresent() && scsId.isPresent()) {
+            return AdminStorageStudentDetailRes.builder()
+                    .icourseSubject(cosId.get().getIcourseSubject())
+                    .startedAt(cosId.get().getStartedAt())
+                    .endedAt(cosId.get().getEndedAt())
+                    .birthday(stuId.get().getBirthday())
+                    .name(stuId.get().getName())
+                    .gender(stuId.get().getGender())
+                    .address(stuId.get().getAddress())
+                    .education(stuId.get().getEducation())
+                    .mobileNumber(stuId.get().getMobileNumber())
+                    .file(fileRepAll.stream().map(item -> AdminStudentFile.builder()
+                            .resume(item.getFileCategoryEntity().getResume())
+                            .selfIntroduction(item.getFileCategoryEntity().getSelfIntroduction())
+                            .portfolio(item.getFileCategoryEntity().getPortFolio())
+                            .portfolioLink(item.getFileCategoryEntity().getPortfolioLink())
+                            .build()).toList())
+                    .build();
+        } else {
+            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
+        }
+    }
+
     public AdminStorageStudentPatchRes patchStorage(AdminStorageStudentPatchDto dto) {
         Optional<StudentEntity> byId = STU_REP.findById(dto.getIstudent());
 
@@ -96,6 +136,19 @@ public class AdminStudentService {
                     .istudent(byId.get().getIstudent())
                     .storageYn(1)
                     .build();
+        } else {
+            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
+        }
+    }
+
+    public AdminStudentRoleRes patchRole(AdminStudentRoleDto dto) {
+        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+
+        if (stdId.isPresent()) {
+            stdId.get().setStartedAt(dto.getStartedAt());
+            stdId.get().setEndedAt(dto.getEndedAt());
+
+            return null;
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
         }
