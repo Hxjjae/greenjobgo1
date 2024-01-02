@@ -9,11 +9,15 @@ import com.green.greenjobgo1.student.sign.model.TokenDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Slf4j
 @Tag(name = "관리자 로그인,회원가입 및 수강생 엑셀 회원가입")
@@ -29,6 +33,11 @@ public class AdminSignController {
             "과목테이블에 없는 과목이 엑셀파일에 있으면 에러가 발생합니다.")
     public ResponseEntity<Integer> addExcel(@RequestPart MultipartFile studentfile){
         return ResponseEntity.ok(service.addExcel(studentfile));
+    }
+    @GetMapping("/student-download")
+    @Operation(summary = "다운로드")
+    public void downloadMock(HttpServletResponse res) throws IOException {
+        service.downloadstd(res);
     }
 
     @PostMapping("/sign-in")
