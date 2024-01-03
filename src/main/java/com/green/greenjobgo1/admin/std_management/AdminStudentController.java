@@ -31,8 +31,6 @@ public class AdminStudentController {
         AdminStudentDto dto = new AdminStudentDto();
         dto.setIcategory(icategory);
         dto.setSubjectName(subjectName);
-        dto.setPage(pageable.getPageNumber());
-        dto.setSize(pageable.getPageSize());
         return SERVICE.selStudentList(dto, pageable);
     }
 
@@ -47,10 +45,7 @@ public class AdminStudentController {
     @GetMapping("/storage")
     @Operation(summary = "보관함 학생 조회")
     public ResponseEntity<AdminStorageStudentFindRes> getStorage(@ParameterObject @PageableDefault(sort = "istudent", direction = Sort.Direction.ASC, page = 1) Pageable pageable) {
-        AdminStorageStudentDto dto = new AdminStorageStudentDto();
-        dto.setPage(pageable.getPageNumber());
-        dto.setSize(pageable.getPageSize());
-        return SERVICE.selStorage(dto, pageable);
+        return SERVICE.selStorage(pageable);
     }
 
     @GetMapping("/storage-detail")

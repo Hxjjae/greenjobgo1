@@ -36,8 +36,8 @@ public class AdminStudentService {
 
 
     public ResponseEntity<AdminStudentFindRes> selStudentList(AdminStudentDto dto, Pageable pageable) {
-        long maxPage = STU_REP.count();
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber() , (int) maxPage+1);
+        long maxPage = adminStudentQdsl.stdIdx(dto);
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber()+1, (int) maxPage, pageable);
         utils.setIdx((int)maxPage);
         List<AdminStudentRes> list = adminStudentQdsl.studentVos(dto, pageable);
 
@@ -82,9 +82,9 @@ public class AdminStudentService {
         }
     }
 
-    public ResponseEntity<AdminStorageStudentFindRes> selStorage(AdminStorageStudentDto dto, Pageable pageable) {
-        long maxPage = STU_REP.count();
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int) maxPage+1);
+    public ResponseEntity<AdminStorageStudentFindRes> selStorage(Pageable pageable) {
+        long maxPage = adminStudentQdsl.storageIdx();
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber()+1, (int) maxPage, pageable);
 
         List<AdminStorageStudentRes> list = adminStudentQdsl.storageVos(pageable);
 

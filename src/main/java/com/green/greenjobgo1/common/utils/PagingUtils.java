@@ -2,6 +2,7 @@ package com.green.greenjobgo1.common.utils;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Pageable;
 
 @Setter
 @Getter
@@ -19,10 +20,12 @@ public  class PagingUtils {
     }
 
 
-    public PagingUtils(int page, int maxPage) {
+    public PagingUtils(int page, int maxPage, Pageable pageable) {
         this.row =10;
         this.page=page;
-        makePage(page,maxPage);
+        this.maxPage = (int) Math.ceil((double) maxPage / pageable.getPageSize());
+        isMore(this.maxPage,page);
+        startIdx(page);
     }
 
     public PagingUtils(int page, int maxPage, int row) {
