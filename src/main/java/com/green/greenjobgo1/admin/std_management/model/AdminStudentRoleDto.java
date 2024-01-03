@@ -13,4 +13,6 @@ public class AdminStudentRoleDto {
     private Long istudent;
     private LocalDate startedAt;
     private LocalDate endedAt;
+    private String email;
+    private Integer editableYn;
 }

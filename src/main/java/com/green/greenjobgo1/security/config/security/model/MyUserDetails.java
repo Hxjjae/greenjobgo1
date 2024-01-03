@@ -18,6 +18,7 @@ public class MyUserDetails implements UserDetails {
     private String uid;
     private String upw;
     private String name;
+    private int editableYn;
 
     @Builder.Default
     private List<String> roles = new ArrayList<>();

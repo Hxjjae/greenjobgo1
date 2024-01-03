@@ -12,4 +12,5 @@ public class UserEntity {
     private String name;
     private String role;
     private String secretKey;
+    private int editableYn;
 }

@@ -1,6 +1,10 @@
 package com.green.greenjobgo1.common.utils;
 
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public  class PagingUtils {
     private int row;
 
@@ -8,6 +12,7 @@ public  class PagingUtils {
     private int page;
     private int maxPage;
     private int isMore;
+    private int idx;
 
     public PagingUtils(){
         this.row = 10;
@@ -19,12 +24,12 @@ public  class PagingUtils {
         this.page=page;
         makePage(page,maxPage);
     }
+
     public PagingUtils(int page, int maxPage, int row) {
         this.row =row;
         this.page=page;
         makePage(page,maxPage);
     }
-
     public  void startIdx(int page){
         this.staIdx = page * row;
     }
@@ -42,25 +47,5 @@ public  class PagingUtils {
         maxPage(maxPage);
         isMore(this.maxPage,page);
 
-    }
-
-    public int getStaIdx() {
-        return staIdx;
-    }
-
-    public int getMaxPage() {
-        return maxPage;
-    }
-
-    public int getIsMore() {
-        return isMore;
-    }
-
-    public int getPage() {
-        return page;
-    }
-
-    public int getRow() {
-        return row;
     }
 }

@@ -63,7 +63,8 @@ public class AdminSubjectService {
 
     public AdminSubjectFindRes selAdminSubject(AdminSubjectDto dto, AdminCategoryDto categoryDto, Pageable pageable) {
         long maxPage = AS_REP.count();
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber()+1, (int)maxPage+1, 10);
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber()+1, (int)maxPage+1);
+        utils.setIdx((int)maxPage);
 
         List<AdminSubjectRes> list = adminSubjectQdsl.subjectVos(dto, categoryDto, pageable);
 

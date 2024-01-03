@@ -11,8 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminStudentFile {
-    private String portfolio;
-    private String resume;
-    private String selfIntroduction;
-    private String portfolioLink;
+    private String file;
 }

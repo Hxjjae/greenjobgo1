@@ -7,12 +7,15 @@ import com.green.greenjobgo1.repository.CourseSubjectRepository;
 import com.green.greenjobgo1.repository.FileRepository;
 import com.green.greenjobgo1.repository.StudentCourseSubjectRepository;
 import com.green.greenjobgo1.repository.StudentRepository;
+import com.green.greenjobgo1.security.config.security.MyUserDetailsServiceImpl;
+import com.green.greenjobgo1.security.config.security.model.MyUserDetails;
 import com.green.greenjobgo1.security.config.security.model.UserEntity;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,13 +31,14 @@ public class AdminStudentService {
     private final FileRepository FILE_REP;
     private final StudentCourseSubjectRepository SCS_REP;
     private final AdminStudentQdsl adminStudentQdsl;
+    private final MyUserDetailsServiceImpl userDetailsService;
 
 
 
     public ResponseEntity<AdminStudentFindRes> selStudentList(AdminStudentDto dto, Pageable pageable) {
         long maxPage = STU_REP.count();
-        PagingUtils utils = new PagingUtils(pageable.getPageSize()+1, (int) maxPage+1, 10);
-
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber() , (int) maxPage+1);
+        utils.setIdx((int)maxPage);
         List<AdminStudentRes> list = adminStudentQdsl.studentVos(dto, pageable);
 
         AdminStudentFindRes build = AdminStudentFindRes.builder()
@@ -80,8 +84,7 @@ public class AdminStudentService {
 
     public ResponseEntity<AdminStorageStudentFindRes> selStorage(AdminStorageStudentDto dto, Pageable pageable) {
         long maxPage = STU_REP.count();
-        PagingUtils utils = new PagingUtils(dto.getPage(), (int) maxPage, 10);
-        dto.setStaIdx(utils.getStaIdx());
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int) maxPage+1);
 
         List<AdminStorageStudentRes> list = adminStudentQdsl.storageVos(pageable);
 
@@ -117,10 +120,7 @@ public class AdminStudentService {
                     .education(stuId.get().getEducation())
                     .mobileNumber(stuId.get().getMobileNumber())
                     .file(fileRepAll.stream().map(item -> AdminStudentFile.builder()
-                            .resume(item.getFileCategoryEntity().getResume())
-                            .selfIntroduction(item.getFileCategoryEntity().getSelfIntroduction())
-                            .portfolio(item.getFileCategoryEntity().getPortFolio())
-                            .portfolioLink(item.getFileCategoryEntity().getPortfolioLink())
+                            .file(item.getFileCategoryEntity().getFile())
                             .build()).toList())
                     .build();
         } else {
@@ -148,7 +148,20 @@ public class AdminStudentService {
             stdId.get().setStartedAt(dto.getStartedAt());
             stdId.get().setEndedAt(dto.getEndedAt());
 
-            return null;
+            Integer editableYn = dto.getEditableYn();
+
+            if (editableYn != null) {
+                stdId.get().setEditableYn(editableYn);
+            }
+
+            StudentEntity save = STU_REP.save(stdId.get());
+
+            return AdminStudentRoleRes.builder()
+                    .startedAt(save.getStartedAt())
+                    .endedAt(save.getEndedAt())
+                    .istudent(save.getIstudent())
+                    .editableYn(save.getEditableYn())
+                    .build();
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
         }

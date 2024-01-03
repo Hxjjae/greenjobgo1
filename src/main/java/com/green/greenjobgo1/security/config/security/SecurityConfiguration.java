@@ -18,15 +18,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
+    private final MyUserDetailsServiceImpl SERVICE_IMPL;
 
     //webSecurityCustomizer를 제외한 모든 것, 시큐리티를 거친다. 보안과 연관
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(authz ->
                             authz.requestMatchers(
-                                             "/swagger.html"
+                                             "/swagger-ui.html"
                                             , "/swagger-ui/**"
                                             , "/v3/api-docs/**"
+                                            , "webjars/**"
+                                            , "swagger-resources/**"
                                             , "/"
                                             , "/index.html"
                                             , "/static/**"
@@ -45,8 +48,9 @@ public class SecurityConfiguration {
                                             , "/err"
                                     ).permitAll()
                                     .requestMatchers(HttpMethod.GET, "/sign-api/refresh-token").permitAll()
-                                    .requestMatchers(HttpMethod.GET, "/api/admin/companylist").hasAnyRole( "ADMIN")
+                                    .requestMatchers(HttpMethod.GET, "/api/admin/**").hasAnyRole( "ADMIN")
                                     .requestMatchers("/api/company/**").hasAnyRole("COMPANY")
+                                    .requestMatchers("/api/student/**").hasAnyRole("USER")
                                     .requestMatchers("**exception**").permitAll()
                                     .requestMatchers("/todo-api").hasAnyRole("USER", "COMPANY", "ADMIN")
                                     .anyRequest().hasRole("ADMIN")
@@ -59,7 +63,8 @@ public class SecurityConfiguration {
                     except.accessDeniedHandler(new CustomAccessDeniedHandler());
                     except.authenticationEntryPoint(new CustomAuthenticationEntryPoint());
                 })
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisService), UsernamePasswordAuthenticationFilter.class)
+                .userDetailsService(SERVICE_IMPL);
 
 
         return httpSecurity.build();

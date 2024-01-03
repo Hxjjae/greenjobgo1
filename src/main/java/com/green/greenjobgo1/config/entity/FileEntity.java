@@ -5,7 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.core.annotation.Order;
+
+import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Data
 @Table(name = "file")
@@ -32,6 +37,11 @@ public class FileEntity {
     @Column(nullable = false, length = 100)
     private String file;
 
+    @CreationTimestamp
+    @Column(updatable = false)
+    LocalDate createdAt;
 
+    @UpdateTimestamp
+    LocalDate updatedAt;
 
 }

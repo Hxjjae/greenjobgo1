@@ -29,20 +29,4 @@ public class FileCategoryEntity {
 
     @Column(length = 100)
     private String file;
-
-    @Column(length = 100)
-    private String resume;
-
-    @Column(length = 100)
-    private String selfIntroduction;
-
-    @Column(length = 100)
-    private String portFolio;
-
-    @Column(length = 100)
-    private String portfolioLink;
-
-
-    @Column(length = 100)
-    private String thumbnail;
 }

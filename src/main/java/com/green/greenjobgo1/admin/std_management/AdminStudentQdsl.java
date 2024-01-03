@@ -27,10 +27,10 @@ public class AdminStudentQdsl {
     QStudentCourseSubjectEntity scs = QStudentCourseSubjectEntity.studentCourseSubjectEntity;
     QStudentEntity stu = QStudentEntity.studentEntity;
     QFileEntity file = QFileEntity.fileEntity;
-
     QCertificateEntity certificate = QCertificateEntity.certificateEntity;
 
     public List<AdminStudentRes> studentVos(AdminStudentDto dto, Pageable pageable) {
+
         JPAQuery<AdminStudentRes> query = jpaQueryFactory
                 .select(Projections.bean(AdminStudentRes.class, stu.istudent, cas.classification, cos.subjectName,
                         cos.startedAt, cos.endedAt, stu.name, stu.gender, stu.address, stu.mobileNumber
@@ -46,14 +46,14 @@ public class AdminStudentQdsl {
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(stu.istudent.desc());
+                .orderBy(stu.istudent.asc());
         return query.fetch();
     }
 
     public List<AdminStorageStudentRes> storageVos(Pageable pageable) {
         JPAQuery<AdminStorageStudentRes> query = jpaQueryFactory
                 .select(Projections.bean(AdminStorageStudentRes.class
-                        , file.ifile, file.file, stu.istudent, stu.name.as("studentName"), cos.subjectName))
+                        , stu.istudent, stu.name.as("studentName"), cos.subjectName, file.ifile, file.file))
                 .from(stu)
                 .join(stu.files, file)
                 .join(stu.scsList, scs)
@@ -61,7 +61,7 @@ public class AdminStudentQdsl {
                 .where(stu.storageYn.eq(1))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(stu.istudent.desc());
+                .orderBy(stu.istudent.asc());
         return query.fetch();
     }
 

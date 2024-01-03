@@ -24,17 +24,19 @@ public class AdminStudentController {
 
     @GetMapping
     @Operation(summary = "학생 조회")
-    public ResponseEntity<AdminStudentFindRes> getStudentList(@ParameterObject @PageableDefault(sort = "icourseSubject", direction = Sort.Direction.ASC) Pageable pageable,
+    public ResponseEntity<AdminStudentFindRes> getStudentList(@ParameterObject @PageableDefault(sort = "istudent", direction = Sort.Direction.ASC, page = 1) Pageable pageable,
                                                               @RequestParam(required = false) Long icategory,
                                                               @RequestParam(required = false) String subjectName
     ) {
         AdminStudentDto dto = new AdminStudentDto();
         dto.setIcategory(icategory);
         dto.setSubjectName(subjectName);
+        dto.setPage(pageable.getPageNumber());
+        dto.setSize(pageable.getPageSize());
         return SERVICE.selStudentList(dto, pageable);
     }
 
-    @GetMapping("-detail")
+    @GetMapping("/detail")
     @Operation(summary = "학생 상세 조회")
     public AdminStudentDetailRes getStudentDetail(@RequestParam Long istudent) {
         AdminStudentDetailDto dto = new AdminStudentDetailDto();
@@ -67,15 +69,17 @@ public class AdminStudentController {
         return SERVICE.patchStorage(dto);
     }
 
-    @PatchMapping("/role")
+    @PatchMapping("/editable-yn")
     @Operation(summary = "권한 수정")
     public AdminStudentRoleRes patchRole(@RequestParam Long istudent,
                                          @RequestParam LocalDate startedAt,
-                                         @RequestParam LocalDate endedAt) {
+                                         @RequestParam LocalDate endedAt,
+                                         @RequestParam Integer editableYn) {
         AdminStudentRoleDto dto = new AdminStudentRoleDto();
         dto.setIstudent(istudent);
         dto.setStartedAt(startedAt);
         dto.setEndedAt(endedAt);
+        dto.setEditableYn(editableYn);
         return SERVICE.patchRole(dto);
     }
 }
