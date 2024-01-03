@@ -38,8 +38,6 @@ public class StudentService {
     @Value("${file.dir}")
     private String fileDir;
 
-    private FileEntity fileEntity = new FileEntity();
-
     public StudentSelRes selStudent(StudentSelDto dto) {
         StudentSelRes studentSelRes = studentQdsl.studentVo(dto.getIstudent());
 
@@ -73,10 +71,13 @@ public class StudentService {
         entity.setFile(savedFileNm);
         FileEntity result = FILE_REP.save(entity);
 
-        String targetDir = String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent());
+        String targetDir = String.format("%s/%d", fileDir, entity.getStudentEntity().getIstudent());
         File fileTargetDir = new File(targetDir);
         if (!fileTargetDir.exists()) {
-            fileTargetDir.mkdirs();
+            if (!fileTargetDir.mkdirs()) {
+                log.error("Failed to create directory: {}", fileTargetDir.getAbsolutePath());
+                throw new RuntimeException("이력서를 저장할 디렉토리를 생성할 수 없습니다.");
+            }
         }
         File fileTarget = new File(String.format("%s%s", targetDir, savedFileNm));
         try {

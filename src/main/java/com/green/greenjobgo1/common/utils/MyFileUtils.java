@@ -56,7 +56,7 @@ public class MyFileUtils {
         }
     }
     public static String makeRandomFileNm(String fileNm){
-        return UUID.randomUUID()+"."+getExt(fileNm);
+        return UUID.randomUUID()+getExt(fileNm);
     }
 
     //절대경로 리턴

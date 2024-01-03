@@ -50,6 +50,14 @@ public class AdminSubjectQdsl {
         return query.fetch();
     }
 
+    public Long selIdx(AdminCategoryDto dto) {
+        JPAQuery<Long> query = jpaQueryFactory.select(cos.icourseSubject.count())
+                .from(cos)
+                .join(cos.categorySubjectEntity, cas)
+                .where(eqIclassification(dto.getIclassification()));
+        return query.fetchOne();
+    }
+
     private BooleanExpression eqIclassification(Long iclassification) {
         return iclassification != null ? cas.iclassification.eq(iclassification) : null;
     }
