@@ -6,10 +6,7 @@ import com.green.greenjobgo1.admin.sign.model.AdminSigInParam;
 import com.green.greenjobgo1.admin.sign.model.StudentExcel;
 import com.green.greenjobgo1.common.utils.ExcelUtil;
 import com.green.greenjobgo1.common.utils.ResultUtils;
-import com.green.greenjobgo1.config.entity.AdminEntity;
-import com.green.greenjobgo1.config.entity.CourseSubjectEntity;
-import com.green.greenjobgo1.config.entity.StudentCourseSubjectEntity;
-import com.green.greenjobgo1.config.entity.StudentEntity;
+import com.green.greenjobgo1.config.entity.*;
 import com.green.greenjobgo1.repository.AdminSubjectRepository;
 import com.green.greenjobgo1.repository.StudentCourseSubjectRepository;
 import com.green.greenjobgo1.repository.StudentRepository;
@@ -20,13 +17,18 @@ import com.green.greenjobgo1.security.config.security.model.MyUserDetails;
 import com.green.greenjobgo1.security.sign.model.SignInResultDto;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -34,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -112,8 +115,8 @@ public class AdminSignService {
             student.setEducation(user.getEducation());
             student.setAge(Integer.parseInt(user.getAge()));
             student.setRole("ROLE_USER");
-            student.setStartedAt(startedAt);
-            student.setEndedAt(endedAt);
+//            student.setStartedAt(startedAt);
+//            student.setEndedAt(endedAt);
             student.setHuntJobYn(0);
             student.setStorageYn(0);
             student.setEditableYn(0);
@@ -144,6 +147,118 @@ public class AdminSignService {
 
         }
         return 1;
+    }
+
+    public void downloadstd(HttpServletResponse response) throws IOException {
+        Workbook wb = new XSSFWorkbook();
+        Sheet sheet = wb.createSheet("수강생다운로드");
+        //Row row = null;
+        Cell cell = null;
+
+        // Header 넣기
+        int cellNum = 0;
+        Row header1 = sheet.createRow(0); // 첫번째줄 헤더
+        Row header2 = sheet.createRow(1);
+        Row header3 = sheet.createRow(2);
+        String[] headerName = new String [] {"과정명","회차","훈련 시작일","훈련 종료일","훈련시간","이름","생년월일(7자리)","핸드폰","이메일","거주지(구까지)","캠퍼스별 담당 실장","성별","나이","학력","최종이력서","포트폴리오"};
+
+        //첫 번째 행에서 첫 번째부터 세 번째 열까지 병합
+        sheet.addMergedRegion(new CellRangeAddress(0,0,0,4));
+        IntStream.rangeClosed(0, 4).forEach(i -> header1.createCell(i).setCellValue("과정 현황"));
+        sheet.addMergedRegion(new CellRangeAddress(1,1,0,4));
+        IntStream.rangeClosed(1, 4).forEach(i -> header2.createCell(i).setCellValue(""));
+
+        sheet.addMergedRegion(new CellRangeAddress(0,0,5,9));
+        IntStream.rangeClosed(5, 9).forEach(i -> header1.createCell(i).setCellValue("훈련생 현황"));
+        sheet.addMergedRegion(new CellRangeAddress(1,1,5,9));
+        IntStream.rangeClosed(5, 9).forEach(i -> header2.createCell(i).setCellValue("훈련생 정보"));
+
+        sheet.addMergedRegion(new CellRangeAddress(0,0,10,15));
+        IntStream.rangeClosed(10, 15).forEach(i -> header1.createCell(i).setCellValue("훈련생 희망 직무 현황"));
+        sheet.addMergedRegion(new CellRangeAddress(1,1,11,15));
+        IntStream.rangeClosed(11, 15).forEach(i -> header2.createCell(i).setCellValue("내담자특성상황"));
+
+        for (int i = 0; i <headerName.length; i++) {
+            header3.createCell(i).setCellValue(headerName[i]);
+        }
+
+        //헤더 색넣기
+        CellStyle oliveGreen = wb.createCellStyle();
+        oliveGreen.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
+        oliveGreen.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        CellStyle lightGreen = wb.createCellStyle();
+        lightGreen.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+        lightGreen.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        CellStyle paleBlue = wb.createCellStyle();
+        paleBlue.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
+        paleBlue.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        // 병합된 영역의 각 셀에 스타일 적용
+        IntStream.rangeClosed(0, 4).mapToObj(col -> header1.getCell(col, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK))
+                .forEach(mergedCell -> mergedCell.setCellStyle(oliveGreen));
+
+        IntStream.rangeClosed(5, 9).mapToObj(col -> header1.getCell(col, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK))
+                .forEach(mergedCell -> mergedCell.setCellStyle(lightGreen));
+
+        IntStream.rangeClosed(10, 15).mapToObj(col -> header1.getCell(col, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK))
+                .forEach(mergedCell -> mergedCell.setCellStyle(paleBlue));
+
+        List<StudentEntity> studentlist = stdRep.findAll();
+
+         //Body
+//        for (int i = 0; i <studentlist.size(); i++) {
+//            //과정명 찾기
+//            List<StudentCourseSubjectEntity> scsList = studentlist.get(0).getScsList();
+//
+//            Long isubject = null;
+//            for (int z = 0; z < scsList.size(); z++) {
+//                isubject = scsList.get(z).getCourseSubjectEntity().getIcourseSubject();
+//                log.info("subjectName: {}",isubject);
+//            }
+//            CourseSubjectEntity subjectEntity = subjectRep.findById(isubject).get();
+//            int rowNum = 3;
+//            cellNum = 0;
+//            row = sheet.createRow(rowNum++);
+//            row.createCell(0).setCellValue(subjectEntity.getSubjectName());
+//            row.createCell(1).setCellValue("2");// 과정 회차
+//            row.createCell(2).setCellValue(subjectEntity.getStartedAt().toString());
+//            row.createCell(3).setCellValue(subjectEntity.getEndedAt().toString());
+//            row.createCell(4).setCellValue(subjectEntity.getEndedAt().toString());
+//            row.createCell(5).setCellValue(subjectEntity.getEndedAt().toString());
+//            row.createCell(6).setCellValue(subjectEntity.getEndedAt().toString());
+//            row.createCell(7).setCellValue(subjectEntity.getEndedAt().toString());
+//
+//        }
+        int rowNum = 4;
+        for (StudentEntity student : studentlist) {
+            List<StudentCourseSubjectEntity> scsList = student.getScsList();
+
+            if (!scsList.isEmpty()) {
+                CourseSubjectEntity subjectEntity = subjectRep.findById(scsList.get(0).getCourseSubjectEntity().getIcourseSubject()).orElse(null);
+                if (subjectEntity != null) {
+                    Row row = sheet.createRow(rowNum++);
+                    row.createCell(0).setCellValue(subjectEntity.getSubjectName());
+                    row.createCell(1).setCellValue("2"); // 과정 회차
+                    row.createCell(2).setCellValue(subjectEntity.getStartedAt().toString());
+                    row.createCell(3).setCellValue(subjectEntity.getEndedAt().toString());
+
+                }
+
+            }
+        }
+
+        // Download
+        response.setContentType("ms-vnd/excel");
+        response.setHeader("Content-Disposition", "attachment;filename=student.xlsx");
+        try {
+            wb.write(response.getOutputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            wb.close();
+        }
     }
 
     public AdminEntity signUp(AdminParam p) {
