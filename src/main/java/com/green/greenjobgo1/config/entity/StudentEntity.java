@@ -38,6 +38,10 @@ public class StudentEntity {
     @OneToMany(mappedBy = "studentEntity")
     private List<CertificateEntity> certificates = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "employee_profile")
+    private EmployeeProfileEntity employeeProfile;
+
     @Column(nullable = false, length = 20, name = "student_id", unique = true)
     private String id;
 
