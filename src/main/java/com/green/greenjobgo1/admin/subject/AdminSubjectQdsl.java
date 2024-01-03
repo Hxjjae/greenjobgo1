@@ -50,11 +50,12 @@ public class AdminSubjectQdsl {
         return query.fetch();
     }
 
-    public Long selIdx(AdminCategoryDto dto) {
+    public Long selIdx(AdminCategoryDto dto, AdminSubjectDto subjectDto) {
         JPAQuery<Long> query = jpaQueryFactory.select(cos.icourseSubject.count())
                 .from(cos)
                 .join(cos.categorySubjectEntity, cas)
-                .where(eqIclassification(dto.getIclassification()));
+                .where(eqIclassification(dto.getIclassification())
+                        ,eqSubjectName(subjectDto.getSubjectName()));
         return query.fetchOne();
     }
 

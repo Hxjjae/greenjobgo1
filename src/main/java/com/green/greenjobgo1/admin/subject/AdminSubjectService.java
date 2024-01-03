@@ -62,11 +62,10 @@ public class AdminSubjectService {
     }
 
     public AdminSubjectFindRes selAdminSubject(AdminSubjectDto dto, AdminCategoryDto categoryDto, Pageable pageable) {
-        long maxPage = AS_REP.count();
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber()+1, (int)maxPage+1);
+        long maxPage = adminSubjectQdsl.selIdx(categoryDto, dto);
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber()+1, (int)maxPage);
         if (categoryDto.getIclassification() != null) {
-            long selIdx = adminSubjectQdsl.selIdx(categoryDto);
-            utils.setIdx((int)selIdx);
+            utils.setIdx((int)maxPage);
         } else {
             utils.setIdx((int)maxPage);
         }

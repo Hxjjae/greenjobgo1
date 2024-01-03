@@ -35,7 +35,7 @@ public  class PagingUtils {
     }
 
     public  void maxPage(int maxPage){
-        this.maxPage=((int) Math.ceil((double) maxPage / row))-1;
+        this.maxPage=((int) Math.ceil((double) maxPage / row));
     }
 
     public void isMore(int maxPage,int page){
