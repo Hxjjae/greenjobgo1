@@ -25,7 +25,7 @@ public class EmployeeProfileController {
     @GetMapping
     @Operation(summary = "직원 프로필 리스트",description = "사진위치: /home/download/Employee/pk번호/사진 <br>" +
             "oneWord: 한마디 <br>"+
-            "name: 직원 이름"+
+            "name: 직원 이름 <br>"+
             "counselingNumber : 상담 전화 <br>"+
             "phone : 휴대폰 번호 <br>"+
             "email : 이메일 <br>")
@@ -35,7 +35,7 @@ public class EmployeeProfileController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "직원 프로필 추가",description = "oneWord: 한마디 <br>"+
-            "name: 직원 이름"+
+            "name: 직원 이름 <br>"+
             "counselingNumber : 상담 전화 <br>"+
             "phone : 휴대폰 번호 <br>"+
             "email : 이메일 <br>")
@@ -45,7 +45,7 @@ public class EmployeeProfileController {
     }
     @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "직원 프로필 수정", description = "oneWord: 한마디 <br>"+
-            "name: 직원 이름"+
+            "name: 직원 이름 <br>"+
             "counselingNumber : 상담 전화 <br>"+
             "phone : 휴대폰 번호 <br>"+
             "email : 이메일 <br>")

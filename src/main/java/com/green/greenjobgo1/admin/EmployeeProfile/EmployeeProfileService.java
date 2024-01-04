@@ -34,7 +34,7 @@ public class EmployeeProfileService {
         return entityList.stream().map(profile -> EmployeeProfileVo.builder()
                 .oneWord(profile.getOneWord())
                 .iemply(profile.getIemply())
-                .conuselingNumber(profile.getCounselingNumber())
+                .counselingNumber (profile.getCounselingNumber())
                 .name(profile.getName())
                 .phoneNumber(profile.getPhoneNumber())
                 .email(profile.getEmail())
@@ -81,10 +81,8 @@ public class EmployeeProfileService {
         return entity;
     }
 
-    public EmployeeProfileVo patchProfile(Long iemply,String oneWord,String name,String conuselingNumber,String phone,String email,MultipartFile pic){
+    public EmployeeProfileVo patchProfile(Long iemply,String name,String oneWord,String conuselingNumber,String phone,String email,MultipartFile pic){
         EmployeeProfileEntity entity = EmployeeProfileRep.findById(iemply).get();
-
-        entity.setIemply(iemply);
 
         Optional.ofNullable(oneWord).ifPresent(entity::setOneWord);
         Optional.ofNullable(conuselingNumber).ifPresent(entity::setCounselingNumber);
@@ -123,7 +121,7 @@ public class EmployeeProfileService {
         return EmployeeProfileVo.builder().iemply(entity.getIemply())
                 .oneWord(entity.getOneWord())
                 .name(entity.getName())
-                .conuselingNumber(entity.getCounselingNumber())
+                .counselingNumber (entity.getCounselingNumber())
                 .phoneNumber(entity.getPhoneNumber())
                 .email(entity.getEmail())
                 .profilePic(entity.getProfilePic()).build();
