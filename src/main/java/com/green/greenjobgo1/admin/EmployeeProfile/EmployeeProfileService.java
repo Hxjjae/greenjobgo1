@@ -28,7 +28,8 @@ public class EmployeeProfileService {
 
 
     public List<EmployeeProfileVo> getProfile(){
-        List<EmployeeProfileEntity> entityList = EmployeeProfileRep.findAll();
+        //List<EmployeeProfileEntity> entityList = EmployeeProfileRep.findAll();
+        List<EmployeeProfileEntity> entityList = EmployeeProfileRep.findByDelYn(0);
 
         return entityList.stream().map(profile -> EmployeeProfileVo.builder()
                 .oneWord(profile.getOneWord())
@@ -140,8 +141,10 @@ public class EmployeeProfileService {
         log.info("file :{}",file);
         file.delete();
 
+        // delYn으로 삭제처리
+        entity.setDelYn(1);
         try {
-            EmployeeProfileRep.delete(entity);
+            EmployeeProfileRep.save(entity);
         }catch (Exception e) {
             return 0;
         }

@@ -9,5 +9,4 @@ public class EmployeePutProfileDto {
     private String phone;
     private String email;
     private String profilePic;
-    private String kakaoId;
 }

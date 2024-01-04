@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -84,11 +85,17 @@ public class AdminSignService {
         //DB에 저장
         for (StudentExcel user : studentlist) {
             String birthday = user.getBirthday();
-            String birthdayfirst = "19"+birthday.substring(0,2);
+
+            // 주민번호 뒷자리가 1 또는 2 이면 19를 반환하고 아니면 20을 반환한다. 19**년생 20**년생
+            int year = (birthday.substring(7, 8).equals("1") || birthday.substring(7, 8).equals("2")) ? 19 : 20;
+            
+            String birthdayfirst = year+birthday.substring(0,2);
             String birthdaysecond = "-"+birthday.substring(2,4);
             String birthdaythird = "-"+birthday.substring(4,6);
+            //생년월일 생성
             LocalDate birth= LocalDate.parse((birthdayfirst + birthdaysecond + birthdaythird));
-
+            
+            // 생년월일 앞자리와 전화번호 뒷자리를 조합하여 비밀번호 생성
             String pwfirst = birthday.substring(0, 6);
             String phone = user.getPhone();
             String pwsecond = phone.substring(9, 13);
@@ -118,31 +125,31 @@ public class AdminSignService {
 
             StudentEntity studententity = stdRep.findById(user.getEmail());
 
-            if (studententity != null){
-                    throw new RuntimeException("중복된 이메일이 있습니다");
+            // 중복된 이메일은 회원가입 X
+            if (studententity == null){
+                StudentEntity save = stdRep.save(student);
+
+                log.info("ID:{}",save.getIstudent());
+                //학생이 소속된 과목table 정보 가져오기
+                CourseSubjectEntity subjectentity = subjectRep.findBySubjectName(user.getSubjectName());
+
+                if (subjectentity == null) {
+                    throw new RuntimeException("존재하지 않는 과목입니다");
+                }
+                StudentCourseSubjectEntity entity = StudentCourseSubjectEntity.builder()
+                        .studentEntity(save)
+                        .courseSubjectEntity(subjectentity).build();
+
+                studentSubjectRep.save(entity);
+                if (save.getId() == null){
+                    return 0;
+                }
             }
 
-            StudentEntity save = stdRep.save(student);
-
-            log.info("ID:{}",save.getIstudent());
-            //학생이 소속된 과목table 정보 가져오기
-            CourseSubjectEntity subjectentity = subjectRep.findBySubjectName(user.getSubjectName());
-
-            if (subjectentity == null) {
-                throw new RuntimeException("존재하지 않는 과목입니다");
-            }
-            StudentCourseSubjectEntity entity = StudentCourseSubjectEntity.builder()
-                    .studentEntity(save)
-                    .courseSubjectEntity(subjectentity).build();
-
-            studentSubjectRep.save(entity);
-
-            if (save.getId() == null){
-                return 0;
-            }
         }
         return 1;
     }
+
 
     public void downloadstd(HttpServletResponse response) throws IOException {
         Workbook wb = new XSSFWorkbook();
@@ -191,30 +198,60 @@ public class AdminSignService {
         paleBlue.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         // 병합된 영역의 각 셀에 스타일 적용
-        IntStream.rangeClosed(0, 4).mapToObj(col -> header1.getCell(col, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK))
-                .forEach(mergedCell -> mergedCell.setCellStyle(oliveGreen));
+        IntStream.rangeClosed(0, 15).forEach(col -> {
+            CellStyle style;
 
-        IntStream.rangeClosed(5, 9).mapToObj(col -> header1.getCell(col, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK))
-                .forEach(mergedCell -> mergedCell.setCellStyle(lightGreen));
 
-        IntStream.rangeClosed(10, 15).mapToObj(col -> header1.getCell(col, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK))
-                .forEach(mergedCell -> mergedCell.setCellStyle(paleBlue));
+            if (col <= 4) {
+                style = oliveGreen;
+            } else if (col <= 9) {
+                style = lightGreen;
+            } else {
+                style = paleBlue;
+            }
+
+            header1.getCell(col, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellStyle(style);
+            header2.getCell(col, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellStyle(style);
+            header3.getCell(col, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellStyle(style);
+
+            style.setBorderTop(BorderStyle.THIN);
+            style.setBorderBottom(BorderStyle.THIN);
+            style.setBorderLeft(BorderStyle.THIN);
+            style.setBorderRight(BorderStyle.THIN);
+        });
 
         List<StudentEntity> studentlist = stdRep.findAll();
 
          //Body
-        int rowNum = 4;
+        int rowNum = 3;
         for (StudentEntity student : studentlist) {
             List<StudentCourseSubjectEntity> scsList = student.getScsList();
+            log.info("scslistsize:{}",scsList.size());
 
             if (!scsList.isEmpty()) {
+                for (int i = 0; i < scsList.size(); i++) {
                 CourseSubjectEntity subjectEntity = subjectRep.findById(scsList.get(0).getCourseSubjectEntity().getIcourseSubject()).orElse(null);
                 if (subjectEntity != null) {
+
+
                     Row row = sheet.createRow(rowNum++);
                     row.createCell(0).setCellValue(subjectEntity.getSubjectName());
-                    row.createCell(1).setCellValue("2"); // 과정 회차
+                    row.createCell(1).setCellValue(subjectEntity.getSubjectCondition()); // 과정 회차
                     row.createCell(2).setCellValue(subjectEntity.getStartedAt().toString());
                     row.createCell(3).setCellValue(subjectEntity.getEndedAt().toString());
+                    // row.createCell(4).setCellValue(subjectEntity);
+                    row.createCell(5).setCellValue(student.getName());
+                    //생년월일 넣기 ex) 19990101-1******
+                    row.createCell(6).setCellValue(dateFormatter(student.getBirthday())+"-"+generateGenderCode(student.getBirthday(),student.getGender())+"******");
+                    row.createCell(7).setCellValue(student.getMobileNumber());
+                    row.createCell(8).setCellValue(student.getId());
+                    row.createCell(9).setCellValue(student.getAddress());
+                    row.createCell(10).setCellValue(student.getEmployeeProfile().getName());
+                    row.createCell(11).setCellValue(student.getGender()==1 ? "남" : "여");
+                    row.createCell(12).setCellValue(student.getAge());
+                    row.createCell(13).setCellValue(student.getEducation());
+
+                }
 
                 }
 
@@ -231,6 +268,29 @@ public class AdminSignService {
         } finally {
             wb.close();
         }
+    }
+    public String dateFormatter(LocalDate birthday){
+        LocalDate originalDate = LocalDate.parse(birthday.toString());
+        // 원하는 형식으로 날짜를 포맷
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String formattedDate = originalDate.format(formatter);
+
+        return formattedDate;
+    }
+
+
+    public  int generateGenderCode(LocalDate birth, int gender) {
+        int genderCode;
+
+        // 1999년 이전 여자: 2, 남자: 1
+        // 2000년 이후 여자: 3, 남자: 4
+        LocalDate comparisonDate = LocalDate.of(2000, 1, 1);
+        if (birth.isBefore(comparisonDate) || birth.isEqual(comparisonDate)) {
+            genderCode = gender == 1 ? 1 : 2;
+        } else {
+            genderCode = gender == 1? 3 : 4;
+        }
+        return genderCode;
     }
 
     public AdminEntity signUp(AdminParam p) {
