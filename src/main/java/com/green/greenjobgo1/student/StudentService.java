@@ -66,31 +66,47 @@ public class StudentService {
         entity.setFileCategoryEntity(fileCateId.get());
         entity.setCreatedAt(LocalDate.now());
         entity.setStudentEntity(stdId.get());
+        entity.setIfile(dto.getIfile());
 
+        String centerPath = String.format("student/%d", dto.getIstudent());
+        String dicPath = String.format("%s/%s", MyFileUtils.getAbsolutePath(fileDir), centerPath);
         String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
-        entity.setFile(savedFileNm);
-        FileEntity result = FILE_REP.save(entity);
+        String savedFilePath = String.format("%s/%s", centerPath, savedFileNm);
+        String targetPath = String.format("%s/%s", MyFileUtils.getAbsolutePath(fileDir), savedFilePath);
 
-        String targetDir = String.format("%s/%d", fileDir, entity.getStudentEntity().getIstudent());
-        File fileTargetDir = new File(targetDir);
-        if (!fileTargetDir.exists()) {
-            if (!fileTargetDir.mkdirs()) {
-                log.error("Failed to create directory: {}", fileTargetDir.getAbsolutePath());
-                throw new RuntimeException("이력서를 저장할 디렉토리를 생성할 수 없습니다.");
-            }
+        entity.setFile(savedFileNm);
+
+        File dicFile = new File(dicPath);
+        if (!dicFile.exists()) {
+            dicFile.mkdirs();
         }
-        File fileTarget = new File(String.format("%s%s", targetDir, savedFileNm));
+        File target = new File(targetPath);
         try {
-            file.transferTo(fileTarget);
+            file.transferTo(target);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("이력서를 업로드 할 수 없습니다.");
+            throw new RuntimeException("업로드 실패");
         }
-        return StudentInsRes.builder()
-                .file(result.getFile())
-                .ifile(result.getIfile())
-                .createdAt(result.getCreatedAt())
-                .istudent(result.getStudentEntity().getIstudent())
-                .build();
+        dto.setFile(savedFileNm);
+
+        FileEntity result = FILE_REP.save(entity);
+        try {
+            StudentInsRes build = StudentInsRes.builder()
+                    .file(result.getFile())
+                    .ifile(result.getIfile())
+                    .createdAt(result.getCreatedAt())
+                    .istudent(result.getStudentEntity().getIstudent())
+                    .build();
+            return build;
+        } catch (Exception e) {
+            String FileName = dto.getFile();
+            String filePath = String.format("student/%d/%s", dto.getIstudent(), FileName);
+            String fullPath = String.format("%s/%s", MyFileUtils.getAbsolutePath(fileDir), filePath);
+            File exceptionFile = new File(fullPath);
+            if (exceptionFile.exists()) {
+                exceptionFile.delete();
+            }
+            throw new RuntimeException("사진 업로드 실패로 인한 삭제");
+        }
     }
 }

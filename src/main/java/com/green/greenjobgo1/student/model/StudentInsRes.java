@@ -17,4 +17,5 @@ public class StudentInsRes {
     private String file;
     private LocalDate createdAt;
 
+
 }
