@@ -34,7 +34,7 @@ public class SecurityConfiguration {
                                             , "/index.html"
                                             , "/static/**"
                                             , "/api/admin/sign/sign-in", "/api/admin/sign/refresh-token", "/api/admin/sign/sign-up"
-                                            , "/api/student/sign/sing-in", "/api/student/sign/refresh-token"
+                                            , "/api/student/sign/sign-in", "/api/student/sign/refresh-token"
                                             , "/api/company/sign-in", "/api/company/refresh-token"
                                             , "/api/admin-student/**"
                                             ,"/sign-api/sign-in"
