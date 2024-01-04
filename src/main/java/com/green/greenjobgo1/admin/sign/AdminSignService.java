@@ -88,7 +88,8 @@ public class AdminSignService {
 
             // 주민번호 뒷자리가 1 또는 2 이면 19를 반환하고 아니면 20을 반환한다. 19**년생 20**년생
             int year = (birthday.substring(7, 8).equals("1") || birthday.substring(7, 8).equals("2")) ? 19 : 20;
-            
+
+            log.info("birthday:{}", birthday);
             String birthdayfirst = year+birthday.substring(0,2);
             String birthdaysecond = "-"+birthday.substring(2,4);
             String birthdaythird = "-"+birthday.substring(4,6);
@@ -272,7 +273,7 @@ public class AdminSignService {
     public String dateFormatter(LocalDate birthday){
         LocalDate originalDate = LocalDate.parse(birthday.toString());
         // 원하는 형식으로 날짜를 포맷
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
         String formattedDate = originalDate.format(formatter);
 
         return formattedDate;
