@@ -63,11 +63,11 @@ public class AdminSubjectService {
 
     public AdminSubjectFindRes selAdminSubject(AdminSubjectDto dto, AdminCategoryDto categoryDto, Pageable pageable) {
         long maxPage = adminSubjectQdsl.selIdx(categoryDto, dto);
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber()+1, (int)maxPage, pageable);
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber() + 1, (int) maxPage, pageable);
         if (categoryDto.getIclassification() != null) {
-            utils.setIdx((int)maxPage);
+            utils.setIdx((int) maxPage);
         } else {
-            utils.setIdx((int)maxPage);
+            utils.setIdx((int) maxPage);
         }
 
         List<AdminSubjectRes> list = adminSubjectQdsl.subjectVos(dto, categoryDto, pageable);
@@ -90,44 +90,46 @@ public class AdminSubjectService {
 
     @Transactional
     public AdminSubjectUpdRes updAdminSubject(AdminSubjectUpdDto dto) {
-        Optional<CategorySubjectEntity> byCategorySubject = AC_REP.findById(dto.getIclassification());
+        List<CategorySubjectEntity> categoryList = AC_REP.findAll();
         Optional<CourseSubjectEntity> byCourseSubject = AS_REP.findById(dto.getIcourseSubject());
 
         if (byCourseSubject.isPresent()) {
-            if (dto.getIclassification() != null) {
-                byCourseSubject.get().getCategorySubjectEntity().setIclassification(byCategorySubject.get().getIclassification());
-            }
-            if (dto.getCourseSubjectName() != null) {
-                byCourseSubject.get().setSubjectName(dto.getCourseSubjectName());
-            }
-            if (dto.getStartedAt() != null) {
-                byCourseSubject.get().setStartedAt(dto.getStartedAt());
-            }
-            if (dto.getEndedAt() != null) {
-                byCourseSubject.get().setEndedAt(dto.getEndedAt());
-            }
-            if (dto.getInstructor() != null) {
-                byCourseSubject.get().setInstructor(dto.getInstructor());
-            }
-            if (dto.getLectureRoom() != null) {
-                byCourseSubject.get().setLectureRoom(dto.getLectureRoom());
+            CourseSubjectEntity existingEntity = byCourseSubject.get();
+            CourseSubjectEntity entity = new CourseSubjectEntity();
+
+            entity.setIcourseSubject(existingEntity.getIcourseSubject());
+            entity.setSubjectName(dto.getCourseSubjectName() != null ? dto.getCourseSubjectName() : existingEntity.getSubjectName());
+            entity.setStartedAt(dto.getStartedAt() != null ? dto.getStartedAt() : existingEntity.getStartedAt());
+            entity.setEndedAt(dto.getEndedAt() != null ? dto.getEndedAt() : existingEntity.getEndedAt());
+            entity.setInstructor(dto.getInstructor() != null ? dto.getInstructor() : existingEntity.getInstructor());
+            entity.setLectureRoom(dto.getLectureRoom() != null ? dto.getLectureRoom() : existingEntity.getLectureRoom());
+            for (CategorySubjectEntity category : categoryList) {
+                if (category.getIclassification().equals(dto.getIclassification())) {
+                    entity.setCategorySubjectEntity(existingEntity.getCategorySubjectEntity());
+
+                } else {
+                    throw new EntityNotFoundException("찾을 수 없는 pk 값입니다.");
+                }
             }
 
+            CourseSubjectEntity save = AS_REP.save(entity);
+
+            AS_REP.delete(existingEntity);
+
+            return AdminSubjectUpdRes.builder()
+                    .icourseSubject(save.getIcourseSubject())
+                    .courseSubjectName(save.getSubjectName())
+                    .startedAt(save.getStartedAt())
+                    .endedAt(save.getEndedAt())
+                    .classification(save.getCategorySubjectEntity().getClassification())
+                    .instructor(save.getInstructor())
+                    .lectureRoom(save.getLectureRoom())
+                    .build();
         } else {
-            throw new RuntimeException("해당 아이디에 대한 데이터를 찾을 수 없습니다.");
+            throw new RuntimeException("해당 pk에 대한 데이터를 찾을 수 없습니다.");
         }
-        CourseSubjectEntity save = AS_REP.save(byCourseSubject.get());
-        return AdminSubjectUpdRes.builder()
-                .icourseSubject(save.getIcourseSubject())
-                .courseSubjectName(save.getSubjectName())
-                .startedAt(save.getStartedAt())
-                .endedAt(save.getEndedAt())
-                .classification(save.getCategorySubjectEntity().getClassification())
-                .instructor(save.getInstructor())
-                .lectureRoom(save.getLectureRoom())
-                .build();
-
     }
+
 
     public AdminSubjectPatchRes patchAdminSubject(AdminSubjectPatchDto dto) {
         Optional<CourseSubjectEntity> byId = AS_REP.findById(dto.getIcourseSubject());

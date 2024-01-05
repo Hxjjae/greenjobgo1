@@ -96,7 +96,7 @@ public class AdminStudentService {
                 .page(utils)
                 .res(list.stream().map(item -> AdminStorageStudentRes.builder()
                         .istudent(item.getIstudent())
-                        .img(String.format("%s/%s/%s", fileDir,item.getIstudent(),item.getImg()))
+                        .img(String.format("%s/%s/%s/%s","112.222.157", fileDir,item.getIstudent(),item.getImg()))
                         .studentName(item.getStudentName())
                         .subjectName(item.getSubjectName())
                         .build()).toList())
