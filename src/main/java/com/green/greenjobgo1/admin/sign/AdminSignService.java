@@ -251,11 +251,8 @@ public class AdminSignService {
                     row.createCell(11).setCellValue(student.getGender()==1 ? "남" : "여");
                     row.createCell(12).setCellValue(student.getAge());
                     row.createCell(13).setCellValue(student.getEducation());
-
                 }
-
                 }
-
             }
         }
 

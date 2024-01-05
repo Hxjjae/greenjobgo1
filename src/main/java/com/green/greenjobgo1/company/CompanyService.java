@@ -3,8 +3,11 @@ package com.green.greenjobgo1.company;
 
 import com.green.greenjobgo1.common.utils.ResultUtils;
 import com.green.greenjobgo1.company.model.CompanySignInParam;
+import com.green.greenjobgo1.company.model.CompanyStdVo;
 import com.green.greenjobgo1.config.entity.CompanyEntity;
+import com.green.greenjobgo1.config.entity.QStudentCourseSubjectEntity;
 import com.green.greenjobgo1.config.entity.QStudentEntity;
+import com.green.greenjobgo1.config.entity.StudentEntity;
 import com.green.greenjobgo1.repository.CompanyRepository;
 import com.green.greenjobgo1.repository.StudentRepository;
 import com.green.greenjobgo1.security.config.RedisService;
@@ -12,6 +15,7 @@ import com.green.greenjobgo1.security.config.security.AuthenticationFacade;
 import com.green.greenjobgo1.security.config.security.JwtTokenProvider;
 import com.green.greenjobgo1.security.config.security.model.MyUserDetails;
 import com.green.greenjobgo1.security.sign.model.SignInResultDto;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,6 +41,8 @@ public class CompanyService {
     private final JPAQueryFactory jpaQueryFactory;
 
     QStudentEntity qstudent = QStudentEntity.studentEntity;
+
+    QStudentCourseSubjectEntity qstudentsubject = QStudentCourseSubjectEntity.studentCourseSubjectEntity;
 
 
 
@@ -162,12 +168,21 @@ public class CompanyService {
         redisService.setValuesWithTimeout(accessToken, "logout", expiration);
     }
 
-//    public CompanyStudentVo getstudent(){
+//    public List<CompanyStdVo> getstudent(){
 //
-////        jpaQueryFactory.select(Projections.constructor(StudentEntity.class,
-////                qstudent.))
+//        List<CompanyStdVo> StudentEntity  = jpaQueryFactory.select(Projections.constructor(CompanyStdVo.class,
+//                        qstudent.istudent,
+//                        qstudent.name,
+//                        qstudentsubject.courseSubjectEntity.subjectName
+//                )).innerJoin(qstudentsubject)
+//                .on(qstudentsubject.studentEntity.istudent.eq(qstudent.istudent))
+//                .fetch();
 //
-//        return null;
+//        List<CompanyStdVo> list = StudentEntity.stream().map(item -> CompanyStdVo.builder()
+//                .istudent(item.getIstudent())
+//                .stdname(item.getStdname())
+//                .subejctName(item.getSubejctName()).build()).toList();
+//        return list;
 //    }
 
 
