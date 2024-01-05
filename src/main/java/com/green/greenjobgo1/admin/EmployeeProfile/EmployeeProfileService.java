@@ -38,7 +38,7 @@ public class EmployeeProfileService {
                 .name(profile.getName())
                 .phoneNumber(profile.getPhoneNumber())
                 .email(profile.getEmail())
-                .profilePic("C:/home/download/Employee/"+profile.getIemply()+"/"+profile.getProfilePic()).build()).toList();
+                .profilePic("/home/download/Employee/"+profile.getIemply()+"/"+profile.getProfilePic()).build()).toList();
     }
 
     public EmployeeProfileEntity insProfile(EmployeeProfileDto dto,MultipartFile pic){

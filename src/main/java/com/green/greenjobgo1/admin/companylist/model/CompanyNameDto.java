@@ -10,7 +10,7 @@ public class CompanyNameDto {
     private String companyName;
     private String leaderName;
     private String jobField;
-    private String manger;
+    private String manager;
     private String phoneNumber;
     private LocalDate dateConslusion;
 }
