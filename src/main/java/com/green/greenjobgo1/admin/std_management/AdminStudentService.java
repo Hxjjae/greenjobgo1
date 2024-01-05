@@ -13,6 +13,7 @@ import com.green.greenjobgo1.security.config.security.model.UserEntity;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,6 +34,8 @@ public class AdminStudentService {
     private final AdminStudentQdsl adminStudentQdsl;
     private final MyUserDetailsServiceImpl userDetailsService;
 
+    @Value("${file.dir}")
+    private String fileDir;
 
 
     public ResponseEntity<AdminStudentFindRes> selStudentList(AdminStudentDto dto, Pageable pageable) {
@@ -87,14 +90,13 @@ public class AdminStudentService {
         PagingUtils utils = new PagingUtils(pageable.getPageNumber()+1, (int) maxPage, pageable);
         utils.setIdx((int)maxPage);
 
-        List<AdminStorageStudentRes> list = adminStudentQdsl.storageVos(pageable);
+        List<AdminStorageStudentRes> list = adminStudentQdsl.storageVos(dto, pageable);
 
         AdminStorageStudentFindRes build = AdminStorageStudentFindRes.builder()
                 .page(utils)
                 .res(list.stream().map(item -> AdminStorageStudentRes.builder()
-                        .ifile(item.getIfile())
-                        .file(item.getFile())
                         .istudent(item.getIstudent())
+                        .img(String.format("%s/%s/%s", fileDir,item.getIstudent(),item.getImg()))
                         .studentName(item.getStudentName())
                         .subjectName(item.getSubjectName())
                         .build()).toList())
@@ -103,9 +105,10 @@ public class AdminStudentService {
     }
 
     public ResponseEntity<AdminPortfolioFindRes> selPortfolio(AdminPortfolioDto dto, Pageable pageable) {
-        long maxPage = adminStudentQdsl.portfolioIdx(dto);
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber()+1, (int) maxPage, pageable);
-        utils.setIdx((int)maxPage);
+        long portfolioIdx = adminStudentQdsl.portfolioIdx(dto);
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber()+1, (int) portfolioIdx, pageable);
+        utils.setIdx((int)portfolioIdx);
+
         List<AdminPortfolioRes> list = adminStudentQdsl.portfolioVos(dto, pageable);
 
         AdminPortfolioFindRes build = AdminPortfolioFindRes.builder()
