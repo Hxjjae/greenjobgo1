@@ -1,10 +1,8 @@
 package com.green.greenjobgo1.company;
 
 import com.green.greenjobgo1.company.model.CompanySignInParam;
-import com.green.greenjobgo1.company.model.CompanyStudentVo;
 import com.green.greenjobgo1.security.CommonRes;
 import com.green.greenjobgo1.security.sign.model.SignInResultDto;
-import com.green.greenjobgo1.student.sign.model.SignInParam;
 import com.green.greenjobgo1.student.sign.model.TokenDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -63,9 +61,9 @@ public class CompanyController {
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .build();
     }
-    @GetMapping("/student")
-    @Operation(summary = "수강생을 검색합니다.")
-    public CompanyStudentVo getstudent(){
-        return null;
-    }
+//    @GetMapping("/student")
+//    @Operation(summary = "수강생을 검색합니다.")
+//    public CompanyStudentVo getstudent(){
+//        return null;
+//    }
 }
