@@ -153,6 +153,7 @@ public class CompanylistService {
             listUser.add(company);
         }
 
+
         //DB에 저장
         for (CompanyExcel oneUser : listUser) {
             int dateConslusion = Integer.parseInt(oneUser.getDateConslusion());
@@ -163,11 +164,17 @@ public class CompanylistService {
             entity.setCompanyName(oneUser.getCompanyname());
             entity.setDateConslusion(date);
             entity.setLeaderName(oneUser.getLeaderName());
+            log.info("기업이름 :{}",oneUser.getCompanyname());
+            CompanyListEntity byCompanyName = companylistRep.findByCompanyName(oneUser.getCompanyname());
 
-            CompanyListEntity save = companylistRep.save(entity);
-            if (save.getCompanyCode() == null){
-                return 0;
+
+            if (byCompanyName == null){
+                CompanyListEntity save = companylistRep.save(entity);
+                if (save.getCompanyCode() == null){
+                    return 0;
+                }
             }
+
         }
         return 1;
     }
