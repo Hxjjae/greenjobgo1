@@ -50,6 +50,7 @@ public class AdminSubjectQdsl {
         return query.fetch();
     }
 
+
     public Long selIdx(AdminCategoryDto dto, AdminSubjectDto subjectDto) {
         JPAQuery<Long> query = jpaQueryFactory.select(cos.icourseSubject.count())
                 .from(cos)

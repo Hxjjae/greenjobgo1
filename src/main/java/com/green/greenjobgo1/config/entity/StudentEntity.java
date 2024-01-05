@@ -35,8 +35,8 @@ public class StudentEntity {
     @OneToMany(mappedBy = "studentEntity")
     private List<FileEntity> files = new ArrayList<>();
 
-    @OneToMany(mappedBy = "studentEntity")
-    private List<CertificateEntity> certificates = new ArrayList<>();
+    @OneToOne(mappedBy = "studentEntity")
+    private CertificateEntity certificates;
 
     @ManyToOne
     @JoinColumn(name = "employee_profile")

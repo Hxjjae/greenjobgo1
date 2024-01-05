@@ -19,9 +19,9 @@ public class CertificateEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false, length = 20)
-    private Long icertifiacate;
+    private Long icertificate;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "istudent")
     private StudentEntity studentEntity;
 

@@ -90,20 +90,6 @@ public class AdminStudentQdsl {
         return query.fetch();
     }
 
-    public List<AdminStorageStudentFileRes> fileVos(AdminStorageStudentDto dto) {
-        JPAQuery<AdminStorageStudentFileRes> query = jpaQueryFactory.select(Projections.bean(AdminStorageStudentFileRes.class
-                        , file.ifile, file.file))
-                .from(stu)
-                .join(stu.files, file)
-                .join(stu.scsList, scs)
-                .join(scs.courseSubjectEntity, cos)
-                .where(stu.storageYn.eq(1),
-                        eqIclassification(dto.getIclassfication()),
-                        eqSubjectName(dto.getSubjectName()),
-                        eqStudentName(dto.getStudentName()));
-        return query.fetch();
-    }
-
     public Long stdIdx(AdminStudentDto dto) {
         JPAQuery<Long> query = jpaQueryFactory.select(stu.istudent.count())
                 .from(scs)

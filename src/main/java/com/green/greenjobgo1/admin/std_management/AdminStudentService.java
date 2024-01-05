@@ -1,6 +1,7 @@
 package com.green.greenjobgo1.admin.std_management;
 
 import com.green.greenjobgo1.admin.std_management.model.*;
+import com.green.greenjobgo1.admin.subject.model.AdminSubjectUpdRes;
 import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.config.entity.*;
 import com.green.greenjobgo1.repository.CourseSubjectRepository;
@@ -188,5 +189,33 @@ public class AdminStudentService {
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
         }
+    }
+
+    public AdminStudentUpdRes updStudent(AdminStudentUpdDto dto) {
+        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+
+        if (stdId.isPresent()) {
+            StudentEntity entity = new StudentEntity();
+            entity.setIstudent(stdId.get().getIstudent());
+            entity.setName(dto.getStudentName());
+            entity.setId(dto.getEmail());
+            entity.setAddress(dto.getAddress());
+            entity.setEducation(dto.getEducation());
+            entity.setCertificates(dto.getCertificate());
+
+            StudentEntity save = STU_REP.save(entity);
+
+            return AdminStudentUpdRes.builder()
+                    .istudent(save.getIstudent())
+                    .studentName(save.getName())
+                    .email(save.getId())
+                    .address(save.getAddress() + save.getAddressDetail())
+                    .education(save.getEducation())
+                    .certificate(save.getCertificates())
+                    .build();
+        } else {
+            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
+        }
+
     }
 }

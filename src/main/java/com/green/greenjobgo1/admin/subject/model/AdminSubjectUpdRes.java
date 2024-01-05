@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Builder
 public class AdminSubjectUpdRes {
     private Long icourseSubject;
-    private String classification;
+    private Long iclassification;
     private String courseSubjectName;
     private LocalDate startedAt;
     private LocalDate endedAt;

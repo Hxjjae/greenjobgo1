@@ -77,13 +77,17 @@ public class AdminSubjectController {
                                               @RequestParam(required = false) Long iclassification,
                                               @RequestParam(required = false) String courseSubjectName,
                                               @RequestParam(required = false) LocalDate startedAt,
-                                              @RequestParam(required = false) LocalDate endedAt) {
+                                              @RequestParam(required = false) LocalDate endedAt,
+                                              @RequestParam(required = false) String instructor,
+                                              @RequestParam(required = false) String lectureRoom) {
         AdminSubjectUpdDto dto = new AdminSubjectUpdDto();
         dto.setIcourseSubject(icourseSubject);
         dto.setIclassification(iclassification);
         dto.setCourseSubjectName(courseSubjectName);
         dto.setEndedAt(endedAt);
         dto.setStartedAt(startedAt);
+        dto.setInstructor(instructor);
+        dto.setLectureRoom(lectureRoom);
         return SERVICE.updAdminSubject(dto);
     }
 

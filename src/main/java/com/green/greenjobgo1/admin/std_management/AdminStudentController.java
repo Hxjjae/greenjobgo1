@@ -1,6 +1,9 @@
 package com.green.greenjobgo1.admin.std_management;
 
 import com.green.greenjobgo1.admin.std_management.model.*;
+import com.green.greenjobgo1.config.entity.CertificateEntity;
+import com.green.greenjobgo1.config.entity.CourseSubjectEntity;
+import com.green.greenjobgo1.config.entity.StudentEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Getter;
@@ -14,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -83,7 +87,7 @@ public class AdminStudentController {
     }
 
     @GetMapping("/storage")
-    @Operation(summary = "보관함 리스트 조회" ,description = "img : 포트폴리오 대표 이미지 \n" +
+    @Operation(summary = "보관함 리스트 조회", description = "img : 포트폴리오 대표 이미지 \n" +
             "\n istudent : 수강생 PK \n" +
             "\n studentName : 수강생 이름 \n" +
             "\n subjectname : 수강과목 이름")
@@ -128,5 +132,24 @@ public class AdminStudentController {
         dto.setEndedAt(endedAt);
         dto.setEditableYn(editableYn);
         return SERVICE.patchRole(dto);
+    }
+
+    @PutMapping()
+    @Operation(summary = "학생 정보 수정")
+    public AdminStudentUpdRes putStudent(@RequestParam Long istudent,
+                                         @RequestParam String studentName,
+                                         @RequestParam String address,
+                                         @RequestParam String email,
+                                         @RequestParam String education,
+                                         @RequestBody CertificateEntity certificate) {
+        AdminStudentUpdDto dto = new AdminStudentUpdDto();
+        dto.setIstudent(istudent);
+        dto.setStudentName(studentName);
+        dto.setAddress(address);
+        dto.setEmail(email);
+        dto.setEducation(education);
+        dto.setCertificate(certificate);
+
+        return SERVICE.updStudent(dto);
     }
 }
