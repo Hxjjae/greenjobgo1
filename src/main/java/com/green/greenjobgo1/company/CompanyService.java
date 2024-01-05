@@ -4,10 +4,7 @@ package com.green.greenjobgo1.company;
 import com.green.greenjobgo1.common.utils.ResultUtils;
 import com.green.greenjobgo1.company.model.CompanySignInParam;
 import com.green.greenjobgo1.company.model.CompanyStdVo;
-import com.green.greenjobgo1.config.entity.CompanyEntity;
-import com.green.greenjobgo1.config.entity.QStudentCourseSubjectEntity;
-import com.green.greenjobgo1.config.entity.QStudentEntity;
-import com.green.greenjobgo1.config.entity.StudentEntity;
+import com.green.greenjobgo1.config.entity.*;
 import com.green.greenjobgo1.repository.CompanyRepository;
 import com.green.greenjobgo1.repository.StudentRepository;
 import com.green.greenjobgo1.security.config.RedisService;
@@ -26,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 @Slf4j
@@ -42,8 +40,8 @@ public class CompanyService {
 
     QStudentEntity qstudent = QStudentEntity.studentEntity;
 
-    QStudentCourseSubjectEntity qstudentsubject = QStudentCourseSubjectEntity.studentCourseSubjectEntity;
-
+    QStudentCourseSubjectEntity qstudentCourseSubject = QStudentCourseSubjectEntity.studentCourseSubjectEntity;
+    QCourseSubjectEntity qCourseSubject  = QCourseSubjectEntity.courseSubjectEntity;
 
 
     public SignInResultDto signIn(CompanySignInParam p, String ip) {
@@ -168,23 +166,23 @@ public class CompanyService {
         redisService.setValuesWithTimeout(accessToken, "logout", expiration);
     }
 
-//    public List<CompanyStdVo> getstudent(){
-//
-//        List<CompanyStdVo> StudentEntity  = jpaQueryFactory.select(Projections.constructor(CompanyStdVo.class,
-//                        qstudent.istudent,
-//                        qstudent.name,
-//                        qstudentsubject.courseSubjectEntity.subjectName
-//                )).innerJoin(qstudentsubject)
-//                .on(qstudentsubject.studentEntity.istudent.eq(qstudent.istudent))
-//                .fetch();
-//
-//        List<CompanyStdVo> list = StudentEntity.stream().map(item -> CompanyStdVo.builder()
-//                .istudent(item.getIstudent())
-//                .stdname(item.getStdname())
-//                .subejctName(item.getSubejctName()).build()).toList();
-//        return list;
-//    }
-
-
-
+    QFileEntity qfileEntity = QFileEntity.fileEntity;
+    public List<CompanyStdVo> getstudent(){
+        List<CompanyStdVo> StudentEntity  = jpaQueryFactory.select(
+                Projections.bean(CompanyStdVo.class,
+                        qstudent.istudent,
+                        qstudent.name,
+                        qCourseSubject.subjectName,
+                        qfileEntity.file
+                )).from(qstudent)
+                .innerJoin(qstudentCourseSubject)
+                .on(qstudentCourseSubject.studentEntity.istudent.eq(qstudent.istudent))
+                .innerJoin(qCourseSubject)
+                .on(qCourseSubject.icourseSubject.eq(qstudentCourseSubject.courseSubjectEntity.icourseSubject))
+                .innerJoin(qfileEntity)
+                .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
+                .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(4L))
+                .fetch();
+        return StudentEntity;
+    }
 }

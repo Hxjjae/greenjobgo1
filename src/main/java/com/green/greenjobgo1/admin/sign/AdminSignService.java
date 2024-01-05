@@ -111,7 +111,8 @@ public class AdminSignService {
             }
 
             StudentEntity student = StudentEntity.builder()
-                    .gender(user.getGender().equals("남") ? 1 : 0)
+                    //.gender(user.getGender().equals("남") ? 1 : 0)
+                    .gender(user.getGender())
                     .id(user.getEmail())
                     .pw(PW_ENCODER.encode(pwfirst + pwsecond))
                     .mobileNumber(user.getPhone())
@@ -248,7 +249,7 @@ public class AdminSignService {
                     row.createCell(8).setCellValue(student.getId());
                     row.createCell(9).setCellValue(student.getAddress());
                     row.createCell(10).setCellValue(student.getEmployeeProfile().getName());
-                    row.createCell(11).setCellValue(student.getGender()==1 ? "남" : "여");
+                    row.createCell(11).setCellValue(student.getGender());
                     row.createCell(12).setCellValue(student.getAge());
                     row.createCell(13).setCellValue(student.getEducation());
                 }
@@ -277,16 +278,16 @@ public class AdminSignService {
     }
 
 
-    public  int generateGenderCode(LocalDate birth, int gender) {
+    public  int generateGenderCode(LocalDate birth, String gender) {
         int genderCode;
 
         // 1999년 이전 여자: 2, 남자: 1
         // 2000년 이후 여자: 3, 남자: 4
         LocalDate comparisonDate = LocalDate.of(2000, 1, 1);
         if (birth.isBefore(comparisonDate) || birth.isEqual(comparisonDate)) {
-            genderCode = gender == 1 ? 1 : 2;
+            genderCode = gender.equals("남") ? 1 : 2;
         } else {
-            genderCode = gender == 1? 3 : 4;
+            genderCode = gender.equals("여")? 3 : 4;
         }
         return genderCode;
     }
@@ -331,6 +332,7 @@ public class AdminSignService {
                 .accessTokenTime(accessTokenTime)
                 .refreshToken(refreshToken)
                 .role(ADMIN)
+                .id(p.getId())
                 .build();
 
         ResultUtils.setSuccessResult(dto);

@@ -58,7 +58,7 @@ public class StudentEntity {
     private LocalDate birthday;
 
     @Column(nullable = false)
-    private int gender;
+    private String gender;
 
     @Column(nullable = false, length = 20)
     private String address;
@@ -75,9 +75,6 @@ public class StudentEntity {
     @Column(nullable = false, name = "huntjob_yn", length = 10)
     @ColumnDefault("0")
     private int huntJobYn;
-
-    @Column(name = "secret_key")
-    private String secretKey;
 
     @Column(nullable = false, length = 10, name = "storage_yn")
     @ColumnDefault("0")
