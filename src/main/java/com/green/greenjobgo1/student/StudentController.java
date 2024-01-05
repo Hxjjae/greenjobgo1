@@ -29,13 +29,13 @@ public class StudentController {
     }
 
     @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Operation(summary = "수강생 이력서 업로드")
+    @Operation(summary = "수강생 파일 및 링크 업로드")
     public StudentInsRes postResume(@RequestPart MultipartFile file,
                                     @RequestParam Long istudent,
                                     @RequestParam Long iFileCategory) {
         StudentInsDto dto = new StudentInsDto();
         dto.setIstudent(istudent);
         dto.setIFileCategory(iFileCategory);
-        return SERVICE.insResume(file, dto);
+        return SERVICE.insFile(file, dto);
     }
 }

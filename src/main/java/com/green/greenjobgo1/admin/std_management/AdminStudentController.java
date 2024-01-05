@@ -9,6 +9,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,10 +42,15 @@ public class AdminStudentController {
         dto.setIstudent(istudent);
         return SERVICE.selStudentDetail(dto);
     }
+
     @GetMapping("/portfolio")
     @Operation(summary = "포트폴리오 조회")
-    public ResponseEntity<AdminPortfolioFindRes> getPortfolio(@ParameterObject @PageableDefault(sort = "istudent", direction = Sort.Direction.DESC, page = 1) Pageable pageable,
-                                                              @RequestParam(required = false)Long iclassfication,
+    public ResponseEntity<AdminPortfolioFindRes> getPortfolio(@ParameterObject @PageableDefault(page = 1)
+                                                              @SortDefault.SortDefaults({
+                                                                      @SortDefault(sort = "storageYn", direction = Sort.Direction.DESC),
+                                                                      @SortDefault(sort = "istudent", direction = Sort.Direction.ASC)
+                                                              }) Pageable pageable,
+                                                              @RequestParam(required = false) Long iclassfication,
                                                               @RequestParam(required = false) String studentName,
                                                               @RequestParam(required = false) String subjectName) {
         AdminPortfolioDto dto = new AdminPortfolioDto();
@@ -58,16 +64,15 @@ public class AdminStudentController {
     @GetMapping("/storage")
     @Operation(summary = "보관함 리스트 조회")
     public ResponseEntity<AdminStorageStudentFindRes> getStorage(@ParameterObject @PageableDefault(sort = "istudent", direction = Sort.Direction.ASC, page = 1) Pageable pageable,
-                                                                 @RequestParam(required = false)Long iclassfication,
+                                                                 @RequestParam(required = false) Long iclassfication,
                                                                  @RequestParam(required = false) String studentName,
-                                                                 @RequestParam(required = false) String subjectName){
+                                                                 @RequestParam(required = false) String subjectName) {
         AdminStorageStudentDto dto = new AdminStorageStudentDto();
         dto.setIclassfication(iclassfication);
         dto.setStudentName(studentName);
         dto.setSubjectName(subjectName);
         return SERVICE.selStorage(dto, pageable);
     }
-
 
 
 //    @GetMapping("/storage-detail")
