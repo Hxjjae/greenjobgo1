@@ -2,10 +2,13 @@ package com.green.greenjobgo1.admin.sign.model;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Builder
 public class StudentExcel {
     private String subjectName;
     private String number;
@@ -17,7 +20,7 @@ public class StudentExcel {
     private String phone;
     private String email;
     private String address;
-    private String teacherName;
+    private String employee;
     private String gender;
     private String age;
     private String education;

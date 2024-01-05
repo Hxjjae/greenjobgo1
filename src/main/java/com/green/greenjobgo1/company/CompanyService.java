@@ -4,14 +4,15 @@ package com.green.greenjobgo1.company;
 import com.green.greenjobgo1.common.utils.ResultUtils;
 import com.green.greenjobgo1.company.model.CompanySignInParam;
 import com.green.greenjobgo1.config.entity.CompanyEntity;
-import com.green.greenjobgo1.config.entity.StudentEntity;
+import com.green.greenjobgo1.config.entity.QStudentEntity;
 import com.green.greenjobgo1.repository.CompanyRepository;
+import com.green.greenjobgo1.repository.StudentRepository;
 import com.green.greenjobgo1.security.config.RedisService;
 import com.green.greenjobgo1.security.config.security.AuthenticationFacade;
 import com.green.greenjobgo1.security.config.security.JwtTokenProvider;
 import com.green.greenjobgo1.security.config.security.model.MyUserDetails;
 import com.green.greenjobgo1.security.sign.model.SignInResultDto;
-import com.green.greenjobgo1.student.sign.model.SignInParam;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,12 @@ public class CompanyService {
     private final AuthenticationFacade facade;
     private final RedisService redisService;
     private final CompanyRepository companyRep;
+    private final StudentRepository StudentRep;
+    private final JPAQueryFactory jpaQueryFactory;
+
+    QStudentEntity qstudent = QStudentEntity.studentEntity;
+
+
 
     public SignInResultDto signIn(CompanySignInParam p, String ip) {
         log.info("[getSignInResult] signDataHandler로 회원 정보 요청");
@@ -154,5 +161,15 @@ public class CompanyService {
 
         redisService.setValuesWithTimeout(accessToken, "logout", expiration);
     }
+
+//    public CompanyStudentVo getstudent(){
+//
+////        jpaQueryFactory.select(Projections.constructor(StudentEntity.class,
+////                qstudent.))
+//
+//        return null;
+//    }
+
+
 
 }

@@ -26,7 +26,7 @@ public class CompanyListEntity {
     @Column(length = 20, name = "area")
     private String area;
 
-    @Column(nullable = false, length = 20, name = "company_name")
+    @Column(nullable = false, length = 20, name = "company_name",unique = true)
     private String companyName;
 
     @Column(length = 20, name = "leader_name")

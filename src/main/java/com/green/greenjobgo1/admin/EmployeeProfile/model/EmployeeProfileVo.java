@@ -9,7 +9,7 @@ public class EmployeeProfileVo {
     private Long iemply;
     private String oneWord;
     private String name;
-    private String conuselingNumber;
+    private String counselingNumber ;
     private String phoneNumber;
     private String email;
     private String profilePic;

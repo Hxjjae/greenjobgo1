@@ -3,7 +3,6 @@ package com.green.greenjobgo1.company;
 import com.green.greenjobgo1.company.model.CompanySignInParam;
 import com.green.greenjobgo1.security.CommonRes;
 import com.green.greenjobgo1.security.sign.model.SignInResultDto;
-import com.green.greenjobgo1.student.sign.model.SignInParam;
 import com.green.greenjobgo1.student.sign.model.TokenDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,10 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Tag(name = "기업 로그인,로그아웃,조회")
@@ -65,4 +61,9 @@ public class CompanyController {
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .build();
     }
+//    @GetMapping("/student")
+//    @Operation(summary = "수강생을 검색합니다.")
+//    public CompanyStudentVo getstudent(){
+//        return null;
+//    }
 }

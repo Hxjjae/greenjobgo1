@@ -28,16 +28,17 @@ public class EmployeeProfileService {
 
 
     public List<EmployeeProfileVo> getProfile(){
-        List<EmployeeProfileEntity> entityList = EmployeeProfileRep.findAll();
+        //List<EmployeeProfileEntity> entityList = EmployeeProfileRep.findAll();
+        List<EmployeeProfileEntity> entityList = EmployeeProfileRep.findByDelYn(0);
 
         return entityList.stream().map(profile -> EmployeeProfileVo.builder()
                 .oneWord(profile.getOneWord())
                 .iemply(profile.getIemply())
-                .conuselingNumber(profile.getCounselingNumber())
+                .counselingNumber (profile.getCounselingNumber())
                 .name(profile.getName())
                 .phoneNumber(profile.getPhoneNumber())
                 .email(profile.getEmail())
-                .profilePic(profile.getProfilePic()).build()).toList();
+                .profilePic("C:/home/download/Employee/"+profile.getIemply()+"/"+profile.getProfilePic()).build()).toList();
     }
 
     public EmployeeProfileEntity insProfile(EmployeeProfileDto dto,MultipartFile pic){
@@ -74,16 +75,16 @@ public class EmployeeProfileService {
 
 
         entity.setProfilePic(img);
-        EmployeeProfileRep.save(entity);
+        EmployeeProfileEntity save = EmployeeProfileRep.save(entity);
 
+        // 파일위치 붙여주기
+        save.setProfilePic("C:/home/download/Employee/"+save.getIemply()+"/"+save.getProfilePic());
 
         return entity;
     }
 
-    public EmployeeProfileVo patchProfile(Long iemply,String oneWord,String name,String conuselingNumber,String phone,String email,MultipartFile pic){
+    public EmployeeProfileVo patchProfile(Long iemply,String name,String oneWord,String conuselingNumber,String phone,String email,MultipartFile pic){
         EmployeeProfileEntity entity = EmployeeProfileRep.findById(iemply).get();
-
-        entity.setIemply(iemply);
 
         Optional.ofNullable(oneWord).ifPresent(entity::setOneWord);
         Optional.ofNullable(conuselingNumber).ifPresent(entity::setCounselingNumber);
@@ -122,10 +123,10 @@ public class EmployeeProfileService {
         return EmployeeProfileVo.builder().iemply(entity.getIemply())
                 .oneWord(entity.getOneWord())
                 .name(entity.getName())
-                .conuselingNumber(entity.getCounselingNumber())
+                .counselingNumber (entity.getCounselingNumber())
                 .phoneNumber(entity.getPhoneNumber())
                 .email(entity.getEmail())
-                .profilePic(entity.getProfilePic()).build();
+                .profilePic("C:/home/download/Employee/"+entity.getIemply()+"/"+entity.getProfilePic()).build();
 
     }
 
@@ -140,8 +141,10 @@ public class EmployeeProfileService {
         log.info("file :{}",file);
         file.delete();
 
+        // delYn으로 삭제처리
+        entity.setDelYn(1);
         try {
-            EmployeeProfileRep.delete(entity);
+            EmployeeProfileRep.save(entity);
         }catch (Exception e) {
             return 0;
         }
