@@ -27,6 +27,6 @@ public class FileCategoryEntity {
     @OneToMany(mappedBy = "fileCategoryEntity")
     private List<FileEntity> files = new ArrayList<>();
 
-    @Column(length = 100)
+    @Column(length = 100,unique = true)
     private String file;
 }

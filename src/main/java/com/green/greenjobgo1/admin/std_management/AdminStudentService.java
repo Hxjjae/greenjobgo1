@@ -82,9 +82,10 @@ public class AdminStudentService {
         }
     }
 
-    public ResponseEntity<AdminStorageStudentFindRes> selStorage(Pageable pageable) {
-        long maxPage = adminStudentQdsl.storageIdx();
+    public ResponseEntity<AdminStorageStudentFindRes> selStorage(AdminStorageStudentDto dto, Pageable pageable) {
+        long maxPage = adminStudentQdsl.storageIdx(dto);
         PagingUtils utils = new PagingUtils(pageable.getPageNumber()+1, (int) maxPage, pageable);
+        utils.setIdx((int)maxPage);
 
         List<AdminStorageStudentRes> list = adminStudentQdsl.storageVos(pageable);
 
@@ -93,6 +94,7 @@ public class AdminStudentService {
                 .res(list.stream().map(item -> AdminStorageStudentRes.builder()
                         .ifile(item.getIfile())
                         .file(item.getFile())
+                        .istudent(item.getIstudent())
                         .studentName(item.getStudentName())
                         .subjectName(item.getSubjectName())
                         .build()).toList())
@@ -100,33 +102,51 @@ public class AdminStudentService {
         return ResponseEntity.ok(build);
     }
 
-    public AdminStorageStudentDetailRes detailStorage(AdminStorageStudentDetailDto dto) {
-        StudentEntity stdEntity = new StudentEntity();
-        stdEntity.setIstudent(dto.getIstudent());
-        Optional<StudentCourseSubjectEntity> scsId = SCS_REP.findByStudentEntity(stdEntity);
-        Optional<StudentEntity> stuId = STU_REP.findById(scsId.get().getStudentEntity().getIstudent());
-        Optional<CourseSubjectEntity> cosId = COS_REP.findById(scsId.get().getCourseSubjectEntity().getIcourseSubject());
-        List<FileEntity> fileRepAll = FILE_REP.findAll();
+    public ResponseEntity<AdminPortfolioFindRes> selPortfolio(AdminPortfolioDto dto, Pageable pageable) {
+        long maxPage = adminStudentQdsl.portfolioIdx(dto);
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber()+1, (int) maxPage, pageable);
+        utils.setIdx((int)maxPage);
+        List<AdminPortfolioRes> list = adminStudentQdsl.portfolioVos(dto, pageable);
 
-        if (stuId.isPresent() && scsId.isPresent()) {
-            return AdminStorageStudentDetailRes.builder()
-                    .icourseSubject(cosId.get().getIcourseSubject())
-                    .startedAt(cosId.get().getStartedAt())
-                    .endedAt(cosId.get().getEndedAt())
-                    .birthday(stuId.get().getBirthday())
-                    .name(stuId.get().getName())
-                    .gender(stuId.get().getGender())
-                    .address(stuId.get().getAddress())
-                    .education(stuId.get().getEducation())
-                    .mobileNumber(stuId.get().getMobileNumber())
-                    .file(fileRepAll.stream().map(item -> AdminStudentFile.builder()
-                            .file(item.getFileCategoryEntity().getFile())
-                            .build()).toList())
-                    .build();
-        } else {
-            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
-        }
+        AdminPortfolioFindRes build = AdminPortfolioFindRes.builder()
+                .page(utils)
+                .res(list.stream().map(item -> AdminPortfolioRes.builder()
+                        .introducedLine(item.getIntroducedLine())
+                        .studentName(item.getStudentName())
+                        .subjectName(item.getSubjectName())
+                        .img(item.getImg())
+                        .build()).toList())
+                .build();
+        return ResponseEntity.ok(build);
     }
+
+//    public AdminStorageStudentDetailRes detailStorage(AdminStorageStudentDetailDto dto) {
+//        StudentEntity stdEntity = new StudentEntity();
+//        stdEntity.setIstudent(dto.getIstudent());
+//        Optional<StudentCourseSubjectEntity> scsId = SCS_REP.findByStudentEntity(stdEntity);
+//        Optional<StudentEntity> stuId = STU_REP.findById(scsId.get().getStudentEntity().getIstudent());
+//        Optional<CourseSubjectEntity> cosId = COS_REP.findById(scsId.get().getCourseSubjectEntity().getIcourseSubject());
+//        List<FileEntity> fileRepAll = FILE_REP.findAll();
+//
+//        if (stuId.isPresent() && scsId.isPresent()) {
+//            return AdminStorageStudentDetailRes.builder()
+//                    .icourseSubject(cosId.get().getIcourseSubject())
+//                    .startedAt(cosId.get().getStartedAt())
+//                    .endedAt(cosId.get().getEndedAt())
+//                    .birthday(stuId.get().getBirthday())
+//                    .name(stuId.get().getName())
+//                    .gender(stuId.get().getGender())
+//                    .address(stuId.get().getAddress())
+//                    .education(stuId.get().getEducation())
+//                    .mobileNumber(stuId.get().getMobileNumber())
+//                    .file(fileRepAll.stream().map(item -> AdminStudentFile.builder()
+//                            .file(item.getFileCategoryEntity().getFile())
+//                            .build()).toList())
+//                    .build();
+//        } else {
+//            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
+//        }
+//    }
 
     public AdminStorageStudentPatchRes patchStorage(AdminStorageStudentPatchDto dto) {
         Optional<StudentEntity> byId = STU_REP.findById(dto.getIstudent());

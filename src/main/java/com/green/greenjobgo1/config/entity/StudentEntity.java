@@ -99,4 +99,7 @@ public class StudentEntity {
     @Column(name = "major_yn")
     private int majorYn;
 
+    @Column(length = 50, name = "introduced_line")
+    private String introducedLine;
+
 }

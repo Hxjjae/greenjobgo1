@@ -38,6 +38,50 @@ public class StudentService {
     @Value("${file.dir}")
     private String fileDir;
 
+
+    public StudentInsRes insResume(MultipartFile file, StudentInsDto dto) {
+        Optional<FileCategoryEntity> fileCateId = FILE_CATE_REP.findById(dto.getIFileCategory());
+        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+
+        FileEntity entity = new FileEntity();
+        entity.setFileCategoryEntity(fileCateId.get());
+        entity.setCreatedAt(LocalDate.now());
+        entity.setStudentEntity(stdId.get());
+
+        if (fileCateId.get().getIFileCategory() == 1) {
+            String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
+            entity.setFile(savedFileNm);
+            FileEntity result = FILE_REP.save(entity);
+
+            String targetDir = String.format("%s/%d", fileDir, entity.getStudentEntity().getIstudent());
+            File fileTargetDir = new File(targetDir);
+            if (!fileTargetDir.exists()) {
+                if (!fileTargetDir.mkdirs()) {
+                    log.error("Failed to create directory: {}", fileTargetDir.getAbsolutePath());
+                    throw new RuntimeException("이력서를 저장할 디렉토리를 생성할 수 없습니다.");
+                }
+            }
+            File fileTarget = new File(String.format("%s%s", targetDir, savedFileNm));
+            try {
+                file.transferTo(fileTarget);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException("이력서를 업로드 할 수 없습니다.");
+            }
+            return StudentInsRes.builder()
+                    .file(result.getFile())
+                    .ifile(result.getIfile())
+                    .createdAt(result.getCreatedAt())
+                    .istudent(result.getStudentEntity().getIstudent())
+                    .build();
+        } else if (fileCateId.get().getIFileCategory() == 2) {
+            return null;
+        } else {
+            return null;
+        }
+
+    }
+
     public StudentSelRes selStudent(StudentSelDto dto) {
         StudentSelRes studentSelRes = studentQdsl.studentVo(dto.getIstudent());
 
@@ -58,39 +102,4 @@ public class StudentService {
         }
     }
 
-    public StudentInsRes insResume(MultipartFile file, StudentInsDto dto) {
-        Optional<FileCategoryEntity> fileCateId = FILE_CATE_REP.findById(dto.getIFileCategory());
-        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
-
-        FileEntity entity = new FileEntity();
-        entity.setFileCategoryEntity(fileCateId.get());
-        entity.setCreatedAt(LocalDate.now());
-        entity.setStudentEntity(stdId.get());
-
-        String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
-        entity.setFile(savedFileNm);
-        FileEntity result = FILE_REP.save(entity);
-
-        String targetDir = String.format("%s/%d", fileDir, entity.getStudentEntity().getIstudent());
-        File fileTargetDir = new File(targetDir);
-        if (!fileTargetDir.exists()) {
-            if (!fileTargetDir.mkdirs()) {
-                log.error("Failed to create directory: {}", fileTargetDir.getAbsolutePath());
-                throw new RuntimeException("이력서를 저장할 디렉토리를 생성할 수 없습니다.");
-            }
-        }
-        File fileTarget = new File(String.format("%s%s", targetDir, savedFileNm));
-        try {
-            file.transferTo(fileTarget);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("이력서를 업로드 할 수 없습니다.");
-        }
-        return StudentInsRes.builder()
-                .file(result.getFile())
-                .ifile(result.getIfile())
-                .createdAt(result.getCreatedAt())
-                .istudent(result.getStudentEntity().getIstudent())
-                .build();
-    }
 }

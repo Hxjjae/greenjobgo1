@@ -1,13 +1,9 @@
 package com.green.greenjobgo1.admin.std_management.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class AdminStorageStudentDto {
+public class AdminPortfolioDto {
     private Long iclassfication;
     private String subjectName;
     private String studentName;

@@ -41,31 +41,54 @@ public class AdminStudentController {
         dto.setIstudent(istudent);
         return SERVICE.selStudentDetail(dto);
     }
+    @GetMapping("/portfolio")
+    @Operation(summary = "포트폴리오 조회")
+    public ResponseEntity<AdminPortfolioFindRes> getPortfolio(@ParameterObject @PageableDefault(sort = "istudent", direction = Sort.Direction.DESC, page = 1) Pageable pageable,
+                                                              @RequestParam(required = false)Long iclassfication,
+                                                              @RequestParam(required = false) String studentName,
+                                                              @RequestParam(required = false) String subjectName) {
+        AdminPortfolioDto dto = new AdminPortfolioDto();
+        dto.setIclassfication(iclassfication);
+        dto.setStudentName(studentName);
+        dto.setSubjectName(subjectName);
+
+        return SERVICE.selPortfolio(dto, pageable);
+    }
 
     @GetMapping("/storage")
-    @Operation(summary = "보관함 학생 조회")
-    public ResponseEntity<AdminStorageStudentFindRes> getStorage(@ParameterObject @PageableDefault(sort = "istudent", direction = Sort.Direction.ASC, page = 1) Pageable pageable) {
-        return SERVICE.selStorage(pageable);
+    @Operation(summary = "보관함 리스트 조회")
+    public ResponseEntity<AdminStorageStudentFindRes> getStorage(@ParameterObject @PageableDefault(sort = "istudent", direction = Sort.Direction.ASC, page = 1) Pageable pageable,
+                                                                 @RequestParam(required = false)Long iclassfication,
+                                                                 @RequestParam(required = false) String studentName,
+                                                                 @RequestParam(required = false) String subjectName){
+        AdminStorageStudentDto dto = new AdminStorageStudentDto();
+        dto.setIclassfication(iclassfication);
+        dto.setStudentName(studentName);
+        dto.setSubjectName(subjectName);
+        return SERVICE.selStorage(dto, pageable);
     }
 
-    @GetMapping("/storage-detail")
-    @Operation(summary = "보관함 학생 상세조회")
-    public AdminStorageStudentDetailRes detailStorage(@RequestParam Long istudent) {
-        AdminStorageStudentDetailDto dto = new AdminStorageStudentDetailDto();
-        dto.setIstudent(istudent);
-        return SERVICE.detailStorage(dto);
-    }
+
+
+//    @GetMapping("/storage-detail")
+//    @Operation(summary = "보관함 학생 상세조회")
+//    public AdminStorageStudentDetailRes detailStorage(@RequestParam Long istudent) {
+//        AdminStorageStudentDetailDto dto = new AdminStorageStudentDetailDto();
+//        dto.setIstudent(istudent);
+//        return SERVICE.detailStorage(dto);
+//    }
 
     @PatchMapping("/storage")
     @Operation(summary = "보관 여부 결정")
     public AdminStorageStudentPatchRes patchStorage(@RequestParam Long istudent) {
+
         AdminStorageStudentPatchDto dto = new AdminStorageStudentPatchDto();
         dto.setIstudent(istudent);
         return SERVICE.patchStorage(dto);
     }
 
     @PatchMapping("/editable-yn")
-    @Operation(summary = "권한 수정")
+    @Operation(summary = "학생 권한 수정")
     public AdminStudentRoleRes patchRole(@RequestParam Long istudent,
                                          @RequestParam LocalDate startedAt,
                                          @RequestParam LocalDate endedAt,

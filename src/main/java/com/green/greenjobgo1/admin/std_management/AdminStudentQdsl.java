@@ -1,10 +1,7 @@
 package com.green.greenjobgo1.admin.std_management;
 
 import com.green.greenjobgo1.admin.category.model.AdminCategoryDto;
-import com.green.greenjobgo1.admin.std_management.model.AdminStorageStudentDto;
-import com.green.greenjobgo1.admin.std_management.model.AdminStorageStudentRes;
-import com.green.greenjobgo1.admin.std_management.model.AdminStudentDto;
-import com.green.greenjobgo1.admin.std_management.model.AdminStudentRes;
+import com.green.greenjobgo1.admin.std_management.model.*;
 import com.green.greenjobgo1.admin.subject.model.AdminSubjectDto;
 import com.green.greenjobgo1.config.entity.*;
 import com.querydsl.core.types.Projections;
@@ -31,6 +28,7 @@ public class AdminStudentQdsl {
     QStudentEntity stu = QStudentEntity.studentEntity;
     QFileEntity file = QFileEntity.fileEntity;
     QCertificateEntity certificate = QCertificateEntity.certificateEntity;
+    QCategorySubjectEntity cate = QCategorySubjectEntity.categorySubjectEntity;
 
     public List<AdminStudentRes> studentVos(AdminStudentDto dto, Pageable pageable) {
 
@@ -50,6 +48,23 @@ public class AdminStudentQdsl {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(stu.istudent.asc());
+        return query.fetch();
+    }
+
+    public List<AdminPortfolioRes> portfolioVos(AdminPortfolioDto dto, Pageable pageable) {
+        JPAQuery<AdminPortfolioRes> query = jpaQueryFactory.select(Projections.bean(AdminPortfolioRes.class, stu.name.as("studentName")
+                        , cos.subjectName, file.file.as("img"), stu.introducedLine))
+                .from(stu)
+                .join(stu.scsList, scs)
+                .join(scs.courseSubjectEntity, cos)
+                .join(cos.categorySubjectEntity, cate)
+                .join(stu.files, file)
+                .where(eqIclassification(dto.getIclassfication()),
+                        eqSubjectName(dto.getSubjectName()),
+                        eqStudentName(dto.getStudentName()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(stu.storageYn.desc(), stu.istudent.asc());
         return query.fetch();
     }
 
@@ -79,13 +94,30 @@ public class AdminStudentQdsl {
         return query.fetchOne();
     }
 
-    public Long storageIdx() {
+    public Long portfolioIdx(AdminPortfolioDto dto) {
+        JPAQuery<Long> query = jpaQueryFactory.select(stu.istudent.count())
+                .from(stu)
+                .join(stu.scsList, scs)
+                .join(scs.courseSubjectEntity, cos)
+                .join(cos.categorySubjectEntity, cate)
+                .join(stu.files, file)
+                .where(eqIclassification(dto.getIclassfication()),
+                        eqSubjectName(dto.getSubjectName()),
+                        eqStudentName(dto.getStudentName()));
+        return query.fetchOne();
+    }
+
+    public Long storageIdx(AdminStorageStudentDto dto) {
         JPAQuery<Long> query = jpaQueryFactory.select(stu.istudent.count())
                 .from(stu)
                 .join(stu.files, file)
                 .join(stu.scsList, scs)
                 .join(scs.courseSubjectEntity, cos)
-                .where(stu.storageYn.eq(1));
+                .join(cos.categorySubjectEntity, cate)
+                .where(stu.storageYn.eq(1),
+                        eqIclassification(dto.getIclassfication()),
+                        eqSubjectName(dto.getSubjectName()),
+                        eqStudentName(dto.getStudentName()));
         return query.fetchOne();
     }
 
@@ -95,5 +127,9 @@ public class AdminStudentQdsl {
 
     private BooleanExpression eqSubjectName(String subjectName) {
         return subjectName != null ? cos.subjectName.contains(subjectName) : null;
+    }
+
+    private BooleanExpression eqStudentName(String studentName) {
+        return studentName != null ? stu.name.contains(studentName) : null;
     }
 }

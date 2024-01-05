@@ -22,7 +22,7 @@ public class CategorySubjectEntity {
     @Column(updatable = false, nullable = false, length = 20)
     private Long iclassification;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 10,unique = true)
     private String classification;
 
     @Column(nullable = false, length = 10, name = "del_yn")
