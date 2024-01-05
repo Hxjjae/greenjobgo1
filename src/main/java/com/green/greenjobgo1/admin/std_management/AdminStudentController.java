@@ -24,7 +24,17 @@ public class AdminStudentController {
     private final AdminStudentService SERVICE;
 
     @GetMapping
-    @Operation(summary = "학생 조회")
+    @Operation(summary = "학생 조회", description = "istudnet : 수강생 PK \n" +
+            "\n classfication : 카테고리 \n" +
+            "\n subjectName : 수강과목 명 \n" +
+            "\n startedAt : 강의시작일자\n" +
+            "\n endedAt : 강의종료일자\n" +
+            "\n name : 수강생 이름 \n" +
+            "\n gender : 수강생 성별\n" +
+            "\n address : 지역\n" +
+            "\n mobileNumber : 휴대폰 번호 \n" +
+            "\n certificate : 자격증 \n" +
+            "\n file : 이력서 + 포트폴리오 ")
     public ResponseEntity<AdminStudentFindRes> getStudentList(@ParameterObject @PageableDefault(sort = "istudent", direction = Sort.Direction.ASC, page = 1) Pageable pageable,
                                                               @RequestParam(required = false) Long icategory,
                                                               @RequestParam(required = false) String subjectName
@@ -36,7 +46,15 @@ public class AdminStudentController {
     }
 
     @GetMapping("/detail")
-    @Operation(summary = "학생 상세 조회")
+    @Operation(summary = "학생 상세 조회", description = "name : 수강생 이름 \n" +
+            "\n birthday : 생일 \n" +
+            "\n address : 주소 \n" +
+            "\n addressDetail : 상세주소\n" +
+            "\n email : 이메일 \n" +
+            "\n startedAt : 권한시작일자\n" +
+            "\n endedAt : 권한만료일자 \n" +
+            "\n mobileNumber : 휴대폰 번호 \n" +
+            "\n education : 학력 ")
     public AdminStudentDetailRes getStudentDetail(@RequestParam Long istudent) {
         AdminStudentDetailDto dto = new AdminStudentDetailDto();
         dto.setIstudent(istudent);
@@ -44,7 +62,10 @@ public class AdminStudentController {
     }
 
     @GetMapping("/portfolio")
-    @Operation(summary = "포트폴리오 조회")
+    @Operation(summary = "포트폴리오 조회", description = "img : 포트폴리오 대표 이미지 \n" +
+            "\n istudent : 수강생 PK \n" +
+            "\n studentName : 수강생 이름 \n" +
+            "\n subjectname : 수강과목 이름")
     public ResponseEntity<AdminPortfolioFindRes> getPortfolio(@ParameterObject @PageableDefault(page = 1)
                                                               @SortDefault.SortDefaults({
                                                                       @SortDefault(sort = "storageYn", direction = Sort.Direction.DESC),
@@ -62,7 +83,10 @@ public class AdminStudentController {
     }
 
     @GetMapping("/storage")
-    @Operation(summary = "보관함 리스트 조회")
+    @Operation(summary = "보관함 리스트 조회" ,description = "img : 포트폴리오 대표 이미지 \n" +
+            "\n istudent : 수강생 PK \n" +
+            "\n studentName : 수강생 이름 \n" +
+            "\n subjectname : 수강과목 이름")
     public ResponseEntity<AdminStorageStudentFindRes> getStorage(@ParameterObject @PageableDefault(sort = "istudent", direction = Sort.Direction.ASC, page = 1) Pageable pageable,
                                                                  @RequestParam(required = false) Long iclassfication,
                                                                  @RequestParam(required = false) String studentName,
