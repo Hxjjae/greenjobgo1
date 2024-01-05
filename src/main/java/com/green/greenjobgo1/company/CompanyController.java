@@ -1,6 +1,7 @@
 package com.green.greenjobgo1.company;
 
 import com.green.greenjobgo1.company.model.CompanySignInParam;
+import com.green.greenjobgo1.company.model.CompanyStdVo;
 import com.green.greenjobgo1.security.CommonRes;
 import com.green.greenjobgo1.security.sign.model.SignInResultDto;
 import com.green.greenjobgo1.student.sign.model.TokenDto;
@@ -14,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @Tag(name = "기업 로그인,로그아웃,조회")
@@ -63,7 +66,7 @@ public class CompanyController {
     }
 //    @GetMapping("/student")
 //    @Operation(summary = "수강생을 검색합니다.")
-//    public CompanyStudentVo getstudent(){
-//        return null;
+//    public List<CompanyStdVo> getstudent(){
+//        return service.getstudent();
 //    }
 }

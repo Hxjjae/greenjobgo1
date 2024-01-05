@@ -49,7 +49,8 @@ public class CompanylistController {
                     "area: 지역 <br>"+
                     "leaderName: 대표 이름 <br>"+
                     "companyName: 회사 명 <br>"+
-                    "sector : 업종 <br>"+
+                    "leaderName: 대표 이름 <br>"+
+                    "JobField: 채용(직업)분야 <br>"+
                     "manger : 담당자 이름<br>"+
                     "phonenumber : 전화번호 <br>"+
                     "dateConslusion: 체결일자 <br>")
@@ -63,7 +64,8 @@ public class CompanylistController {
     @Operation(summary = "회사정보 수정",description = "companyCode: DB 회사 pk값 <br>" +
             "area: 지역 <br>"+
             "companyName: 회사 명 <br>"+
-            "sector : 업종 <br>"+
+            "leaderName: 대표 이름 <br>"+
+            "JobField: 채용(직업)분야 <br>"+
             "manger : 담당자 <br>"+
             "phonenumber : 전화번호 <br>"+
             "dateConslusion: 체결일자 <br>")
