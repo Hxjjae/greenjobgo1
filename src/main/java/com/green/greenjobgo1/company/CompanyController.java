@@ -64,9 +64,9 @@ public class CompanyController {
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .build();
     }
-//    @GetMapping("/student")
-//    @Operation(summary = "수강생을 검색합니다.")
-//    public List<CompanyStdVo> getstudent(){
-//        return service.getstudent();
-//    }
+    @GetMapping("/student")
+    @Operation(summary = "수강생을 검색합니다.")
+    public List<CompanyStdVo> getstudent(){
+        return service.getstudent();
+    }
 }

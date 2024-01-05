@@ -12,4 +12,5 @@ public class SignInResultDto extends SignUpResultDto {
     private Long accessTokenTime;
     private String refreshToken;
     private String role;
+    private String id;
 }

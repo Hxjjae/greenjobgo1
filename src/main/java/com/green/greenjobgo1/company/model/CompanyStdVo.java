@@ -1,16 +1,15 @@
 package com.green.greenjobgo1.company.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Getter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompanyStdVo {
     private Long  istudent;
-    private String stdname;
-    private String subejctName;
+    private String name;
+    private String subjectName;
+    private String file;
+
 }
