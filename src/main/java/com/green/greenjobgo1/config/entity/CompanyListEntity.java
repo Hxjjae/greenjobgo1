@@ -26,13 +26,13 @@ public class CompanyListEntity {
     @Column(length = 20, name = "area")
     private String area;
 
-    @Column(nullable = false, length = 20, name = "company_name",unique = true)
+    @Column(nullable = false, length = 50, name = "company_name",unique = true)
     private String companyName;
 
     @Column(length = 20, name = "leader_name")
     private String leaderName;
 
-    @Column(length = 20, name = "job_field")
+    @Column(length = 50, name = "job_field")
     private String jobField;
 
     @Column(length = 20, name = "manager")

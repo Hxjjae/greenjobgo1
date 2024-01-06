@@ -13,11 +13,14 @@ import com.green.greenjobgo1.security.config.security.JwtTokenProvider;
 import com.green.greenjobgo1.security.config.security.model.MyUserDetails;
 import com.green.greenjobgo1.security.sign.model.SignInResultDto;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -167,13 +170,19 @@ public class CompanyService {
     }
 
     QFileEntity qfileEntity = QFileEntity.fileEntity;
-    public List<CompanyStdVo> getstudent(){
+    QCategorySubjectEntity qCategorySubjectEntity = QCategorySubjectEntity.categorySubjectEntity;
+    public List<CompanyStdVo> getstudent(int page,int size,Long icategory,String subjectName,String studentName){
+        //page 값이 1이상인 경우 -1
+        int page2 = (page > 0) ? (page - 1) : 0;
+        Pageable pageable = PageRequest.of(page2, size);
+
         List<CompanyStdVo> StudentEntity  = jpaQueryFactory.select(
                 Projections.bean(CompanyStdVo.class,
                         qstudent.istudent,
+                        qfileEntity.file,
                         qstudent.name,
                         qCourseSubject.subjectName,
-                        qfileEntity.file
+                        qCategorySubjectEntity.classification
                 )).from(qstudent)
                 .innerJoin(qstudentCourseSubject)
                 .on(qstudentCourseSubject.studentEntity.istudent.eq(qstudent.istudent))
@@ -181,8 +190,35 @@ public class CompanyService {
                 .on(qCourseSubject.icourseSubject.eq(qstudentCourseSubject.courseSubjectEntity.icourseSubject))
                 .innerJoin(qfileEntity)
                 .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
-                .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(4L))
+                .innerJoin(qCategorySubjectEntity)
+                .on(qCategorySubjectEntity.iclassification.eq(qCourseSubject.categorySubjectEntity.iclassification))
+                //.where(qfileEntity.fileCategoryEntity.iFileCategory.eq(4L))
+                .where(eqcategory(icategory))
+                .where(eqsubjectName(subjectName))
+                .where(eqstudentName(studentName))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
         return StudentEntity;
+    }
+
+    private BooleanExpression eqcategory(Long icategory) {
+        if(icategory == null || icategory == 0) {
+            return null;
+        }
+        return qCategorySubjectEntity.iclassification.eq(icategory);
+    }
+
+    private BooleanExpression eqsubjectName(String subjectName) {
+        if(subjectName == null || subjectName.isEmpty()) {
+            return null;
+        }
+        return qCourseSubject.subjectName.like("%"+subjectName+"%");
+    }
+    private BooleanExpression eqstudentName(String studentName) {
+        if(studentName == null || studentName.isEmpty()) {
+            return null;
+        }
+        return qstudent.name.like("%"+studentName+"%");
     }
 }

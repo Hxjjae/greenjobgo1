@@ -66,7 +66,13 @@ public class CompanyController {
     }
     @GetMapping("/student")
     @Operation(summary = "수강생을 검색합니다.")
-    public List<CompanyStdVo> getstudent(){
-        return service.getstudent();
+    public List<CompanyStdVo> getstudent(@RequestParam(required = false)int page,
+                                         @RequestParam(required = false)int size,
+                                         @RequestParam(required = false)Long icategory,
+                                         @RequestParam(required = false)String subjectName,
+                                         @RequestParam(required = false)String studentName
+                                         )
+    {
+        return service.getstudent(page,size,icategory,subjectName,studentName);
     }
 }

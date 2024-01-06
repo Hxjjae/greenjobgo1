@@ -133,8 +133,12 @@ public class AdminSignService {
 
                 log.info("ID:{}",save.getIstudent());
                 //학생이 소속된 과목table 정보 가져오기
+                log.info("과정명:{}",user.getSubjectName());
                 CourseSubjectEntity subjectentity = subjectRep.findBySubjectName(user.getSubjectName());
 
+
+
+                log.info("subject테이블 과정명:{}",subjectentity.getSubjectName());
                 if (subjectentity == null) {
                     throw new RuntimeException("존재하지 않는 과목입니다");
                 }
