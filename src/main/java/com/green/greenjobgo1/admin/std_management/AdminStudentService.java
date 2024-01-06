@@ -113,7 +113,7 @@ public class AdminStudentService {
         AdminPortfolioFindRes build = AdminPortfolioFindRes.builder()
                 .page(utils)
                 .res(list.stream().map(item -> AdminPortfolioRes.builder()
-                        .introducedLine(item.getIntroducedLine())
+                        .istudent(item.getIstudent())
                         .studentName(item.getStudentName())
                         .subjectName(item.getSubjectName())
                         .img(item.getImg())

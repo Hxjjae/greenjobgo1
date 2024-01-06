@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class AdminPortfolioRes {
     private String subjectName;
     private String studentName;
-    private String introducedLine;
+    private Long istudent;
     private String img;
 
 }
