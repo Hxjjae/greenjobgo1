@@ -65,7 +65,7 @@ public class AdminSignService {
         for (Map<String, Object> map : listMap) {
             StudentExcel student = StudentExcel.builder()
                     .subjectName(map.get("0").toString())
-                    .number(map.get("1").toString())
+                    .round(map.get("1").toString())
                     .startedAt(map.get("2").toString())
                     .endedAt(map.get("3").toString())
                     .trainingTime(map.get("4").toString())

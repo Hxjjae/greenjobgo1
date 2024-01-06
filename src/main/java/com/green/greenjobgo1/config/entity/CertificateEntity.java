@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.core.annotation.Order;
 
+import java.util.List;
+
 @Data
 @Table(name = "certificate")
 @Order(1)
@@ -21,7 +23,7 @@ public class CertificateEntity {
     @Column(updatable = false, nullable = false, length = 20)
     private Long icertificate;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "istudent")
     private StudentEntity studentEntity;
 

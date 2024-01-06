@@ -36,10 +36,10 @@ public class AdminSubjectController {
 
     @GetMapping
     @Operation(summary = "수강과목 보기", description = "iclassficiation = 대분류 pk\n" +
-                                        "subjectName = 과정 이름\n" +
-                                        "condition = 과정 상태\n" +
-                                        "delYn = 삭제 여부\n" +
-                                        "\nResponses : " +
+            "subjectName = 과정 이름\n" +
+            "condition = 과정 상태\n" +
+            "delYn = 삭제 여부\n" +
+            "\nResponses : " +
             "\npage = 현재 페이지\n" +
             "\nmaxPage = 최대 페이지\n" +
             "\nrow = 행 갯수(10고정)\n" +
@@ -68,10 +68,14 @@ public class AdminSubjectController {
 
     @PutMapping
     @Operation(summary = "수강과목 수정", description = "\nicourseSubject = 과정 pk\n" +
-                            "\niclassfication = 대분류 pk\n" +
-                        "\ncourseSubjectName = 과정 이름\n" +
-                        "\nstartedAt = 시작일자\n" +
-                        "\nendedAt = 종료일자\n")
+            "\niclassfication = 대분류 pk\n" +
+            "\ncourseSubjectName = 과정 이름\n" +
+            "\nstartedAt = 시작일자\n" +
+            "\nendedAt = 종료일자\n" +
+            "\nInstructor = 강사명\n" +
+            "\nLectureRoom = 강의실\n" +
+            "\nround = 회차\n" +
+            "\nclassTime = 수강시간")
 
     public AdminSubjectUpdRes putAdminSubject(@RequestParam Long icourseSubject,
                                               @RequestParam(required = false) Long iclassification,
@@ -79,7 +83,9 @@ public class AdminSubjectController {
                                               @RequestParam(required = false) LocalDate startedAt,
                                               @RequestParam(required = false) LocalDate endedAt,
                                               @RequestParam(required = false) String instructor,
-                                              @RequestParam(required = false) String lectureRoom) {
+                                              @RequestParam(required = false) String lectureRoom,
+                                              @RequestParam(required = false) int round,
+                                              @RequestParam(required = false) int classTime) {
         AdminSubjectUpdDto dto = new AdminSubjectUpdDto();
         dto.setIcourseSubject(icourseSubject);
         dto.setIclassification(iclassification);
@@ -88,6 +94,8 @@ public class AdminSubjectController {
         dto.setStartedAt(startedAt);
         dto.setInstructor(instructor);
         dto.setLectureRoom(lectureRoom);
+        dto.setRound(round);
+        dto.setClassTime(classTime);
         return SERVICE.updAdminSubject(dto);
     }
 

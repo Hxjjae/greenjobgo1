@@ -30,12 +30,14 @@ public class StudentController {
 
     @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "수강생 파일 및 링크 업로드")
-    public StudentInsRes postResume(@RequestPart MultipartFile file,
+    public StudentInsRes postResume(@RequestPart(required = false) MultipartFile file,
                                     @RequestParam Long istudent,
-                                    @RequestParam Long iFileCategory) {
+                                    @RequestParam Long iFileCategory,
+                                    @RequestParam(required = false) String fileLink) {
         StudentInsDto dto = new StudentInsDto();
         dto.setIstudent(istudent);
         dto.setIFileCategory(iFileCategory);
+        dto.setFileLink(fileLink);
         return SERVICE.insFile(file, dto);
     }
 }

@@ -16,4 +16,6 @@ public class AdminSubjectInsRes {
     private LocalDate endedAt;
     private String instructor;
     private String lectureRoom;
+    private int round;
+    private int classTime;
 }

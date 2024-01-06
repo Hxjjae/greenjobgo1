@@ -13,4 +13,5 @@ public class StudentInsDto {
     private Long istudent;
     private Long iFileCategory;
     private String file;
+    private String fileLink;
 }

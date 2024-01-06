@@ -100,6 +100,32 @@ public class StudentService {
                     .createdAt(result.getCreatedAt())
                     .istudent(result.getStudentEntity().getIstudent())
                     .build();
+        } else if (fileCateId.get().getIFileCategory() == 3 && dto.getFileLink() != null) {
+                String savedFileNm = dto.getFileLink();
+                entity.setFile(savedFileNm);
+                FileEntity result = FILE_REP.save(entity);
+
+                String targetDir = String.format("%s/%d", fileDir, entity.getStudentEntity().getIstudent());
+                File fileTargetDir = new File(targetDir);
+                if (!fileTargetDir.exists()) {
+                    if (!fileTargetDir.mkdirs()) {
+                        log.error("Failed to create directory: {}", fileTargetDir.getAbsolutePath());
+                        throw new RuntimeException("포트폴리오 링크를 저장할 디렉토리를 생성할 수 없습니다.");
+                    }
+                }
+                File fileTarget = new File(String.format("%s%s", targetDir, savedFileNm));
+                try {
+                    file.transferTo(fileTarget);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("포트폴리오 링크를 업로드 할 수 없습니다.");
+                }
+                return StudentInsRes.builder()
+                        .file(result.getFile())
+                        .ifile(result.getIfile())
+                        .createdAt(result.getCreatedAt())
+                        .istudent(result.getStudentEntity().getIstudent())
+                        .build();
         } else if (fileCateId.get().getIFileCategory() == 4) {
             String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
             entity.setFile(savedFileNm);

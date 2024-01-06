@@ -133,18 +133,16 @@ public class AdminStudentController {
                                          @RequestParam String address,
                                          @RequestParam String email,
                                          @RequestParam String education,
-                                         @RequestParam Long icertificate,
-                                         @RequestParam String certificate) {
+                                         @RequestParam List<String> certificateList) {
         AdminStudentUpdDto dto = new AdminStudentUpdDto();
-        CertificateEntity entity = new CertificateEntity();
+        AdminStudentCertificateDto certiDto = new AdminStudentCertificateDto();
         dto.setIstudent(istudent);
         dto.setStudentName(studentName);
         dto.setAddress(address);
         dto.setEmail(email);
         dto.setEducation(education);
-        entity.setIcertificate(icertificate);
-        entity.setCertificate(certificate);
+        certiDto.setCertificate(certificateList.toString());
 
-        return SERVICE.updStudent(dto, entity);
+        return SERVICE.updStudent(dto, certiDto);
     }
 }

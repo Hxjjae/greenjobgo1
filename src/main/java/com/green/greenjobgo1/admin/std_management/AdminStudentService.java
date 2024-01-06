@@ -159,25 +159,26 @@ public class AdminStudentService {
 
     }
 
-    public AdminStudentUpdRes updStudent(AdminStudentUpdDto dto, CertificateEntity certificateEntity) {
+    public AdminStudentUpdRes updStudent(AdminStudentUpdDto dto, AdminStudentCertificateDto certificateDto) {
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
-        Optional<CertificateEntity> certId = CERT_REP.findById(certificateEntity.getIcertificate());
 
         if (stdId.isPresent()) {
+            List<CertificateEntity> certificates = stdId.get().getCertificates();
             StudentEntity student = new StudentEntity();
-            CertificateEntity certificate = new CertificateEntity();
+            student = stdId.get();
+
             student.setIstudent(stdId.get().getIstudent());
             student.setName(dto.getStudentName());
             student.setId(dto.getEmail());
             student.setAddress(dto.getAddress());
             student.setEducation(dto.getEducation());
-            student.setCertificates(certificateEntity);
-            if (certId.isPresent()) {
-                certificate.setCertificate(certificateEntity.getCertificate());
-            }
 
+            for (CertificateEntity certificate : certificates) {
+                certificate.setCertificate(certificateDto.getCertificate());
+                student.setCertificates(certificates);
+            }
             StudentEntity stdSave = STU_REP.save(student);
-            CertificateEntity certSave = CERT_REP.save(certificate);
+
 
 
             return AdminStudentUpdRes.builder()
@@ -186,7 +187,11 @@ public class AdminStudentService {
                     .email(stdSave.getId())
                     .address(stdSave.getAddress() + stdSave.getAddressDetail())
                     .education(stdSave.getEducation())
-                    .certificate(certSave.getCertificate())
+                    .certificate(certificates.stream().map(item ->
+                            AdminStudentCertificateRes.builder()
+                                    .icertificate(item.getIcertificate())
+                                    .certificate(item.getCertificate())
+                                    .build()).toList())
                     .build();
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");

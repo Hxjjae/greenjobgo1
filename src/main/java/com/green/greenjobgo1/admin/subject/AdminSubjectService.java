@@ -44,6 +44,8 @@ public class AdminSubjectService {
                 courseSubjectEntity.setCategorySubjectEntity(categorySubjectEntity);
                 courseSubjectEntity.setStartedAt(dto.getStartedAt());
                 courseSubjectEntity.setEndedAt(dto.getEndedAt());
+                courseSubjectEntity.setRound(dto.getRound());
+                courseSubjectEntity.setClassTime(dto.getClassTime());
 
                 break;
             }
@@ -57,6 +59,8 @@ public class AdminSubjectService {
                 .endedAt(save.getEndedAt())
                 .instructor(save.getInstructor())
                 .lectureRoom(save.getLectureRoom())
+                .round(save.getRound())
+                .classTime(save.getClassTime())
                 .build();
 
     }
@@ -103,6 +107,8 @@ public class AdminSubjectService {
                     entity.setEndedAt(dto.getEndedAt());
                     entity.setInstructor(dto.getInstructor());
                     entity.setLectureRoom(dto.getLectureRoom());
+                    entity.setRound(dto.getRound());
+                    entity.setClassTime(dto.getClassTime());
 
                     break;
                 }

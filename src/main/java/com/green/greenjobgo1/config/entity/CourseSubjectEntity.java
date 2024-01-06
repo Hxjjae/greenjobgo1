@@ -52,11 +52,16 @@ public class CourseSubjectEntity {
     @Column(nullable = false, length = 10)
     private String instructor;
 
-    @Column(nullable = false, length = 10,name = "lecture_room")
+    @Column(nullable = false, length = 10, name = "lecture_room")
     private String lectureRoom;
 
     @Column(nullable = false, length = 10, name = "del_yn")
     @ColumnDefault("0")
     private int delYn;
 
+    @Column(length = 50, name = "class_time")
+    private int classTime;
+
+    @Column(length = 10)
+    private int round;
 }
