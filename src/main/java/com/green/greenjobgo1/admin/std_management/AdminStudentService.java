@@ -4,10 +4,7 @@ import com.green.greenjobgo1.admin.std_management.model.*;
 import com.green.greenjobgo1.admin.subject.model.AdminSubjectUpdRes;
 import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.config.entity.*;
-import com.green.greenjobgo1.repository.CourseSubjectRepository;
-import com.green.greenjobgo1.repository.FileRepository;
-import com.green.greenjobgo1.repository.StudentCourseSubjectRepository;
-import com.green.greenjobgo1.repository.StudentRepository;
+import com.green.greenjobgo1.repository.*;
 import com.green.greenjobgo1.security.config.security.MyUserDetailsServiceImpl;
 import com.green.greenjobgo1.security.config.security.model.MyUserDetails;
 import com.green.greenjobgo1.security.config.security.model.UserEntity;
@@ -31,6 +28,7 @@ public class AdminStudentService {
     private final StudentRepository STU_REP;
     private final CourseSubjectRepository COS_REP;
     private final FileRepository FILE_REP;
+    private final CertificateRepository CERT_REP;
     private final StudentCourseSubjectRepository SCS_REP;
     private final AdminStudentQdsl adminStudentQdsl;
     private final MyUserDetailsServiceImpl userDetailsService;
@@ -41,8 +39,8 @@ public class AdminStudentService {
 
     public ResponseEntity<AdminStudentFindRes> selStudentList(AdminStudentDto dto, Pageable pageable) {
         long maxPage = adminStudentQdsl.stdIdx(dto);
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber()+1, (int) maxPage, pageable);
-        utils.setIdx((int)maxPage);
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber() + 1, (int) maxPage, pageable);
+        utils.setIdx((int) maxPage);
         List<AdminStudentRes> list = adminStudentQdsl.studentVos(dto, pageable);
 
         AdminStudentFindRes build = AdminStudentFindRes.builder()
@@ -88,8 +86,8 @@ public class AdminStudentService {
 
     public ResponseEntity<AdminStorageStudentFindRes> selStorage(AdminStorageStudentDto dto, Pageable pageable) {
         long maxPage = adminStudentQdsl.storageIdx(dto);
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber()+1, (int) maxPage, pageable);
-        utils.setIdx((int)maxPage);
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber() + 1, (int) maxPage, pageable);
+        utils.setIdx((int) maxPage);
 
         List<AdminStorageStudentRes> list = adminStudentQdsl.storageVos(dto, pageable);
 
@@ -97,7 +95,7 @@ public class AdminStudentService {
                 .page(utils)
                 .res(list.stream().map(item -> AdminStorageStudentRes.builder()
                         .istudent(item.getIstudent())
-                        .img(String.format("%s/%s/%s/%s","112.222.157", fileDir,item.getIstudent(),item.getImg()))
+                        .img(String.format("%s/%s/%s/%s", "112.222.157", fileDir, item.getIstudent(), item.getImg()))
                         .studentName(item.getStudentName())
                         .subjectName(item.getSubjectName())
                         .build()).toList())
@@ -107,8 +105,8 @@ public class AdminStudentService {
 
     public ResponseEntity<AdminPortfolioFindRes> selPortfolio(AdminPortfolioDto dto, Pageable pageable) {
         long portfolioIdx = adminStudentQdsl.portfolioIdx(dto);
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber()+1, (int) portfolioIdx, pageable);
-        utils.setIdx((int)portfolioIdx);
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber() + 1, (int) portfolioIdx, pageable);
+        utils.setIdx((int) portfolioIdx);
 
         List<AdminPortfolioRes> list = adminStudentQdsl.portfolioVos(dto, pageable);
 
@@ -124,34 +122,6 @@ public class AdminStudentService {
         return ResponseEntity.ok(build);
     }
 
-//    public AdminStorageStudentDetailRes detailStorage(AdminStorageStudentDetailDto dto) {
-//        StudentEntity stdEntity = new StudentEntity();
-//        stdEntity.setIstudent(dto.getIstudent());
-//        Optional<StudentCourseSubjectEntity> scsId = SCS_REP.findByStudentEntity(stdEntity);
-//        Optional<StudentEntity> stuId = STU_REP.findById(scsId.get().getStudentEntity().getIstudent());
-//        Optional<CourseSubjectEntity> cosId = COS_REP.findById(scsId.get().getCourseSubjectEntity().getIcourseSubject());
-//        List<FileEntity> fileRepAll = FILE_REP.findAll();
-//
-//        if (stuId.isPresent() && scsId.isPresent()) {
-//            return AdminStorageStudentDetailRes.builder()
-//                    .icourseSubject(cosId.get().getIcourseSubject())
-//                    .startedAt(cosId.get().getStartedAt())
-//                    .endedAt(cosId.get().getEndedAt())
-//                    .birthday(stuId.get().getBirthday())
-//                    .name(stuId.get().getName())
-//                    .gender(stuId.get().getGender())
-//                    .address(stuId.get().getAddress())
-//                    .education(stuId.get().getEducation())
-//                    .mobileNumber(stuId.get().getMobileNumber())
-//                    .file(fileRepAll.stream().map(item -> AdminStudentFile.builder()
-//                            .file(item.getFileCategoryEntity().getFile())
-//                            .build()).toList())
-//                    .build();
-//        } else {
-//            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
-//        }
-//    }
-
     public AdminStorageStudentPatchRes patchStorage(AdminStorageStudentPatchDto dto) {
         Optional<StudentEntity> byId = STU_REP.findById(dto.getIstudent());
 
@@ -166,52 +136,57 @@ public class AdminStudentService {
     }
 
     public AdminStudentRoleRes patchRole(AdminStudentRoleDto dto) {
-        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
-
-        if (stdId.isPresent()) {
-            stdId.get().setStartedAt(dto.getStartedAt());
-            stdId.get().setEndedAt(dto.getEndedAt());
-
-            Integer editableYn = dto.getEditableYn();
-
-            if (editableYn != null) {
-                stdId.get().setEditableYn(editableYn);
-            }
-
-            StudentEntity save = STU_REP.save(stdId.get());
-
-            return AdminStudentRoleRes.builder()
-                    .startedAt(save.getStartedAt())
-                    .endedAt(save.getEndedAt())
-                    .istudent(save.getIstudent())
-                    .editableYn(save.getEditableYn())
-                    .build();
-        } else {
-            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
+        List<StudentEntity> all = STU_REP.findAll();
+        StudentEntity stdEntity = new StudentEntity();
+        StudentEntity tempEntity = new StudentEntity();
+        for (StudentEntity entity : all) {
+            stdEntity = entity;
+            tempEntity = stdEntity;
         }
+        for (int i = 0; i < all.size(); i++) {
+            tempEntity.setStartedAt(dto.getStartedAt());
+            tempEntity.setEndedAt(dto.getEndedAt());
+            tempEntity.setEditableYn(dto.getEditableYn());
+        }
+        StudentEntity save = STU_REP.save(tempEntity);
+
+
+        return AdminStudentRoleRes.builder()
+                .editableYn(save.getEditableYn())
+                .startedAt(save.getStartedAt())
+                .endedAt(save.getEndedAt())
+                .build();
+
     }
 
-    public AdminStudentUpdRes updStudent(AdminStudentUpdDto dto) {
+    public AdminStudentUpdRes updStudent(AdminStudentUpdDto dto, CertificateEntity certificateEntity) {
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+        Optional<CertificateEntity> certId = CERT_REP.findById(certificateEntity.getIcertificate());
 
         if (stdId.isPresent()) {
-            StudentEntity entity = new StudentEntity();
-            entity.setIstudent(stdId.get().getIstudent());
-            entity.setName(dto.getStudentName());
-            entity.setId(dto.getEmail());
-            entity.setAddress(dto.getAddress());
-            entity.setEducation(dto.getEducation());
-            entity.setCertificates(dto.getCertificate());
+            StudentEntity student = new StudentEntity();
+            CertificateEntity certificate = new CertificateEntity();
+            student.setIstudent(stdId.get().getIstudent());
+            student.setName(dto.getStudentName());
+            student.setId(dto.getEmail());
+            student.setAddress(dto.getAddress());
+            student.setEducation(dto.getEducation());
+            student.setCertificates(certificateEntity);
+            if (certId.isPresent()) {
+                certificate.setCertificate(certificateEntity.getCertificate());
+            }
 
-            StudentEntity save = STU_REP.save(entity);
+            StudentEntity stdSave = STU_REP.save(student);
+            CertificateEntity certSave = CERT_REP.save(certificate);
+
 
             return AdminStudentUpdRes.builder()
-                    .istudent(save.getIstudent())
-                    .studentName(save.getName())
-                    .email(save.getId())
-                    .address(save.getAddress() + save.getAddressDetail())
-                    .education(save.getEducation())
-                    .certificate(save.getCertificates())
+                    .istudent(stdSave.getIstudent())
+                    .studentName(stdSave.getName())
+                    .email(stdSave.getId())
+                    .address(stdSave.getAddress() + stdSave.getAddressDetail())
+                    .education(stdSave.getEducation())
+                    .certificate(certSave.getCertificate())
                     .build();
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");

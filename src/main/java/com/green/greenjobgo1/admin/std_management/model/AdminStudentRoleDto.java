@@ -10,9 +10,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminStudentRoleDto {
-    private Long istudent;
     private LocalDate startedAt;
     private LocalDate endedAt;
-    private String email;
     private Integer editableYn;
+    private Long icourseSubject;
 }

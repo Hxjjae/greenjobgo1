@@ -19,5 +19,5 @@ public class AdminStudentUpdRes {
     private String address;
     private String email;
     private String education;
-    private CertificateEntity certificate;
+    private String certificate;
 }

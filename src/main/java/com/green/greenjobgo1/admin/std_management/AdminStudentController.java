@@ -103,14 +103,6 @@ public class AdminStudentController {
     }
 
 
-//    @GetMapping("/storage-detail")
-//    @Operation(summary = "보관함 학생 상세조회")
-//    public AdminStorageStudentDetailRes detailStorage(@RequestParam Long istudent) {
-//        AdminStorageStudentDetailDto dto = new AdminStorageStudentDetailDto();
-//        dto.setIstudent(istudent);
-//        return SERVICE.detailStorage(dto);
-//    }
-
     @PatchMapping("/storage")
     @Operation(summary = "보관 여부 결정")
     public AdminStorageStudentPatchRes patchStorage(@RequestParam Long istudent) {
@@ -122,12 +114,12 @@ public class AdminStudentController {
 
     @PatchMapping("/editable-yn")
     @Operation(summary = "학생 권한 수정")
-    public AdminStudentRoleRes patchRole(@RequestParam Long istudent,
+    public AdminStudentRoleRes patchRole(@RequestParam Long icourseSubject,
                                          @RequestParam LocalDate startedAt,
                                          @RequestParam LocalDate endedAt,
                                          @RequestParam Integer editableYn) {
         AdminStudentRoleDto dto = new AdminStudentRoleDto();
-        dto.setIstudent(istudent);
+        dto.setIcourseSubject(icourseSubject);
         dto.setStartedAt(startedAt);
         dto.setEndedAt(endedAt);
         dto.setEditableYn(editableYn);
@@ -141,15 +133,18 @@ public class AdminStudentController {
                                          @RequestParam String address,
                                          @RequestParam String email,
                                          @RequestParam String education,
-                                         @RequestBody CertificateEntity certificate) {
+                                         @RequestParam Long icertificate,
+                                         @RequestParam String certificate) {
         AdminStudentUpdDto dto = new AdminStudentUpdDto();
+        CertificateEntity entity = new CertificateEntity();
         dto.setIstudent(istudent);
         dto.setStudentName(studentName);
         dto.setAddress(address);
         dto.setEmail(email);
         dto.setEducation(education);
-        dto.setCertificate(certificate);
+        entity.setIcertificate(icertificate);
+        entity.setCertificate(certificate);
 
-        return SERVICE.updStudent(dto);
+        return SERVICE.updStudent(dto, entity);
     }
 }
