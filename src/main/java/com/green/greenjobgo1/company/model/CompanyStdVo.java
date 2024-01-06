@@ -7,9 +7,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompanyStdVo {
+    private String file;
     private Long  istudent;
     private String name;
     private String subjectName;
-    private String file;
+    private String classification;
 
 }
