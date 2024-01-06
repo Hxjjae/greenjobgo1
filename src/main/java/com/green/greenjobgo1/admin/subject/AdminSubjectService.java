@@ -125,6 +125,8 @@ public class AdminSubjectService {
                 .endedAt(save.getEndedAt())
                 .instructor(save.getInstructor())
                 .lectureRoom(save.getLectureRoom())
+                .round(save.getRound())
+                .classTime(save.getClassTime())
                 .build();
     }
 

@@ -18,5 +18,5 @@ public class AdminSubjectUpdRes {
     private String instructor;
     private String lectureRoom;
     private int round;
-    private String classTime;
+    private int classTime;
 }
