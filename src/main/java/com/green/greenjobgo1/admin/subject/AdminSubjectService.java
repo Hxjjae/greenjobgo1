@@ -88,6 +88,8 @@ public class AdminSubjectService {
                         .lectureRoom(item.getLectureRoom())
                         .instructor(item.getInstructor())
                         .subjectCondition(item.getSubjectCondition())
+                        .round(item.getRound())
+                        .classTime(item.getClassTime())
                         .build()).toList())
                 .build();
     }

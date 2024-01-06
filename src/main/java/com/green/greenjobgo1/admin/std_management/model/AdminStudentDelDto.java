@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdminStorageStudentPatchDto {
+public class AdminStudentDelDto {
     private Long istudent;
-    private int storageYn;
+
 }
