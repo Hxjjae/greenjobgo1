@@ -1,6 +1,7 @@
 package com.green.greenjobgo1.company;
 
 import com.green.greenjobgo1.company.model.CompanySignInParam;
+import com.green.greenjobgo1.company.model.CompanyStdRes;
 import com.green.greenjobgo1.company.model.CompanyStdVo;
 import com.green.greenjobgo1.security.CommonRes;
 import com.green.greenjobgo1.security.sign.model.SignInResultDto;
@@ -66,12 +67,11 @@ public class CompanyController {
     }
     @GetMapping("/student")
     @Operation(summary = "수강생을 검색합니다.")
-    public List<CompanyStdVo> getstudent(@RequestParam(required = false)int page,
-                                         @RequestParam(required = false)int size,
-                                         @RequestParam(required = false)Long icategory,
-                                         @RequestParam(required = false)String subjectName,
-                                         @RequestParam(required = false)String studentName
-                                         )
+    public CompanyStdRes getstudent(@RequestParam(required = false)int page,
+                                    @RequestParam(required = false)int size,
+                                    @RequestParam(required = false)Long icategory,
+                                    @RequestParam(required = false)String subjectName,
+                                    @RequestParam(required = false)String studentName)
     {
         return service.getstudent(page,size,icategory,subjectName,studentName);
     }

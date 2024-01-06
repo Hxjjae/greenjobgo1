@@ -74,7 +74,6 @@ public class CompanylistService {
 
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
-
         int totalcount = Math.toIntExact(count);
 
         int maxpage = (int) Math.ceil((double) count / pageable.getPageSize());

@@ -3,6 +3,7 @@ package com.green.greenjobgo1.company;
 
 import com.green.greenjobgo1.common.utils.ResultUtils;
 import com.green.greenjobgo1.company.model.CompanySignInParam;
+import com.green.greenjobgo1.company.model.CompanyStdRes;
 import com.green.greenjobgo1.company.model.CompanyStdVo;
 import com.green.greenjobgo1.config.entity.*;
 import com.green.greenjobgo1.repository.CompanyRepository;
@@ -171,7 +172,7 @@ public class CompanyService {
 
     QFileEntity qfileEntity = QFileEntity.fileEntity;
     QCategorySubjectEntity qCategorySubjectEntity = QCategorySubjectEntity.categorySubjectEntity;
-    public List<CompanyStdVo> getstudent(int page,int size,Long icategory,String subjectName,String studentName){
+    public CompanyStdRes getstudent(int page,int size,Long icategory,String subjectName,String studentName){
         //page 값이 1이상인 경우 -1
         int page2 = (page > 0) ? (page - 1) : 0;
         Pageable pageable = PageRequest.of(page2, size);
@@ -192,14 +193,37 @@ public class CompanyService {
                 .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
                 .innerJoin(qCategorySubjectEntity)
                 .on(qCategorySubjectEntity.iclassification.eq(qCourseSubject.categorySubjectEntity.iclassification))
-                //.where(qfileEntity.fileCategoryEntity.iFileCategory.eq(4L))
+                .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(4L))
                 .where(eqcategory(icategory))
                 .where(eqsubjectName(subjectName))
                 .where(eqstudentName(studentName))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        return StudentEntity;
+        Long count = jpaQueryFactory.select(
+                        qstudent.istudent.count()
+                ).from(qstudent)
+                .innerJoin(qstudentCourseSubject)
+                .on(qstudentCourseSubject.studentEntity.istudent.eq(qstudent.istudent))
+                .innerJoin(qCourseSubject)
+                .on(qCourseSubject.icourseSubject.eq(qstudentCourseSubject.courseSubjectEntity.icourseSubject))
+                .innerJoin(qfileEntity)
+                .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
+                .innerJoin(qCategorySubjectEntity)
+                .on(qCategorySubjectEntity.iclassification.eq(qCourseSubject.categorySubjectEntity.iclassification))
+                .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(4L))
+                .where(eqcategory(icategory))
+                .where(eqsubjectName(subjectName))
+                .where(eqstudentName(studentName)).fetchOne();
+
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int totalcount = Math.toIntExact(count);
+        int maxpage = (int) Math.ceil((double) count / pageable.getPageSize());
+
+        log.info("maxpage:{}",maxpage);
+        return CompanyStdRes.builder().maxpage(maxpage).totalcount(totalcount).list(StudentEntity).build();
+
     }
 
     private BooleanExpression eqcategory(Long icategory) {
