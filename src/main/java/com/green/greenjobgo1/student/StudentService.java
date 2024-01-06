@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ public class StudentService {
                     throw new RuntimeException("이력서를 저장할 디렉토리를 생성할 수 없습니다.");
                 }
             }
-            File fileTarget = new File(String.format("%s%s", targetDir, savedFileNm));
+            File fileTarget = new File(String.format("%s/%s", targetDir, savedFileNm));
             try {
                 file.transferTo(fileTarget);
             } catch (IOException e) {
@@ -87,7 +88,7 @@ public class StudentService {
                     throw new RuntimeException("포트폴리오를 저장할 디렉토리를 생성할 수 없습니다.");
                 }
             }
-            File fileTarget = new File(String.format("%s%s", targetDir, savedFileNm));
+            File fileTarget = new File(String.format("%s/%s", targetDir, savedFileNm));
             try {
                 file.transferTo(fileTarget);
             } catch (IOException e) {
@@ -105,21 +106,6 @@ public class StudentService {
                 entity.setFile(savedFileNm);
                 FileEntity result = FILE_REP.save(entity);
 
-                String targetDir = String.format("%s/%d", fileDir, entity.getStudentEntity().getIstudent());
-                File fileTargetDir = new File(targetDir);
-                if (!fileTargetDir.exists()) {
-                    if (!fileTargetDir.mkdirs()) {
-                        log.error("Failed to create directory: {}", fileTargetDir.getAbsolutePath());
-                        throw new RuntimeException("포트폴리오 링크를 저장할 디렉토리를 생성할 수 없습니다.");
-                    }
-                }
-                File fileTarget = new File(String.format("%s%s", targetDir, savedFileNm));
-                try {
-                    file.transferTo(fileTarget);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException("포트폴리오 링크를 업로드 할 수 없습니다.");
-                }
                 return StudentInsRes.builder()
                         .file(result.getFile())
                         .ifile(result.getIfile())
@@ -139,7 +125,7 @@ public class StudentService {
                     throw new RuntimeException("대표 이미지를 저장할 디렉토리를 생성할 수 없습니다.");
                 }
             }
-            File fileTarget = new File(String.format("%s%s", targetDir, savedFileNm));
+            File fileTarget = new File(String.format("%s/%s", targetDir, savedFileNm));
             try {
                 file.transferTo(fileTarget);
             } catch (IOException e) {
