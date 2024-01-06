@@ -1,11 +1,16 @@
 package com.green.greenjobgo1.security.config.security;
 
+import com.green.greenjobgo1.admin.AdminRepository;
+import com.green.greenjobgo1.config.entity.AdminEntity;
+import com.green.greenjobgo1.config.entity.CompanyEntity;
+import com.green.greenjobgo1.config.entity.StudentEntity;
+import com.green.greenjobgo1.repository.CompanyRepository;
+import com.green.greenjobgo1.repository.StudentRepository;
 import com.green.greenjobgo1.security.config.RedisService;
 import com.green.greenjobgo1.security.config.security.model.MyUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import java.security.Key;
-import java.security.SignatureException;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 
 @Slf4j
@@ -31,13 +34,19 @@ public class JwtTokenProvider {
     public final long ACCESS_TOKEN_VALID_MS = 20_000_000L; // 1000L * 60 * 3 // 180초
     public final long REFRESH_TOKEN_VALID_MS = 1_296_000_000L; // 1000L * 60 * 60 * 24 * 15 -> 15일
 
+    private final AdminRepository adminRep;
+    private final StudentRepository studentRep;
+    private final CompanyRepository companyRep;
     private final RedisService redisService;
 
     @Autowired
     public JwtTokenProvider(@Value("${springboot.jwt.access-secret}") String accessSecretKey
                             , @Value("${springboot.jwt.refresh-secret}") String refreshSecretKey
                             , @Value("${springboot.jwt.token-type}") String tokenType
-                            , RedisService redisService) {
+                            , AdminRepository adminRep, StudentRepository studentRep, CompanyRepository companyRep, RedisService redisService) {
+        this.adminRep = adminRep;
+        this.studentRep = studentRep;
+        this.companyRep = companyRep;
         byte[] accessKeyBytes = Decoders.BASE64.decode(accessSecretKey);
         this.ACCESS_KEY = Keys.hmacShaKeyFor(accessKeyBytes);
 
@@ -82,19 +91,43 @@ public class JwtTokenProvider {
     }
 
     private UserDetails getUserDetailsFromToken(String token, Key key) {
-        try {
-            Claims claims = getClaims(token, key);
-            String strIuser = claims.getSubject();
-            List<String> roles = (List<String>) claims.get("roles");
-            return MyUserDetails
-                    .builder()
-                    .iuser(Long.valueOf(strIuser))
+        Claims claims = getClaims(token, key);
+        String strIuser = claims.getSubject();
+        Long id = Long.valueOf(strIuser);
+        List<String> roles = (List<String>)claims.get("roles");
+
+        log.info(roles.get(0));
+        if ("ROLE_ADMIN".equals(roles.get(0))) {
+            AdminEntity admin = adminRep.findById(id).get();
+            return MyUserDetails.builder()
+                    .iuser(admin.getIadmin())
+                    .uid(admin.getId())
+                    .upw(admin.getPw())
+                    .name(admin.getId())
                     .roles(roles)
                     .build();
-        } catch (Exception e) {
-            e.printStackTrace();
+        }else if (("ROLE_USER".equals(roles.get(0)))){
+            StudentEntity student = studentRep.findById(id).get();
+            return MyUserDetails.builder()
+                    .iuser(student.getIstudent())
+                    .uid(student.getId())
+                    .upw(student.getPw())
+                    .name(student.getName())
+                    .roles(roles)
+                    .build();
         }
-        return null;
+
+
+            CompanyEntity company = companyRep.findById(id).get();
+            return MyUserDetails.builder()
+                    .iuser(company.getIcompany())
+                    .uid(company.getId())
+                    .upw(company.getPassword())
+                    .name(company.getId())
+                    .roles(roles)
+                    .build();
+
+
     }
 
     public String resolveToken(HttpServletRequest req, String type) {
@@ -111,7 +144,7 @@ public class JwtTokenProvider {
         return headerAuth != null && headerAuth.startsWith(String.format("%s ", type)) ? headerAuth.substring(type.length()).trim() : null;
     }
 
-    public Claims getClaims(String token, Key key) throws Exception {
+    public Claims getClaims(String token, Key key) {
         return Jwts
                 .parserBuilder()
                 .setSigningKey(key)
