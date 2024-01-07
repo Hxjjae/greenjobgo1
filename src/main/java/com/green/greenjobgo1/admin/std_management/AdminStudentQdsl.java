@@ -54,7 +54,7 @@ public class AdminStudentQdsl {
     public List<AdminPortfolioRes> portfolioVos(AdminPortfolioDto dto, Pageable pageable) {
         JPAQuery<AdminPortfolioRes> query = jpaQueryFactory.select(
                         Projections.bean(AdminPortfolioRes.class, stu.name.as("studentName")
-                                , cos.subjectName, file.file.as("img"), stu.istudent))
+                                , cos.subjectName, file.file.as("img"), stu.istudent, stu.storageYn))
                 .from(stu)
                 .join(stu.scsList, scs)
                 .join(scs.courseSubjectEntity, cos)
@@ -72,8 +72,8 @@ public class AdminStudentQdsl {
 
     public List<AdminStorageStudentRes> storageVos(AdminStorageStudentDto dto, Pageable pageable) {
         JPAQuery<AdminStorageStudentRes> query = jpaQueryFactory.select(
-                        Projections.bean(AdminStorageStudentRes.class, stu.name.as("studentName")
-                                , cos.subjectName, file.file.as("img"), stu.introducedLine))
+                        Projections.bean(AdminStorageStudentRes.class, stu.istudent ,stu.name.as("studentName")
+                                , cos.subjectName, file.file.as("img"), stu.introducedLine, stu.storageYn))
                 .from(stu)
                 .join(stu.scsList, scs)
                 .join(scs.courseSubjectEntity, cos)

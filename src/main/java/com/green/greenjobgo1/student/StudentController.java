@@ -28,7 +28,7 @@ public class StudentController {
         return SERVICE.selStudent(dto);
     }
 
-    @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "수강생 파일 및 링크 업로드")
     public StudentInsRes postResume(@RequestPart(required = false) MultipartFile file,
                                     @RequestParam Long istudent,

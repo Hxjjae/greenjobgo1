@@ -16,5 +16,6 @@ public class AdminStorageStudentRes {
     private Long istudent;
     private String studentName;
     private String subjectName;
+    private int storageYn;
 
 }
