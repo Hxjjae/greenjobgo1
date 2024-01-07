@@ -46,7 +46,8 @@ public class CompanyService {
 
     QStudentCourseSubjectEntity qstudentCourseSubject = QStudentCourseSubjectEntity.studentCourseSubjectEntity;
     QCourseSubjectEntity qCourseSubject  = QCourseSubjectEntity.courseSubjectEntity;
-
+    QFileEntity qfileEntity = QFileEntity.fileEntity;
+    QCategorySubjectEntity qCategorySubjectEntity = QCategorySubjectEntity.categorySubjectEntity;
 
     public SignInResultDto signIn(CompanySignInParam p, String ip) {
         log.info("[getSignInResult] signDataHandler로 회원 정보 요청");
@@ -170,8 +171,7 @@ public class CompanyService {
         redisService.setValuesWithTimeout(accessToken, "logout", expiration);
     }
 
-    QFileEntity qfileEntity = QFileEntity.fileEntity;
-    QCategorySubjectEntity qCategorySubjectEntity = QCategorySubjectEntity.categorySubjectEntity;
+
     public CompanyStdRes getstudent(int page,int size,Long icategory,String subjectName,String studentName){
         //page 값이 1이상인 경우 -1
         int page2 = (page > 0) ? (page - 1) : 0;
@@ -244,5 +244,12 @@ public class CompanyService {
             return null;
         }
         return qstudent.name.like("%"+studentName+"%");
+    }
+
+    public int detailStd(){
+
+
+        
+        return 0;
     }
 }

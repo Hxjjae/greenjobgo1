@@ -1,7 +1,7 @@
-package com.green.greenjobgo1.admin.EmployeeProfile;
+package com.green.greenjobgo1.admin.employeeProfile;
 
-import com.green.greenjobgo1.admin.EmployeeProfile.model.EmployeeProfileDto;
-import com.green.greenjobgo1.admin.EmployeeProfile.model.EmployeeProfileVo;
+import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileDto;
+import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileVo;
 import com.green.greenjobgo1.config.entity.EmployeeProfileEntity;
 import com.green.greenjobgo1.repository.EmployeeProfileRepository;
 import com.green.greenjobgo1.common.utils.MyFileUtils;
@@ -38,7 +38,7 @@ public class EmployeeProfileService {
                 .name(profile.getName())
                 .phoneNumber(profile.getPhoneNumber())
                 .email(profile.getEmail())
-                .profilePic("/home/download/Employee/"+profile.getIemply()+"/"+profile.getProfilePic()).build()).toList();
+                .profilePic("/home/download/employee/"+profile.getIemply()+"/"+profile.getProfilePic()).build()).toList();
     }
 
     public EmployeeProfileEntity insProfile(EmployeeProfileDto dto,MultipartFile pic){
@@ -53,7 +53,7 @@ public class EmployeeProfileService {
         EmployeeProfileRep.save(entity);
 
         String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
-        String centerPath = String.format("%s/Employee/%d", MyFileUtils.getAbsolutePath(fileDir),entity.getIemply());
+        String centerPath = String.format("%s/employee/%d", MyFileUtils.getAbsolutePath(fileDir),entity.getIemply());
 
         File dic = new File(centerPath);
         if(!dic.exists()){
@@ -78,7 +78,7 @@ public class EmployeeProfileService {
         EmployeeProfileEntity save = EmployeeProfileRep.save(entity);
 
         // 파일위치 붙여주기
-        save.setProfilePic("C:/home/download/Employee/"+save.getIemply()+"/"+save.getProfilePic());
+        save.setProfilePic("C:/home/download/employee/"+save.getIemply()+"/"+save.getProfilePic());
 
         return entity;
     }
@@ -94,7 +94,7 @@ public class EmployeeProfileService {
 
         if (pic != null) {
             String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
-            String centerPath = String.format("%s/Employee/%d", MyFileUtils.getAbsolutePath(fileDir), iemply);
+            String centerPath = String.format("%s/employee/%d", MyFileUtils.getAbsolutePath(fileDir), iemply);
 
             File file = new File(centerPath+"/"+entity.getProfilePic());
             log.info("file :{}",file);
@@ -126,7 +126,7 @@ public class EmployeeProfileService {
                 .counselingNumber (entity.getCounselingNumber())
                 .phoneNumber(entity.getPhoneNumber())
                 .email(entity.getEmail())
-                .profilePic("C:/home/download/Employee/"+entity.getIemply()+"/"+entity.getProfilePic()).build();
+                .profilePic("C:/home/download/employee/"+entity.getIemply()+"/"+entity.getProfilePic()).build();
 
     }
 
@@ -136,7 +136,7 @@ public class EmployeeProfileService {
 
         //저장된 파일 삭제
         String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
-        String centerPath = String.format("%s/Employee/%d", MyFileUtils.getAbsolutePath(fileDir), iemply);
+        String centerPath = String.format("%s/employee/%d", MyFileUtils.getAbsolutePath(fileDir), iemply);
         File file = new File(centerPath);
         log.info("file :{}",file);
         file.delete();

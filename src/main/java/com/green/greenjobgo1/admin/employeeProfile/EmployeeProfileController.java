@@ -1,7 +1,7 @@
-package com.green.greenjobgo1.admin.EmployeeProfile;
+package com.green.greenjobgo1.admin.employeeProfile;
 
-import com.green.greenjobgo1.admin.EmployeeProfile.model.EmployeeProfileDto;
-import com.green.greenjobgo1.admin.EmployeeProfile.model.EmployeeProfileVo;
+import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileDto;
+import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileVo;
 import com.green.greenjobgo1.config.entity.EmployeeProfileEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
