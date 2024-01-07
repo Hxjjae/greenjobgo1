@@ -1,12 +1,8 @@
 package com.green.greenjobgo1.admin.std_management;
 
 import com.green.greenjobgo1.admin.std_management.model.*;
-import com.green.greenjobgo1.config.entity.CertificateEntity;
-import com.green.greenjobgo1.config.entity.CourseSubjectEntity;
-import com.green.greenjobgo1.config.entity.StudentEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
@@ -105,10 +101,12 @@ public class AdminStudentController {
 
     @PatchMapping("/storage")
     @Operation(summary = "보관 여부 결정")
-    public AdminStorageStudentPatchRes patchStorage(@RequestParam Long istudent) {
+    public AdminStorageStudentPatchRes patchStorage(@RequestParam Long istudent,
+                                                    @RequestParam int storageYn) {
 
         AdminStorageStudentPatchDto dto = new AdminStorageStudentPatchDto();
         dto.setIstudent(istudent);
+        dto.setStorageYn(storageYn);
         return SERVICE.patchStorage(dto);
     }
 
@@ -126,6 +124,14 @@ public class AdminStudentController {
         return SERVICE.patchRole(dto);
     }
 
+    @DeleteMapping()
+    @Operation(summary = "학생 삭제")
+    public AdminStudentDelRes delStudent(@RequestParam Long istudent) {
+        AdminStudentDelDto dto = new AdminStudentDelDto();
+        dto.setIstudent(istudent);
+        return SERVICE.delStudent(dto);
+    }
+
     @PutMapping()
     @Operation(summary = "학생 정보 수정")
     public AdminStudentUpdRes putStudent(@RequestParam Long istudent,
@@ -134,6 +140,7 @@ public class AdminStudentController {
                                          @RequestParam String email,
                                          @RequestParam String education,
                                          @RequestParam List<String> certificateList) {
+
         AdminStudentUpdDto dto = new AdminStudentUpdDto();
         AdminStudentCertificateDto certiDto = new AdminStudentCertificateDto();
         dto.setIstudent(istudent);

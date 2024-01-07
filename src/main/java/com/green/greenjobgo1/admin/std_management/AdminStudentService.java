@@ -1,20 +1,16 @@
 package com.green.greenjobgo1.admin.std_management;
 
 import com.green.greenjobgo1.admin.std_management.model.*;
-import com.green.greenjobgo1.admin.subject.model.AdminSubjectUpdRes;
 import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.config.entity.*;
 import com.green.greenjobgo1.repository.*;
 import com.green.greenjobgo1.security.config.security.MyUserDetailsServiceImpl;
-import com.green.greenjobgo1.security.config.security.model.MyUserDetails;
-import com.green.greenjobgo1.security.config.security.model.UserEntity;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -126,9 +122,31 @@ public class AdminStudentService {
         Optional<StudentEntity> byId = STU_REP.findById(dto.getIstudent());
 
         if (byId.isPresent()) {
+            if (dto.getStorageYn() == 1) {
+                byId.get().setStorageYn(1);
+            } else {
+                byId.get().setStorageYn(0);
+            }
+            StudentEntity save = STU_REP.save(byId.get());
             return AdminStorageStudentPatchRes.builder()
-                    .istudent(byId.get().getIstudent())
-                    .storageYn(1)
+                    .istudent(save.getIstudent())
+                    .storageYn(save.getStorageYn())
+                    .build();
+        } else {
+            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
+        }
+    }
+
+    public AdminStudentDelRes delStudent(AdminStudentDelDto dto) {
+        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+
+        if (stdId.isPresent()) {
+            stdId.get().setDelYn(1);
+
+            StudentEntity save = STU_REP.save(stdId.get());
+            return AdminStudentDelRes.builder()
+                    .istudent(save.getIstudent())
+                    .delYn(save.getDelYn())
                     .build();
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");

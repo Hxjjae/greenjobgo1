@@ -20,5 +20,6 @@ public class AdminSubjectRes {
     private String lectureRoom;
     private int subjectCondition;
     private int delYn;
-
+    private int round;
+    private int classTime;
 }

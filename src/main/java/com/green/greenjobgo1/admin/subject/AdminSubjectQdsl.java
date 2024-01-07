@@ -35,8 +35,11 @@ public class AdminSubjectQdsl {
     QCategorySubjectEntity cas = QCategorySubjectEntity.categorySubjectEntity;
 
     public List<AdminSubjectRes> subjectVos(AdminSubjectDto dto, AdminCategoryDto categoryDto, Pageable pageable) {
-        JPAQuery<AdminSubjectRes> query = jpaQueryFactory.select(Projections.bean(AdminSubjectRes.class, cos.icourseSubject, cos.subjectName.as("courseSubjectName")
-                , cas.iclassification, cas.classification, cos.instructor, cos.lectureRoom, cos.startedAt, cos.endedAt,cos.subjectCondition, cos.delYn))
+        JPAQuery<AdminSubjectRes> query = jpaQueryFactory.select(Projections.bean(AdminSubjectRes.class
+                        , cos.icourseSubject, cos.subjectName.as("courseSubjectName")
+                , cas.iclassification, cas.classification, cos.instructor, cos.lectureRoom
+                         , cos.startedAt, cos.endedAt,cos.subjectCondition, cos.delYn,
+                            cos.round, cos.classTime))
                 .from(cos)
                 .where(eqDelYn(dto.getDelYn())
                         ,eqIclassification(categoryDto.getIclassification())
