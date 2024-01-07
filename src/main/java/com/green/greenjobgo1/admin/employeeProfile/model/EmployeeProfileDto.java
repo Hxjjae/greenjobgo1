@@ -1,4 +1,4 @@
-package com.green.greenjobgo1.admin.EmployeeProfile.model;
+package com.green.greenjobgo1.admin.employeeProfile.model;
 
 import lombok.Data;
 
