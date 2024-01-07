@@ -1,8 +1,8 @@
 package com.green.greenjobgo1.company;
 
-import com.green.greenjobgo1.company.model.CompanySignInParam;
-import com.green.greenjobgo1.company.model.CompanyStdRes;
-import com.green.greenjobgo1.company.model.CompanyStdVo;
+import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileVo;
+import com.green.greenjobgo1.company.model.*;
+import com.green.greenjobgo1.config.entity.StudentEntity;
 import com.green.greenjobgo1.security.CommonRes;
 import com.green.greenjobgo1.security.sign.model.SignInResultDto;
 import com.green.greenjobgo1.student.sign.model.TokenDto;
@@ -74,5 +74,22 @@ public class CompanyController {
                                     @RequestParam(required = false)String studentName)
     {
         return service.getstudent(page,size,icategory,subjectName,studentName);
+    }
+
+    @GetMapping("/student/{istudent}")
+    @Operation(summary = "수강생을 상세조회.")
+    public CompanystdDetailRes studentdetail(@PathVariable Long istudent){
+         return service.detailStd(istudent);
+    }
+
+    @GetMapping("/employee")
+    @Operation(summary = "직원 프로필 리스트",description = "사진위치: /home/download/employee/pk번호/사진 <br>" +
+            "oneWord: 한마디 <br>"+
+            "name: 직원 이름 <br>"+
+            "counselingNumber : 상담 전화 <br>"+
+            "phone : 휴대폰 번호 <br>"+
+            "email : 이메일 <br>")
+    public ResponseEntity<List<EmployeeProfileVo>> getProfile(){
+        return ResponseEntity.ok(service.getProfile());
     }
 }

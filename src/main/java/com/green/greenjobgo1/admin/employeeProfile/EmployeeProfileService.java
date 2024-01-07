@@ -78,7 +78,7 @@ public class EmployeeProfileService {
         EmployeeProfileEntity save = EmployeeProfileRep.save(entity);
 
         // 파일위치 붙여주기
-        save.setProfilePic("C:/home/download/employee/"+save.getIemply()+"/"+save.getProfilePic());
+        save.setProfilePic("/home/download/employee/"+save.getIemply()+"/"+save.getProfilePic());
 
         return entity;
     }
@@ -126,7 +126,7 @@ public class EmployeeProfileService {
                 .counselingNumber (entity.getCounselingNumber())
                 .phoneNumber(entity.getPhoneNumber())
                 .email(entity.getEmail())
-                .profilePic("C:/home/download/employee/"+entity.getIemply()+"/"+entity.getProfilePic()).build();
+                .profilePic("/home/download/employee/"+entity.getIemply()+"/"+entity.getProfilePic()).build();
 
     }
 

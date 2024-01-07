@@ -23,7 +23,7 @@ public class EmployeeProfileController {
     private final EmployeeProfileService service;
 
     @GetMapping
-    @Operation(summary = "직원 프로필 리스트",description = "사진위치: /home/download/Employee/pk번호/사진 <br>" +
+    @Operation(summary = "직원 프로필 리스트",description = "사진위치: /home/download/employee/pk번호/사진 <br>" +
             "oneWord: 한마디 <br>"+
             "name: 직원 이름 <br>"+
             "counselingNumber : 상담 전화 <br>"+

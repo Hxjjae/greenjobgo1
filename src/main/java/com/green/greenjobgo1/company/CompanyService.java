@@ -1,12 +1,13 @@
 package com.green.greenjobgo1.company;
 
 
+import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileVo;
+import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.common.utils.ResultUtils;
-import com.green.greenjobgo1.company.model.CompanySignInParam;
-import com.green.greenjobgo1.company.model.CompanyStdRes;
-import com.green.greenjobgo1.company.model.CompanyStdVo;
+import com.green.greenjobgo1.company.model.*;
 import com.green.greenjobgo1.config.entity.*;
 import com.green.greenjobgo1.repository.CompanyRepository;
+import com.green.greenjobgo1.repository.EmployeeProfileRepository;
 import com.green.greenjobgo1.repository.StudentRepository;
 import com.green.greenjobgo1.security.config.RedisService;
 import com.green.greenjobgo1.security.config.security.AuthenticationFacade;
@@ -25,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -41,6 +43,7 @@ public class CompanyService {
     private final CompanyRepository companyRep;
     private final StudentRepository StudentRep;
     private final JPAQueryFactory jpaQueryFactory;
+    private final EmployeeProfileRepository EmployeeProfileRep;
 
     QStudentEntity qstudent = QStudentEntity.studentEntity;
 
@@ -59,6 +62,10 @@ public class CompanyService {
         }
         if(!PW_ENCODER.matches(p.getPw(), companyentity.getPassword())) {
             throw new RuntimeException("비밀번호 불일치");
+        }
+        LocalDate currentTime = LocalDate.now();
+        if(currentTime.isBefore(companyentity.getStartedAt()) && !currentTime.isAfter(companyentity.getEndedAt())) {
+            throw new RuntimeException("조회기간 만료");
         }
 
         String redisKey = String.format("c:RT(%s):COMPANY:%s:%s", "Server", companyentity.getIcompany(), ip);
@@ -177,6 +184,8 @@ public class CompanyService {
         int page2 = (page > 0) ? (page - 1) : 0;
         Pageable pageable = PageRequest.of(page2, size);
 
+
+
         List<CompanyStdVo> StudentEntity  = jpaQueryFactory.select(
                 Projections.bean(CompanyStdVo.class,
                         qstudent.istudent,
@@ -221,8 +230,12 @@ public class CompanyService {
         int totalcount = Math.toIntExact(count);
         int maxpage = (int) Math.ceil((double) count / pageable.getPageSize());
 
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int) maxpage, pageable);
+        utils.setIdx((int) maxpage);
+
         log.info("maxpage:{}",maxpage);
-        return CompanyStdRes.builder().maxpage(maxpage).totalcount(totalcount).list(StudentEntity).build();
+
+        return CompanyStdRes.builder().page(utils).maxpage(maxpage).totalcount(totalcount).list(StudentEntity).build();
 
     }
 
@@ -246,10 +259,53 @@ public class CompanyService {
         return qstudent.name.like("%"+studentName+"%");
     }
 
-    public int detailStd(){
+    public CompanystdDetailRes detailStd(Long istudent){
+        CompanyStdDetailVo Vo = jpaQueryFactory.select(Projections.bean(CompanyStdDetailVo.class,
+                        qfileEntity.file,
+                        qstudent.istudent,
+                        qstudent.name,
+                        qstudent.birthday,
+                        qCourseSubject.subjectName,
+                        qstudent.id,
+                        qCourseSubject.startedAt,
+                        qCourseSubject.endedAt,
+                        qstudent.education,
+                        qCategorySubjectEntity.classification
+                )).from(qstudent)
+                .innerJoin(qstudentCourseSubject)
+                .on(qstudentCourseSubject.studentEntity.istudent.eq(qstudent.istudent))
+                .innerJoin(qCourseSubject)
+                .on(qCourseSubject.icourseSubject.eq(qstudentCourseSubject.courseSubjectEntity.icourseSubject))
+                .innerJoin(qfileEntity)
+                .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
+                .innerJoin(qCategorySubjectEntity)
+                .on(qCategorySubjectEntity.iclassification.eq(qCourseSubject.categorySubjectEntity.iclassification))
+                .where(qstudent.istudent.eq(istudent))
+                .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(4L))
+                .fetchOne();
 
-
-        
-        return 0;
+        List<CompanyStdfileVo> file = jpaQueryFactory.select(Projections.constructor(CompanyStdfileVo.class,
+                        qfileEntity.file
+                )).from(qstudent)
+                .innerJoin(qfileEntity)
+                .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
+                .where(qstudent.istudent.eq(istudent))
+                .where(qfileEntity.fileCategoryEntity.iFileCategory.ne(4L))
+                .fetch();
+        return CompanystdDetailRes.builder().vo(Vo).file(file).build();
     }
+
+    public List<EmployeeProfileVo> getProfile(){
+        List<EmployeeProfileEntity> entityList = EmployeeProfileRep.findByDelYn(0);
+
+        return entityList.stream().map(profile -> EmployeeProfileVo.builder()
+                .oneWord(profile.getOneWord())
+                .iemply(profile.getIemply())
+                .counselingNumber (profile.getCounselingNumber())
+                .name(profile.getName())
+                .phoneNumber(profile.getPhoneNumber())
+                .email(profile.getEmail())
+                .profilePic("/home/download/employee/"+profile.getIemply()+"/"+profile.getProfilePic()).build()).toList();
+    }
+
 }
