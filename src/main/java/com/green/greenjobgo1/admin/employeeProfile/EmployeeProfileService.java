@@ -38,7 +38,7 @@ public class EmployeeProfileService {
                 .name(profile.getName())
                 .phoneNumber(profile.getPhoneNumber())
                 .email(profile.getEmail())
-                .profilePic("/home/download/employee/"+profile.getIemply()+"/"+profile.getProfilePic()).build()).toList();
+                .profilePic("/img/employee/"+profile.getIemply()+"/"+profile.getProfilePic()).build()).toList();
     }
 
     public EmployeeProfileEntity insProfile(EmployeeProfileDto dto,MultipartFile pic){
@@ -78,7 +78,7 @@ public class EmployeeProfileService {
         EmployeeProfileEntity save = EmployeeProfileRep.save(entity);
 
         // 파일위치 붙여주기
-        save.setProfilePic("/home/download/employee/"+save.getIemply()+"/"+save.getProfilePic());
+        save.setProfilePic("/img/employee/"+save.getIemply()+"/"+save.getProfilePic());
 
         return entity;
     }
@@ -126,7 +126,7 @@ public class EmployeeProfileService {
                 .counselingNumber (entity.getCounselingNumber())
                 .phoneNumber(entity.getPhoneNumber())
                 .email(entity.getEmail())
-                .profilePic("/home/download/employee/"+entity.getIemply()+"/"+entity.getProfilePic()).build();
+                .profilePic("/img/employee/"+entity.getIemply()+"/"+entity.getProfilePic()).build();
 
     }
 
