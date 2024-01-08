@@ -94,6 +94,8 @@ public class AdminStudentService {
                         .img(String.format("%s/%s", item.getIstudent(), item.getImg()))
                         .studentName(item.getStudentName())
                         .subjectName(item.getSubjectName())
+                        .companyMainYn(item.getCompanyMainYn())
+                        .storageYn(item.getStorageYn())
                         .build()).toList())
                 .build();
         return ResponseEntity.ok(build);

@@ -17,5 +17,6 @@ public class AdminStorageStudentRes {
     private String studentName;
     private String subjectName;
     private int storageYn;
+    private int companyMainYn;
 
 }

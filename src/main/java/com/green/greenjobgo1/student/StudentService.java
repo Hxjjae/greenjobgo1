@@ -54,7 +54,7 @@ public class StudentService {
             entity.setFile(savedFileNm);
             FileEntity result = FILE_REP.save(entity);
 
-            String targetDir = String.format("%s/%d", fileDir, entity.getStudentEntity().getIstudent());
+            String targetDir = String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent());
             File fileTargetDir = new File(targetDir);
             if (!fileTargetDir.exists()) {
                 if (!fileTargetDir.mkdirs()) {
@@ -80,7 +80,7 @@ public class StudentService {
             entity.setFile(savedFileNm);
             FileEntity result = FILE_REP.save(entity);
 
-            String targetDir = String.format("%s/%d", fileDir, entity.getStudentEntity().getIstudent());
+            String targetDir = String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent());
             File fileTargetDir = new File(targetDir);
             if (!fileTargetDir.exists()) {
                 if (!fileTargetDir.mkdirs()) {
@@ -117,7 +117,7 @@ public class StudentService {
             entity.setFile(savedFileNm);
             FileEntity result = FILE_REP.save(entity);
 
-            String targetDir = String.format("%s/%d", fileDir, entity.getStudentEntity().getIstudent());
+            String targetDir = String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent());
             File fileTargetDir = new File(targetDir);
             if (!fileTargetDir.exists()) {
                 if (!fileTargetDir.mkdirs()) {

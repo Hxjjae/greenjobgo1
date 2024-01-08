@@ -11,6 +11,7 @@ public class AdminStorageStudentDto {
     private Long iclassfication;
     private String subjectName;
     private String studentName;
+    private int storageYn;
     private int page;
     private int staIdx;
     private int size;

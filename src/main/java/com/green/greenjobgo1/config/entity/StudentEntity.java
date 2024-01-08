@@ -103,4 +103,6 @@ public class StudentEntity {
     @Column(length = 50, name = "introduced_line")
     private String introducedLine;
 
+    @Column(length = 10)
+    private int companyMainYn;
 }

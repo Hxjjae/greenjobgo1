@@ -83,10 +83,10 @@ public class AdminStudentQdsl {
                         eqSubjectName(dto.getSubjectName()),
                         eqStudentName(dto.getStudentName()),
                         file.fileCategoryEntity.iFileCategory.eq(4L),
-                        stu.storageYn.eq(1))
+                        eqStorageYn(dto.getStorageYn()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(stu.storageYn.desc(), stu.istudent.asc());
+                .orderBy(stu.storageYn.desc(), stu.istudent.asc(), stu.companyMainYn.desc());
         return query.fetch();
     }
 
@@ -151,5 +151,10 @@ public class AdminStudentQdsl {
 
     private BooleanExpression eqStudentName(String studentName) {
         return studentName != null ? stu.name.contains(studentName) : null;
+    }
+
+    private BooleanExpression eqStorageYn(Integer storageYn) {
+        return storageYn != null ? stu.storageYn.eq(storageYn) : null;
+
     }
 }
