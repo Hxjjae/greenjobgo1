@@ -1,5 +1,9 @@
 package com.green.greenjobgo1.student.sign;
 
+import com.green.greenjobgo1.company.CompanyService;
+import com.green.greenjobgo1.company.model.CompanySignInParam;
+import com.green.greenjobgo1.config.entity.CompanyEntity;
+import com.green.greenjobgo1.repository.CompanyRepository;
 import com.green.greenjobgo1.security.config.security.AuthenticationFacade;
 import com.green.greenjobgo1.security.config.security.model.MyUserDetails;
 import com.green.greenjobgo1.student.sign.model.SignInParam;
@@ -29,12 +33,24 @@ public class StudentSignService {
     private final PasswordEncoder PW_ENCODER;
     private final JwtTokenProvider JWT_PROVIDER;
     private final StudentRepository studentRepository;
+    private final CompanyRepository companyRep;
     private final AuthenticationFacade facade;
     private final RedisService redisService;
     private final JPAQueryFactory jpaQueryFactory;
+    private final CompanyService companyService;
     public SignInResultDto signIn(SignInParam p, String ip) {
         log.info("[getSignInResult] signDataHandler로 회원 정보 요청");
         StudentEntity user = studentRepository.findById(p.getEmail());
+        CompanyEntity company = companyRep.findById(p.getEmail());
+
+        if (company != null){
+            CompanySignInParam param = new CompanySignInParam();
+            param.setId(p.getEmail());
+            param.setPw(p.getPw());
+            SignInResultDto signInResultDto = companyService.signIn(param, ip);
+
+            return signInResultDto;
+        }
 
         if (user == null) {
             throw new RuntimeException("존재하지 않는 이메일");

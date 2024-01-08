@@ -82,6 +82,11 @@ public class CompanyController {
          return service.detailStd(istudent);
     }
 
+
+    @GetMapping("/mainstudent")
+    public List<CompanyMainVo> list(){
+        return null;
+    }
     @GetMapping("/employee")
     @Operation(summary = "직원 프로필 리스트",description = "사진위치: /home/download/employee/pk번호/사진 <br>" +
             "oneWord: 한마디 <br>"+
