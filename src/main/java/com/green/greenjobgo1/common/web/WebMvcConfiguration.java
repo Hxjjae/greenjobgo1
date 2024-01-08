@@ -28,7 +28,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         if (FILE_DIR.startsWith("../")) FILE_DIR = FILE_DIR.replace("../", "");
         log.info("uploadPath {}", uploadPath);
 
-        reg.addResourceHandler( "/imgs/**")
+        reg.addResourceHandler( "/img/**")
                 .addResourceLocations(String.format("file:%s/", FILE_DIR));
 
         reg.addResourceHandler( "/**")
