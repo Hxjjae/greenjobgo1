@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,9 +32,9 @@ public class StudentController {
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "수강생 파일 및 링크 업로드")
     public StudentInsRes postResume(@RequestPart(required = false) MultipartFile file,
-                                    @RequestParam Long istudent,
-                                    @RequestParam Long iFileCategory,
-                                    @RequestParam(required = false) String fileLink) {
+                                                   @RequestParam Long istudent,
+                                                   @RequestParam Long iFileCategory,
+                                                   @RequestParam(required = false) String fileLink) {
         StudentInsDto dto = new StudentInsDto();
         dto.setIstudent(istudent);
         dto.setIFileCategory(iFileCategory);

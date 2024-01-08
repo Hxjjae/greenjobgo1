@@ -17,5 +17,10 @@ public class StudentInsRes {
     private String file;
     private LocalDate createdAt;
 
-
+    public StudentInsRes(StudentInsRes res) {
+        this.ifile = res.getIfile();
+        this.istudent = res.getIstudent();
+        this.file = res.getFile();
+        this.createdAt = res.createdAt;
+    }
 }

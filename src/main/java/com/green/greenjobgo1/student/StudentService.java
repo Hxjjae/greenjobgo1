@@ -102,8 +102,6 @@ public class StudentService {
                             .build();
                 }
             }
-        }
-        for (FileEntity fileEntity : fileAll) {
             if (fileCateId.get().getIFileCategory() == 2) {
                 if (fileEntity.getFile().length() > 5) {
                     String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
@@ -147,8 +145,6 @@ public class StudentService {
                             .build();
                 }
             }
-        }
-        for (FileEntity fileEntity : fileAll) {
             if (fileCateId.get().getIFileCategory() == 3 && dto.getFileLink() != null) {
                 if (fileEntity.getFile().length() > 5) {
                     try {
@@ -189,8 +185,6 @@ public class StudentService {
 
                 }
             }
-        }
-        for (FileEntity fileEntity : fileAll) {
             if (fileCateId.get().getIFileCategory() == 4) {
                 if (fileCateId.isEmpty()) {
                     String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
@@ -210,7 +204,7 @@ public class StudentService {
                             .createdAt(result.getCreatedAt())
                             .istudent(result.getStudentEntity().getIstudent())
                             .build();
-                } else {
+                } else if (fileCateId.get().getFile().length() > 1) {
                     FILE_REP.deleteById(fileEntity.getIfile());
 
                     String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
@@ -256,3 +250,4 @@ public class StudentService {
         }
     }
 }
+
