@@ -110,12 +110,22 @@ public class AdminStudentController {
         return SERVICE.patchStorage(dto);
     }
 
+    @PatchMapping("/main")
+    @Operation(summary = "메인 여부 결정")
+    public AdminMainPortfolioPatchRes patchMain(@RequestParam Long istudent,
+                                                @RequestParam int companyMainYn) {
+        AdminMainPortfolioPatchDto dto = new AdminMainPortfolioPatchDto();
+        dto.setIstudent(istudent);
+        dto.setCompanyMainYn(companyMainYn);
+        return SERVICE.patchMain(dto);
+    }
     @PatchMapping("/editable-yn")
     @Operation(summary = "학생 권한 수정")
     public AdminStudentRoleRes patchRole(@RequestParam Long icourseSubject,
                                          @RequestParam LocalDate startedAt,
                                          @RequestParam LocalDate endedAt,
                                          @RequestParam Integer editableYn) {
+
         AdminStudentRoleDto dto = new AdminStudentRoleDto();
         dto.setIcourseSubject(icourseSubject);
         dto.setStartedAt(startedAt);

@@ -36,7 +36,7 @@ public class AdminSubjectService {
         List<CategorySubjectEntity> categorySubjectEntities = AC_REP.findAll();
         CourseSubjectEntity courseSubjectEntity = new CourseSubjectEntity();
         for (CategorySubjectEntity categorySubjectEntity : categorySubjectEntities) {
-            if (categorySubjectEntity.getClassification().equals(dto.getClassification())) {
+            if (categorySubjectEntity.getIclassification().equals(dto.getIclassification())) {
 
                 courseSubjectEntity.setInstructor(dto.getInstructor());
                 courseSubjectEntity.setLectureRoom(dto.getLectureRoom());
@@ -54,7 +54,7 @@ public class AdminSubjectService {
         return AdminSubjectInsRes.builder()
                 .icourseSubject(save.getIcourseSubject())
                 .courseSubjectName(save.getSubjectName())
-                .classification(save.getCategorySubjectEntity().getClassification())
+                .iclassification(save.getCategorySubjectEntity().getIclassification())
                 .startedAt(save.getStartedAt())
                 .endedAt(save.getEndedAt())
                 .instructor(save.getInstructor())

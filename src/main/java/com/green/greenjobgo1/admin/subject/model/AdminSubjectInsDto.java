@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Data
 public class AdminSubjectInsDto {
     private String courseSubjectName;
-    private String classification;
+    private Long iclassification;
     private LocalDate startedAt;
     private LocalDate endedAt;
     private String instructor;

@@ -91,7 +91,7 @@ public class AdminStudentService {
                 .page(utils)
                 .res(list.stream().map(item -> AdminStorageStudentRes.builder()
                         .istudent(item.getIstudent())
-                        .img(String.format("%s/%s", item.getIstudent(), item.getImg()))
+                        .img(String.format("/img/student/%s/%s", item.getIstudent(), item.getImg()))
                         .studentName(item.getStudentName())
                         .subjectName(item.getSubjectName())
                         .companyMainYn(item.getCompanyMainYn())
@@ -114,7 +114,7 @@ public class AdminStudentService {
                         .istudent(item.getIstudent())
                         .studentName(item.getStudentName())
                         .subjectName(item.getSubjectName())
-                        .img(String.format("%s/%s", item.getIstudent(), item.getImg()))
+                        .img(String.format("/img/student/%s/%s", item.getIstudent(), item.getImg()))
                         .storageYn(item.getStorageYn())
                         .build()).toList())
                 .build();
@@ -134,6 +134,24 @@ public class AdminStudentService {
             return AdminStorageStudentPatchRes.builder()
                     .istudent(save.getIstudent())
                     .storageYn(save.getStorageYn())
+                    .build();
+        } else {
+            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
+        }
+    }
+    public AdminMainPortfolioPatchRes patchMain(AdminMainPortfolioPatchDto dto) {
+        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+
+        if (stdId.isPresent()) {
+            if (dto.getCompanyMainYn() == 1) {
+                stdId.get().setCompanyMainYn(1);
+            } else {
+                stdId.get().setCompanyMainYn(0);
+            }
+            StudentEntity save = STU_REP.save(stdId.get());
+            return AdminMainPortfolioPatchRes.builder()
+                    .companyMainYn(save.getCompanyMainYn())
+                    .istudent(save.getIstudent())
                     .build();
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
@@ -219,4 +237,6 @@ public class AdminStudentService {
         }
 
     }
+
+
 }
