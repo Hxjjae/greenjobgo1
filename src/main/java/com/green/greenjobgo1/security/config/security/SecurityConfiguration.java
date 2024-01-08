@@ -38,6 +38,7 @@ public class SecurityConfiguration {
                                             , "/api/company/sign-in", "/api/company/refresh-token"
                                             , "/api/admin-student/**"
                                             ,"/home/download/**"
+                                            , "imgs/**"
                                             ,"/sign-api/sign-in"
                                             , "/sign-api/sign-up"
                                             , "/sign-api/exception"
