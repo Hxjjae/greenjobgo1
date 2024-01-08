@@ -9,5 +9,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FileRepository extends JpaRepository<FileEntity, Long> {
-    Optional<FileEntity> findByStudentEntity(StudentEntity entity);
+    List<FileEntity> findAllByStudentEntity(StudentEntity entity);
 }
