@@ -241,11 +241,11 @@ public class AdminSignService {
 
 
                     Row row = sheet.createRow(rowNum++);
-                    row.createCell(0).setCellValue(subjectEntity.getSubjectName());
-                    row.createCell(1).setCellValue(subjectEntity.getSubjectCondition()); // 과정 회차
+                    row.createCell(0).setCellValue(subjectEntity.getSubjectName()); //과목명
+                    row.createCell(1).setCellValue(subjectEntity.getRound()); // 과정 회차
                     row.createCell(2).setCellValue(subjectEntity.getStartedAt().toString());
                     row.createCell(3).setCellValue(subjectEntity.getEndedAt().toString());
-                    // row.createCell(4).setCellValue(subjectEntity);
+                    row.createCell(4).setCellValue(subjectEntity.getClassTime()); //수강시간
                     row.createCell(5).setCellValue(student.getName());
                     //생년월일 넣기 ex) 19990101-1******
                     row.createCell(6).setCellValue(dateFormatter(student.getBirthday())+"-"+generateGenderCode(student.getBirthday(),student.getGender())+"******");
@@ -255,7 +255,7 @@ public class AdminSignService {
                     row.createCell(10).setCellValue(student.getEmployeeProfile().getName());
                     row.createCell(11).setCellValue(student.getGender());
                     row.createCell(12).setCellValue(student.getAge());
-                    row.createCell(13).setCellValue(student.getEducation());
+                    row.createCell(13).setCellValue(student.getEducation()); // 학력
                 }
                 }
             }
@@ -288,10 +288,10 @@ public class AdminSignService {
         // 1999년 이전 여자: 2, 남자: 1
         // 2000년 이후 여자: 3, 남자: 4
         LocalDate comparisonDate = LocalDate.of(2000, 1, 1);
-        if (birth.isBefore(comparisonDate) || birth.isEqual(comparisonDate)) {
+        if (birth.isBefore(comparisonDate)) {
             genderCode = gender.equals("남") ? 1 : 2;
         } else {
-            genderCode = gender.equals("여")? 3 : 4;
+            genderCode = gender.equals("여")? 4 : 3;
         }
         return genderCode;
     }

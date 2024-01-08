@@ -295,6 +295,22 @@ public class CompanyService {
         return CompanystdDetailRes.builder().vo(Vo).file(file).build();
     }
 
+    public List<CompanyMainVo> mainselstd(){
+        List<CompanyMainVo> list = jpaQueryFactory.select(Projections.constructor(CompanyMainVo.class,
+                        qfileEntity.file,
+                        qstudent.istudent,
+                        qstudent.name,
+                        qCourseSubject.subjectName,
+                        qCourseSubject.icourseSubject))
+                .from(qstudent)
+                .innerJoin(qfileEntity)
+                .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
+                .innerJoin(qCourseSubject)
+                .on(qCourseSubject.icourseSubject.eq(qstudentCourseSubject.courseSubjectEntity.icourseSubject))
+                .fetch();
+        return list;
+    }
+
     public List<EmployeeProfileVo> getProfile(){
         List<EmployeeProfileEntity> entityList = EmployeeProfileRep.findByDelYn(0);
 
