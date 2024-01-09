@@ -8,16 +8,24 @@ import com.green.greenjobgo1.repository.CompanylistRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -176,5 +184,72 @@ public class CompanylistService {
 
         }
         return 1;
+    }
+
+    public void downloadCompanylist(HttpServletResponse response) throws IOException {
+        Workbook wb = new XSSFWorkbook();
+        Sheet sheet = wb.createSheet("기업 리스트 다운로드");
+        //Row row = null;
+        Cell cell = null;
+
+        // Header 넣기
+        int cellNum = 0;
+        Row header = sheet.createRow(1); // 첫번째줄 헤더
+        String[] headerName = new String[]{"지역", "기업명", "홈페이지", "대표명", "담당자", "연락처", "체결일자"};
+
+
+        for (int i = 0; i < headerName.length; i++) {
+            header.createCell(i+1).setCellValue(headerName[i]);
+        }
+
+        //헤더 색넣기
+
+        CellStyle paleBlue = wb.createCellStyle();
+        paleBlue.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
+        paleBlue.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+         //각 셀에 스타일 적용
+        IntStream.rangeClosed(0, 7).forEach(col -> {
+            CellStyle style=paleBlue;
+            header.getCell(col, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellStyle(style);
+            style.setBorderTop(BorderStyle.THIN);
+            style.setBorderBottom(BorderStyle.THIN);
+            style.setBorderLeft(BorderStyle.THIN);
+            style.setBorderRight(BorderStyle.THIN);
+        });
+        List<CompanyListEntity> companyList = companylistRep.findAll();
+
+        int rowNum = 2;
+        for (CompanyListEntity company:companyList) {
+            Row row = sheet.createRow(rowNum++);
+
+            row.createCell(1).setCellValue(company.getArea());
+            row.createCell(2).setCellValue(company.getCompanyName());
+            row.createCell(3).setCellValue(company.getHomepage());
+            row.createCell(4).setCellValue(company.getLeaderName());
+            row.createCell(5).setCellValue(company.getManager());
+            row.createCell(6).setCellValue(company.getPhoneNumber());
+
+            LocalDate dateConslusion = company.getDateConslusion();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String formattedDate = dateConslusion.format(formatter);
+            row.createCell(7).setCellValue(formattedDate);
+        }
+
+
+        // Download
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment;filename=company.xlsx");
+//        ServletOutputStream servletOutputStream = response.getOutputStream();
+//        servletOutputStream.flush();
+//        servletOutputStream.close();
+
+        try {
+            wb.write(response.getOutputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            wb.close();
+        }
     }
 }
