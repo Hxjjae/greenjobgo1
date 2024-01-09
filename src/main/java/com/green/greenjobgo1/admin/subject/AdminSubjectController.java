@@ -78,14 +78,14 @@ public class AdminSubjectController {
             "\nclassTime = 수강시간")
 
     public AdminSubjectUpdRes putAdminSubject(@RequestParam Long icourseSubject,
-                                              @RequestParam(required = false) Long iclassification,
-                                              @RequestParam(required = false) String courseSubjectName,
-                                              @RequestParam(required = false) LocalDate startedAt,
-                                              @RequestParam(required = false) LocalDate endedAt,
-                                              @RequestParam(required = false) String instructor,
-                                              @RequestParam(required = false) String lectureRoom,
-                                              @RequestParam(required = false) int round,
-                                              @RequestParam(required = false) int classTime) {
+                                              @RequestParam Long iclassification,
+                                              @RequestParam String courseSubjectName,
+                                              @RequestParam LocalDate startedAt,
+                                              @RequestParam LocalDate endedAt,
+                                              @RequestParam String instructor,
+                                              @RequestParam String lectureRoom,
+                                              @RequestParam Integer round,
+                                              @RequestParam Integer classTime) {
         AdminSubjectUpdDto dto = new AdminSubjectUpdDto();
         dto.setIcourseSubject(icourseSubject);
         dto.setIclassification(iclassification);

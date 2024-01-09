@@ -60,8 +60,8 @@ public class CourseSubjectEntity {
     private int delYn;
 
     @Column(length = 50, name = "class_time")
-    private int classTime;
+    private Integer classTime;
 
     @Column(length = 10)
-    private int round;
+    private Integer round;
 }
