@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,112 +35,496 @@ public class StudentService {
     private String fileDir;
 
 
-    public StudentInsRes insFile(MultipartFile file, StudentInsDto dto) {
+    //    public StudentInsTotalRes insFile(MultipartFile file, StudentInsDto dto) {
+//        Optional<FileCategoryEntity> fileCateId = FILE_CATE_REP.findById(dto.getIFileCategory());
+//        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+//
+//        FileEntity entity = new FileEntity();
+//        entity.setFileCategoryEntity(fileCateId.get());
+//        entity.setCreatedAt(LocalDate.now());
+//        entity.setStudentEntity(stdId.get());
+//
+//        StudentEntity studentEntity = new StudentEntity();
+//        studentEntity.setIntroducedLine(dto.getIntroducedLine());
+//
+//        StudentEntity studentSave = studentEntity;
+//        if (dto.getIntroducedLine() != null) {
+//            studentSave = STU_REP.save(studentEntity);
+//        }
+//
+//        if (fileCateId.get().getIFileCategory() == 1) {
+//            String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
+//            entity.setFile(savedFileNm);
+//            FileEntity result = FILE_REP.save(entity);
+//
+//            String targetDir = String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent());
+//            File fileTargetDir = new File(targetDir);
+//            if (!fileTargetDir.exists()) {
+//                if (!fileTargetDir.mkdirs()) {
+//                    log.error("Failed to create directory: {}", fileTargetDir.getAbsolutePath());
+//                    throw new RuntimeException("이력서를 저장할 디렉토리를 생성할 수 없습니다.");
+//                }
+//            }
+//            File fileTarget = new File(String.format("%s/%s", targetDir, savedFileNm));
+//            try {
+//                file.transferTo(fileTarget);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                throw new RuntimeException("이력서를 업로드 할 수 없습니다.");
+//            }
+//            StudentInsRes res = StudentInsRes.builder()
+//                    .file(result.getFile())
+//                    .ifile(result.getIfile())
+//                    .createdAt(result.getCreatedAt())
+//                    .istudent(result.getStudentEntity().getIstudent())
+//                    .build();
+//            StudentIntroducedLineRes std = StudentIntroducedLineRes.builder()
+//                    .introducedLine(studentSave.getIntroducedLine())
+//                    .build();
+//            return StudentInsTotalRes.builder()
+//                    .res(res)
+//                    .std(std)
+//                    .build();
+//        } else if (fileCateId.get().getIFileCategory() == 2) {
+//            String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
+//            entity.setFile(savedFileNm);
+//            FileEntity result = FILE_REP.save(entity);
+//
+//            String targetDir = String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent());
+//            File fileTargetDir = new File(targetDir);
+//            if (!fileTargetDir.exists()) {
+//                if (!fileTargetDir.mkdirs()) {
+//                    log.error("Failed to create directory: {}", fileTargetDir.getAbsolutePath());
+//                    throw new RuntimeException("포트폴리오를 저장할 디렉토리를 생성할 수 없습니다.");
+//                }
+//            }
+//            File fileTarget = new File(String.format("%s/%s", targetDir, savedFileNm));
+//            try {
+//                file.transferTo(fileTarget);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                throw new RuntimeException("포트폴리오를 업로드 할 수 없습니다.");
+//            }
+//            StudentInsRes res = StudentInsRes.builder()
+//                    .file(result.getFile())
+//                    .ifile(result.getIfile())
+//                    .createdAt(result.getCreatedAt())
+//                    .istudent(result.getStudentEntity().getIstudent())
+//                    .build();
+//            StudentIntroducedLineRes std = StudentIntroducedLineRes.builder()
+//                    .introducedLine(studentSave.getIntroducedLine())
+//                    .build();
+//            return StudentInsTotalRes.builder()
+//                    .res(res)
+//                    .std(std)
+//                    .build();
+//        } else if (fileCateId.get().getIFileCategory() == 3 && dto.getFileLink() != null) {
+//            String savedFileNm = dto.getFileLink();
+//            entity.setFile(savedFileNm);
+//            FileEntity result = FILE_REP.save(entity);
+//
+//            StudentInsRes res = StudentInsRes.builder()
+//                    .file(result.getFile())
+//                    .ifile(result.getIfile())
+//                    .createdAt(result.getCreatedAt())
+//                    .istudent(result.getStudentEntity().getIstudent())
+//                    .build();
+//            StudentIntroducedLineRes std = StudentIntroducedLineRes.builder()
+//                    .introducedLine(studentSave.getIntroducedLine())
+//                    .build();
+//            return StudentInsTotalRes.builder()
+//                    .res(res)
+//                    .std(std)
+//                    .build();
+//        } else if (fileCateId.get().getIFileCategory() == 4) {
+//            String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
+//            entity.setFile(savedFileNm);
+//            FileEntity result = FILE_REP.save(entity);
+//
+//            String targetDir = String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent());
+//            File fileTargetDir = new File(targetDir);
+//            if (!fileTargetDir.exists()) {
+//                if (!fileTargetDir.mkdirs()) {
+//                    log.error("Failed to create directory: {}", fileTargetDir.getAbsolutePath());
+//                    throw new RuntimeException("대표 이미지를 저장할 디렉토리를 생성할 수 없습니다.");
+//                }
+//            }
+//            File fileTarget = new File(String.format("%s/%s", targetDir, savedFileNm));
+//            try {
+//                file.transferTo(fileTarget);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                throw new RuntimeException("이미지를 업로드 할 수 없습니다.");
+//            }
+//            StudentInsRes res = StudentInsRes.builder()
+//                    .file(result.getFile())
+//                    .ifile(result.getIfile())
+//                    .createdAt(result.getCreatedAt())
+//                    .istudent(result.getStudentEntity().getIstudent())
+//                    .build();
+//            StudentIntroducedLineRes std = StudentIntroducedLineRes.builder()
+//                    .introducedLine(studentSave.getIntroducedLine())
+//                    .build();
+//            return StudentInsTotalRes.builder()
+//                    .res(res)
+//                    .std(std)
+//                    .build();
+//        }
+//        return null;
+//    }
+    public StudentInsTotalRes insFile(MultipartFile file, StudentInsDto dto) {
         Optional<FileCategoryEntity> fileCateId = FILE_CATE_REP.findById(dto.getIFileCategory());
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+
+        if (!fileCateId.isPresent() || !stdId.isPresent()) {
+            return null;
+        }
 
         FileEntity entity = new FileEntity();
         entity.setFileCategoryEntity(fileCateId.get());
         entity.setCreatedAt(LocalDate.now());
         entity.setStudentEntity(stdId.get());
 
-        if (fileCateId.get().getIFileCategory() == 1) {
-            String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
+        StudentEntity studentEntity = new StudentEntity();
+        studentEntity.setIntroducedLine(dto.getIntroducedLine());
+
+        StudentEntity studentSave = (dto.getIntroducedLine() != null) ? STU_REP.save(studentEntity) : studentEntity;
+
+        String savedFileNm;
+
+        Long iFileCategory = fileCateId.get().getIFileCategory();
+        if (iFileCategory == 1 || iFileCategory == 2 || iFileCategory == 4) {
+            savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
+        } else if (iFileCategory == 3) {
+            savedFileNm = (dto.getFileLink() != null) ? dto.getFileLink() : null;
+        } else {
+            return null;
+        }
+
+        if (savedFileNm != null) {
             entity.setFile(savedFileNm);
             FileEntity result = FILE_REP.save(entity);
 
             String targetDir = String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent());
             File fileTargetDir = new File(targetDir);
-            if (!fileTargetDir.exists()) {
-                if (!fileTargetDir.mkdirs()) {
-                    log.error("Failed to create directory: {}", fileTargetDir.getAbsolutePath());
-                    throw new RuntimeException("이력서를 저장할 디렉토리를 생성할 수 없습니다.");
-                }
-            }
-            File fileTarget = new File(String.format("%s/student/%s", targetDir, savedFileNm));
-            try {
-                file.transferTo(fileTarget);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("이력서를 업로드 할 수 없습니다.");
-            }
-            return StudentInsRes.builder()
-                    .file(result.getFile())
-                    .ifile(result.getIfile())
-                    .createdAt(result.getCreatedAt())
-                    .istudent(result.getStudentEntity().getIstudent())
-                    .build();
 
-
-        } else if (fileCateId.get().getIFileCategory() == 2) {
-            String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
-            entity.setFile(savedFileNm);
-            FileEntity result = FILE_REP.save(entity);
-
-            String targetDir = String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent());
-            File fileTargetDir = new File(targetDir);
-            if (!fileTargetDir.exists()) {
-                if (!fileTargetDir.mkdirs()) {
-                    log.error("Failed to create directory: {}", fileTargetDir.getAbsolutePath());
-                    throw new RuntimeException("포트폴리오를 저장할 디렉토리를 생성할 수 없습니다.");
-                }
+            if (!fileTargetDir.exists() && !fileTargetDir.mkdirs()) {
+                throw new RuntimeException("디렉토리를 생성할 수 없습니다.");
             }
+
             File fileTarget = new File(String.format("%s/%s", targetDir, savedFileNm));
             try {
                 file.transferTo(fileTarget);
             } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("포트폴리오를 업로드 할 수 없습니다.");
+                throw new RuntimeException("파일을 업로드 할 수 없습니다.");
             }
-            return StudentInsRes.builder()
+
+            StudentInsRes res = StudentInsRes.builder()
                     .file(result.getFile())
                     .ifile(result.getIfile())
                     .createdAt(result.getCreatedAt())
                     .istudent(result.getStudentEntity().getIstudent())
                     .build();
 
-
-        } else if (fileCateId.get().getIFileCategory() == 3 && dto.getFileLink() != null) {
-            String savedFileNm = dto.getFileLink();
-            entity.setFile(savedFileNm);
-            FileEntity result = FILE_REP.save(entity);
-
-            return StudentInsRes.builder()
-                    .file(result.getFile())
-                    .ifile(result.getIfile())
-                    .createdAt(result.getCreatedAt())
-                    .istudent(result.getStudentEntity().getIstudent())
+            StudentIntroducedLineRes std = StudentIntroducedLineRes.builder()
+                    .introducedLine(studentSave.getIntroducedLine())
                     .build();
 
-        } else if (fileCateId.get().getIFileCategory() == 4) {
-            String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
-            entity.setFile(savedFileNm);
-            FileEntity result = FILE_REP.save(entity);
-
-            String targetDir = String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent());
-            File fileTargetDir = new File(targetDir);
-            if (!fileTargetDir.exists()) {
-                if (!fileTargetDir.mkdirs()) {
-                    log.error("Failed to create directory: {}", fileTargetDir.getAbsolutePath());
-                    throw new RuntimeException("대표 이미지를 저장할 디렉토리를 생성할 수 없습니다.");
-                }
-            }
-            File fileTarget = new File(String.format("%s/%s", targetDir, savedFileNm));
-            try {
-                file.transferTo(fileTarget);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("이미지를 업로드 할 수 없습니다.");
-            }
-            return StudentInsRes.builder()
-                    .file(result.getFile())
-                    .ifile(result.getIfile())
-                    .createdAt(result.getCreatedAt())
-                    .istudent(result.getStudentEntity().getIstudent())
+            return StudentInsTotalRes.builder()
+                    .res(res)
+                    .std(std)
                     .build();
         }
+
         return null;
     }
+
+
+    public StudentPatchTotalRes patchFile(MultipartFile file, StudentPatchDto dto) {
+        Optional<FileCategoryEntity> fileCateId = FILE_CATE_REP.findById(dto.getIFileCategory());
+        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+        List<FileEntity> fileAll = FILE_REP.findAllByStudentEntity(stdId.orElseThrow(EntityNotFoundException::new));
+
+        FileEntity entity = new FileEntity();
+        StudentEntity studentEntity = new StudentEntity();
+        studentEntity.setIntroducedLine(dto.getIntroducedLine());
+        StudentEntity studentSave = (dto.getIntroducedLine() != null) ? STU_REP.save(studentEntity) : studentEntity;
+
+        for (FileEntity fileEntity : fileAll) {
+            if (fileCateId.isPresent()) {
+                Long iFileCategory = fileCateId.get().getIFileCategory();
+                if (iFileCategory == 1 || iFileCategory == 2 || iFileCategory == 4) {
+                    fileUpload(file, dto, entity, fileEntity, studentSave);
+                } else if (iFileCategory == 3) {
+                    fileLinkUpload(dto, entity, fileEntity, studentSave);
+                }
+            }
+        }
+        FileEntity save = FILE_REP.save(entity);
+
+        StudentPatchRes res = StudentPatchRes.builder()
+                .file(save.getFile())
+                .ifile(save.getIfile())
+                .createdAt(save.getCreatedAt())
+                .istudent(save.getStudentEntity().getIstudent())
+                .build();
+        StudentIntroducedLineRes std = StudentIntroducedLineRes.builder()
+                .introducedLine(studentSave.getIntroducedLine())
+                .build();
+
+        return StudentPatchTotalRes.builder()
+                .res(res)
+                .std(std)
+                .build();
+    }
+
+    public StudentDelRes delFile(StudentDelDto dto) {
+        Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
+
+        if (fileId.isPresent()) {
+            FileEntity fileEntity = fileId.get();
+
+            String targetDir = String.format("%s/student/%d", fileDir, fileEntity.getStudentEntity().getIstudent());
+            File fileToDelete = new File(String.format("%s/%s", targetDir, fileEntity.getFile()));
+
+            if (fileToDelete.exists()) {
+                if (!fileToDelete.delete()) {
+                    throw new RuntimeException("파일을 저장한 곳에서 삭제할 수 없습니다.");
+                }
+            }
+
+            try {
+                FILE_REP.delete(fileEntity);
+            } catch (Exception e) {
+                throw new RuntimeException("데이터베이스에서 파일 엔터티를 삭제할 수 없습니다.");
+            }
+            return StudentDelRes.builder()
+                    .ifile(fileEntity.getIfile())
+                    .build();
+        } else {
+            throw new RuntimeException("ID에 해당하는 파일이 존재하지 않습니다: " + dto.getIfile());
+        }
+
+    }
+
+
+
+    private void fileUpload(MultipartFile file, StudentPatchDto dto, FileEntity entity,
+                            FileEntity fileEntity, StudentEntity studentSave) {
+        String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
+        entity.setFile(savedFileNm);
+
+        try {
+            handleFileOperations(file, entity, fileEntity, savedFileNm);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("파일 업로드 또는 삭제 중 오류 발생", e);
+        }
+    }
+
+    private void fileLinkUpload(StudentPatchDto dto, FileEntity entity,
+                                FileEntity fileEntity, StudentEntity studentSave) {
+        String savedFileNm = dto.getFileLink();
+        entity.setFile(savedFileNm);
+
+        try {
+            FILE_REP.save(fileEntity);
+        } catch (Exception e) {
+            throw new RuntimeException("파일 링크 업로드 중 오류 발생", e);
+        }
+    }
+
+    private void handleFileOperations(MultipartFile file, FileEntity entity, FileEntity fileEntity, String savedFileNm) throws IOException {
+        File targetDir = new File(String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent()));
+        File fileTarget = new File(targetDir, savedFileNm);
+
+        if (targetDir.exists()) {
+            targetDir.delete();
+        }
+
+        fileEntity.setFile(null);
+        FILE_REP.save(fileEntity);
+
+        file.transferTo(fileTarget);
+    }
+
+
+//    public StudentPatchTotalRes patchFile(MultipartFile file, StudentPatchDto dto) {
+//        Optional<FileCategoryEntity> fileCateId = FILE_CATE_REP.findById(dto.getIFileCategory());
+//        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+//        List<FileEntity> fileAll = FILE_REP.findAllByStudentEntity(stdId.get());
+//
+//        FileEntity entity = new FileEntity();
+//
+//        StudentEntity studentEntity = new StudentEntity();
+//        studentEntity.setIntroducedLine(dto.getIntroducedLine());
+//
+//        StudentEntity studentSave = studentEntity;
+//        if (dto.getIntroducedLine() != null) {
+//            studentSave = STU_REP.save(studentEntity);
+//        }
+//
+//        for (FileEntity fileEntity : fileAll) {
+//            if (fileCateId.isPresent()) {
+//                if (fileCateId.get().getIFileCategory() == 1) {
+//                    FileEntity tempEntity = new FileEntity();
+//                    FileEntity saveEntity = null;
+//                    tempEntity = fileEntity;
+//                    saveEntity = tempEntity;
+//
+//                    String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
+//                    entity.setFile(savedFileNm);
+//                    FileEntity result = FILE_REP.save(entity);
+//
+//                    String targetDir = String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent());
+//                    File fileTarget = new File(String.format("%s/%s", targetDir, savedFileNm));
+//                    File tempFile = new File(targetDir);
+//                    if (tempFile.exists()) {
+//                        tempFile.delete();
+//                    }
+//                    fileEntity.setFile(null);
+//                    try {
+//                        FILE_REP.save(fileEntity);
+//                    } catch (Exception e) {
+//                        throw new RuntimeException("이력서 삭제 실패");
+//                    }
+//                    try {
+//                        file.transferTo(fileTarget);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                        throw new RuntimeException("이력서를 업로드 할 수 없습니다.");
+//                    }
+//                    FileEntity save = FILE_REP.save(entity);
+//
+//                    StudentPatchRes res = StudentPatchRes.builder()
+//                            .file(save.getFile())
+//                            .ifile(save.getIfile())
+//                            .createdAt(save.getCreatedAt())
+//                            .istudent(save.getStudentEntity().getIstudent())
+//                            .build();
+//                    StudentIntroducedLineRes std = StudentIntroducedLineRes.builder()
+//                            .introducedLine(studentSave.getIntroducedLine())
+//                            .build();
+//                    return StudentPatchTotalRes.builder()
+//                            .res(res)
+//                            .std(std)
+//                            .build();
+//
+//                } else if (fileCateId.get().getIFileCategory() == 2) {
+//                    FileEntity tempEntity = new FileEntity();
+//                    FileEntity saveEntity = null;
+//                    tempEntity = fileEntity;
+//                    saveEntity = tempEntity;
+//
+//                    String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
+//                    entity.setFile(savedFileNm);
+//                    FileEntity result = FILE_REP.save(entity);
+//
+//                    String targetDir = String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent());
+//                    File fileTarget = new File(String.format("%s/%s", targetDir, savedFileNm));
+//                    File tempFile = new File(targetDir);
+//                    if (tempFile.exists()) {
+//                        tempFile.delete();
+//                    }
+//                    fileEntity.setFile(null);
+//                    try {
+//                        FILE_REP.save(fileEntity);
+//                    } catch (Exception e) {
+//                        throw new RuntimeException("포트폴리오 삭제 실패");
+//                    }
+//                    try {
+//                        file.transferTo(fileTarget);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                        throw new RuntimeException("포트폴리오를 업로드 할 수 없습니다.");
+//                    }
+//                    FileEntity save = FILE_REP.save(entity);
+//
+//                    StudentPatchRes res = StudentPatchRes.builder()
+//                            .file(save.getFile())
+//                            .ifile(save.getIfile())
+//                            .createdAt(save.getCreatedAt())
+//                            .istudent(save.getStudentEntity().getIstudent())
+//                            .build();
+//                    StudentIntroducedLineRes std = StudentIntroducedLineRes.builder()
+//                            .introducedLine(studentSave.getIntroducedLine())
+//                            .build();
+//                    return StudentPatchTotalRes.builder()
+//                            .res(res)
+//                            .std(std)
+//                            .build();
+//                } else if (fileCateId.get().getIFileCategory() == 4) {
+//                    FileEntity tempEntity = new FileEntity();
+//                    FileEntity saveEntity = null;
+//                    tempEntity = fileEntity;
+//                    saveEntity = tempEntity;
+//
+//                    String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
+//                    entity.setFile(savedFileNm);
+//                    FileEntity result = FILE_REP.save(saveEntity);
+//
+//                    String targetDir = String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent());
+//                    File fileTarget = new File(String.format("%s/%s", targetDir, savedFileNm));
+//                    File tempFile = new File(targetDir);
+//                    if (tempFile.exists()) {
+//                        tempFile.delete();
+//                    }
+//                    fileEntity.setFile(null);
+//                    try {
+//                        FILE_REP.save(fileEntity);
+//                    } catch (Exception e) {
+//                        throw new RuntimeException("대표 이미지 삭제 실패");
+//                    }
+//                    try {
+//                        file.transferTo(fileTarget);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                        throw new RuntimeException("포트폴리오 대표 이미지를 업로드 할 수 없습니다.");
+//                    }
+//                    FileEntity save = FILE_REP.save(result);
+//
+//                    StudentPatchRes res = StudentPatchRes.builder()
+//                            .file(save.getFile())
+//                            .ifile(save.getIfile())
+//                            .createdAt(save.getCreatedAt())
+//                            .istudent(save.getStudentEntity().getIstudent())
+//                            .build();
+//                    StudentIntroducedLineRes std = StudentIntroducedLineRes.builder()
+//                            .introducedLine(studentSave.getIntroducedLine())
+//                            .build();
+//                    return StudentPatchTotalRes.builder()
+//                            .res(res)
+//                            .std(std)
+//                            .build();
+//                } else if (fileCateId.get().getIFileCategory() == 3) {
+//                    FileEntity tempEntity = new FileEntity();
+//                    FileEntity saveEntity = null;
+//                    tempEntity = fileEntity;
+//                    saveEntity = tempEntity;
+//
+//                    String savedFileNm = dto.getFileLink();
+//                    entity.setFile(savedFileNm);
+//                    FileEntity result = FILE_REP.save(saveEntity);
+//
+//                    StudentPatchRes res = StudentPatchRes.builder()
+//                            .file(result.getFile())
+//                            .ifile(result.getIfile())
+//                            .createdAt(result.getCreatedAt())
+//                            .istudent(result.getStudentEntity().getIstudent())
+//                            .build();
+//                    StudentIntroducedLineRes std = StudentIntroducedLineRes.builder()
+//                            .introducedLine(studentSave.getIntroducedLine())
+//                            .build();
+//                    return StudentPatchTotalRes.builder()
+//                            .res(res)
+//                            .std(std)
+//                            .build();
+//                }
+//                return null;
+//            }
+//        }
+//    }
+
 
     public StudentSelRes selStudent(StudentSelDto dto) {
         StudentSelRes studentSelRes = studentQdsl.studentVo(dto.getIstudent());
