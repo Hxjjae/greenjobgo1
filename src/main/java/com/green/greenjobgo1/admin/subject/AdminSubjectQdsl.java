@@ -37,14 +37,14 @@ public class AdminSubjectQdsl {
     public List<AdminSubjectRes> subjectVos(AdminSubjectDto dto, AdminCategoryDto categoryDto, Pageable pageable) {
         JPAQuery<AdminSubjectRes> query = jpaQueryFactory.select(Projections.bean(AdminSubjectRes.class
                         , cos.icourseSubject, cos.subjectName.as("courseSubjectName")
-                , cas.iclassification, cas.classification, cos.instructor, cos.lectureRoom
-                         , cos.startedAt, cos.endedAt,cos.subjectCondition, cos.delYn,
-                            cos.round, cos.classTime))
+                        , cas.iclassification, cas.classification, cos.instructor, cos.lectureRoom
+                        , cos.startedAt, cos.endedAt, cos.subjectCondition, cos.delYn,
+                        cos.round, cos.classTime))
                 .from(cos)
                 .where(eqDelYn(dto.getDelYn())
-                        ,eqIclassification(categoryDto.getIclassification())
-                        ,eqCondition(dto.getSubjectCondition())
-                        ,eqSubjectName(dto.getSubjectName())
+                        , eqIclassification(categoryDto.getIclassification())
+                        , eqCondition(dto.getSubjectCondition())
+                        , eqSubjectName(dto.getSubjectName())
                 )
                 .join(cos.categorySubjectEntity, cas)
                 .offset(pageable.getOffset())
@@ -53,13 +53,43 @@ public class AdminSubjectQdsl {
         return query.fetch();
     }
 
+    public Long updSubject(AdminSubjectUpdDto dto) {
+        JPAUpdateClause query = jpaQueryFactory.update(cos)
+                .set(cos.icourseSubject, dto.getIcourseSubject());
+        if (dto.getCourseSubjectName() != null) {
+            query.set(cos.subjectName, dto.getCourseSubjectName());
+        }
+        if (dto.getIclassification() != null) {
+            query.set(cos.categorySubjectEntity.iclassification, dto.getIclassification());
+        }
+        if (dto.getInstructor() != null) {
+            query.set(cos.instructor, dto.getInstructor());
+        }
+        if (dto.getLectureRoom() != null) {
+            query.set(cos.lectureRoom, dto.getLectureRoom());
+        }
+        if (dto.getStartedAt() != null) {
+            query.set(cos.startedAt, dto.getStartedAt());
+        }
+        if (dto.getEndedAt() != null) {
+            query.set(cos.endedAt, dto.getEndedAt());
+        }
+        if (dto.getRound() != null) {
+            query.set(cos.round, dto.getRound());
+        }
+        if (dto.getClassTime() != null) {
+            query.set(cos.classTime, dto.getClassTime());
+        }
+        return query.execute();
+    }
+
 
     public Long selIdx(AdminCategoryDto dto, AdminSubjectDto subjectDto) {
         JPAQuery<Long> query = jpaQueryFactory.select(cos.icourseSubject.count())
                 .from(cos)
                 .join(cos.categorySubjectEntity, cas)
                 .where(eqIclassification(dto.getIclassification())
-                        ,eqSubjectName(subjectDto.getSubjectName()));
+                        , eqSubjectName(subjectDto.getSubjectName()));
         return query.fetchOne();
     }
 
