@@ -6,18 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdminStorageStudentRes {
-    private String img;
-    private Long istudent;
-    private String studentName;
-    private String subjectName;
-    private int storageYn;
-    private int companyMainYn;
-    private int huntJobYn;
-
+public class AdminStudentDetailFindRes {
+    private AdminStudentDetailRes res;
+    private List<AdminStudentFile> file;
 }

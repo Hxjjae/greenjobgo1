@@ -22,6 +22,6 @@ public class AdminStudentRes {
     private String address;
     private String mobileNumber;
     private String education;
-    private String certificate;
-    private String file;
+    private Long certificate;
+    private Long file;
 }

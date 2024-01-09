@@ -15,5 +15,5 @@ public class AdminPortfolioRes {
     private Long istudent;
     private String img;
     private int storageYn;
-
+    private int huntJobYn;
 }

@@ -44,4 +44,6 @@ public class FileEntity {
     @UpdateTimestamp
     LocalDate updatedAt;
 
+    @Column
+    private Integer mainYn;
 }

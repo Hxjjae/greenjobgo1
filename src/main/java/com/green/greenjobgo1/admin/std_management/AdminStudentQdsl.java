@@ -1,8 +1,6 @@
 package com.green.greenjobgo1.admin.std_management;
 
-import com.green.greenjobgo1.admin.category.model.AdminCategoryDto;
 import com.green.greenjobgo1.admin.std_management.model.*;
-import com.green.greenjobgo1.admin.subject.model.AdminSubjectDto;
 import com.green.greenjobgo1.config.entity.*;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -39,8 +37,6 @@ public class AdminStudentQdsl {
                 .from(scs)
                 .join(scs.studentEntity, stu)
                 .join(scs.courseSubjectEntity, cos)
-//                .join(stu.files, file)
-//                .join(stu.certificates, certificate)
                 .join(cos.categorySubjectEntity, cas)
                 .where(eqIclassification(dto.getIcategory()),
                         eqSubjectName(dto.getSubjectName())
@@ -49,6 +45,34 @@ public class AdminStudentQdsl {
                 .limit(pageable.getPageSize())
                 .orderBy(stu.istudent.asc());
         return query.fetch();
+    }
+
+    public List<AdminStudentFile> fileVos(AdminStudentDetailDto dto) {
+        JPAQuery<AdminStudentFile> query = jpaQueryFactory
+                .select(Projections.bean(AdminStudentFile.class, file.file))
+                .from(file)
+                .join(file.studentEntity, stu)
+                .where(stu.istudent.eq(dto.getIstudent()))
+                .orderBy(file.mainYn.desc());
+        return query.fetch();
+    }
+
+    public Long fileCount(Long istudent) {
+        JPAQuery<Long> query = jpaQueryFactory
+                .select(file.file.count())
+                .from(file)
+                .join(file.studentEntity, stu)
+                .where(stu.istudent.eq(istudent), file.fileCategoryEntity.iFileCategory.in(1,2,3));
+        return query.fetchOne();
+    }
+
+    public Long certificateCount(Long istudent) {
+        JPAQuery<Long> query = jpaQueryFactory
+                .select(certificate.certificate.count())
+                .from(certificate)
+                .join(certificate.studentEntity, stu)
+                .where(stu.istudent.eq(istudent));
+        return query.fetchOne();
     }
 
     public List<AdminPortfolioRes> portfolioVos(AdminPortfolioDto dto, Pageable pageable) {
@@ -86,7 +110,7 @@ public class AdminStudentQdsl {
                         eqStorageYn(dto.getStorageYn()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(stu.storageYn.desc(), stu.istudent.asc(), stu.companyMainYn.desc());
+                .orderBy(stu.companyMainYn.desc(), cos.endedAt.desc());
         return query.fetch();
     }
 

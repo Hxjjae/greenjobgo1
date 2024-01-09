@@ -55,7 +55,7 @@ public class AdminStudentController {
             "\n endedAt : 권한만료일자 \n" +
             "\n mobileNumber : 휴대폰 번호 \n" +
             "\n education : 학력 ")
-    public AdminStudentDetailRes getStudentDetail(@RequestParam Long istudent) {
+    public AdminStudentDetailFindRes getStudentDetail(@RequestParam Long istudent) {
         AdminStudentDetailDto dto = new AdminStudentDetailDto();
         dto.setIstudent(istudent);
         return SERVICE.selStudentDetail(dto);

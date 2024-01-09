@@ -13,7 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -35,45 +37,51 @@ public class AdminStudentService {
 
     public ResponseEntity<AdminStudentFindRes> selStudentList(AdminStudentDto dto, Pageable pageable) {
         long maxPage = adminStudentQdsl.stdIdx(dto);
+
         PagingUtils utils = new PagingUtils(pageable.getPageNumber() + 1, (int) maxPage, pageable);
         utils.setIdx((int) maxPage);
+
         List<AdminStudentRes> list = adminStudentQdsl.studentVos(dto, pageable);
 
-        AdminStudentFindRes build = AdminStudentFindRes.builder()
-                .page(utils)
-                .res(list.stream().map(item -> AdminStudentRes.builder()
-                        .istudent(item.getIstudent())
-                        .address(item.getAddress())
-                        .endedAt(item.getEndedAt())
-                        .startedAt(item.getStartedAt())
-                        .name(item.getName())
-                        .gender(item.getGender())
-                        .education(item.getEducation())
-                        .classification(item.getClassification())
-                        .certificate(item.getCertificate())
-                        .mobileNumber(item.getMobileNumber())
-                        .subjectName(item.getSubjectName())
-                        .build()).toList())
-                .build();
-        return ResponseEntity.ok(build);
-
-
+            AdminStudentFindRes build = AdminStudentFindRes.builder()
+                    .page(utils)
+                    .res(list.stream().map(item -> AdminStudentRes.builder()
+                            .istudent(item.getIstudent())
+                            .address(item.getAddress())
+                            .endedAt(item.getEndedAt())
+                            .startedAt(item.getStartedAt())
+                            .name(item.getName())
+                            .gender(item.getGender())
+                            .education(item.getEducation())
+                            .classification(item.getClassification())
+                            .certificate(adminStudentQdsl.certificateCount(item.getIstudent()))
+                            .mobileNumber(item.getMobileNumber())
+                            .subjectName(item.getSubjectName())
+                            .file(adminStudentQdsl.fileCount(item.getIstudent()))
+                            .build()).toList())
+                    .build();
+            return ResponseEntity.ok(build);
     }
 
-    public AdminStudentDetailRes selStudentDetail(AdminStudentDetailDto dto) {
+    public AdminStudentDetailFindRes selStudentDetail(AdminStudentDetailDto dto) {
         Optional<StudentEntity> byId = STU_REP.findById(dto.getIstudent());
+        List<FileEntity> fileList = FILE_REP.findAllByStudentEntity(byId.get());
+        List<AdminStudentFile> files = adminStudentQdsl.fileVos(dto);
 
         if (byId.isPresent()) {
-            return AdminStudentDetailRes.builder()
-                    .name(byId.get().getName())
-                    .startedAt(byId.get().getStartedAt())
-                    .endedAt(byId.get().getEndedAt())
-                    .birthday(byId.get().getBirthday())
-                    .address(byId.get().getAddress())
-                    .addressDetail(byId.get().getAddressDetail())
-                    .education(byId.get().getEducation())
-                    .email(byId.get().getId())
-                    .mobileNumber(byId.get().getMobileNumber())
+            return AdminStudentDetailFindRes.builder()
+                    .res(AdminStudentDetailRes.builder()
+                            .name(byId.get().getName())
+                            .startedAt(byId.get().getStartedAt())
+                            .endedAt(byId.get().getEndedAt())
+                            .birthday(byId.get().getBirthday())
+                            .address(byId.get().getAddress())
+                            .addressDetail(byId.get().getAddressDetail())
+                            .education(byId.get().getEducation())
+                            .email(byId.get().getId())
+                            .mobileNumber(byId.get().getMobileNumber())
+                            .build())
+                    .file(files)
                     .build();
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
@@ -95,6 +103,7 @@ public class AdminStudentService {
                         .studentName(item.getStudentName())
                         .subjectName(item.getSubjectName())
                         .companyMainYn(item.getCompanyMainYn())
+                        .huntJobYn(item.getHuntJobYn())
                         .storageYn(item.getStorageYn())
                         .build()).toList())
                 .build();
@@ -114,6 +123,7 @@ public class AdminStudentService {
                         .istudent(item.getIstudent())
                         .studentName(item.getStudentName())
                         .subjectName(item.getSubjectName())
+                        .huntJobYn(item.getHuntJobYn())
                         .img(String.format("/img/student/%s/%s", item.getIstudent(), item.getImg()))
                         .storageYn(item.getStorageYn())
                         .build()).toList())
