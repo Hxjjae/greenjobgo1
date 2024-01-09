@@ -1,4 +1,4 @@
-package com.green.greenjobgo1.student.sign.model;
+package com.green.greenjobgo1.sign.model;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.green.greenjobgo1.student.sign;
+package com.green.greenjobgo1.sign;
 
 import com.green.greenjobgo1.company.CompanyService;
 import com.green.greenjobgo1.company.model.CompanySignInParam;
@@ -6,7 +6,7 @@ import com.green.greenjobgo1.config.entity.CompanyEntity;
 import com.green.greenjobgo1.repository.CompanyRepository;
 import com.green.greenjobgo1.security.config.security.AuthenticationFacade;
 import com.green.greenjobgo1.security.config.security.model.MyUserDetails;
-import com.green.greenjobgo1.student.sign.model.SignInParam;
+import com.green.greenjobgo1.sign.model.SignInParam;
 import com.green.greenjobgo1.common.utils.ResultUtils;
 import com.green.greenjobgo1.config.entity.StudentEntity;
 import com.green.greenjobgo1.repository.StudentRepository;
@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collections;
@@ -29,7 +30,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class StudentSignService {
+public class SignService {
     private final PasswordEncoder PW_ENCODER;
     private final JwtTokenProvider JWT_PROVIDER;
     private final StudentRepository studentRepository;
@@ -47,10 +48,11 @@ public class StudentSignService {
             CompanySignInParam param = new CompanySignInParam();
             param.setId(p.getEmail());
             param.setPw(p.getPw());
-            SignInResultDto signInResultDto = companyService.signIn(param, ip);
+            SignInResultDto signInResultDto = companysignIn(param, ip);
 
             return signInResultDto;
         }
+
 
         if (user == null) {
             throw new RuntimeException("존재하지 않는 이메일");
@@ -82,6 +84,53 @@ public class StudentSignService {
                 .accessTokenTime(accessTokenTime)
                 .refreshToken(refreshToken)
                 .role(user.getRole())
+                .id(p.getEmail())
+                .build();
+
+        log.info("[getSignInResult] SignInResultDto 객체 값 주입");
+        ResultUtils.setSuccessResult(dto);
+        return dto;
+    }
+    public SignInResultDto companysignIn(CompanySignInParam p, String ip) {
+        log.info("[getSignInResult] signDataHandler로 회원 정보 요청");
+        CompanyEntity companyentity = companyRep.findById(p.getId());
+
+        log.info("Icompany :{}",companyentity.getIcompany());
+        if (companyentity == null) {
+            throw new RuntimeException("존재하지 않는 이메일");
+        }
+        if(!PW_ENCODER.matches(p.getPw(), companyentity.getPassword())) {
+            throw new RuntimeException("비밀번호 불일치");
+        }
+        LocalDate currentTime = LocalDate.now();
+        if(currentTime.isBefore(companyentity.getStartedAt()) && !currentTime.isAfter(companyentity.getEndedAt())) {
+            throw new RuntimeException("조회기간 만료");
+        }
+
+        String redisKey = String.format("c:RT(%s):COMPANY:%s:%s", "Server", companyentity.getIcompany(), ip);
+
+        if (redisService.getValues(redisKey)!=null){
+            redisService.deleteValues(redisKey);
+        }
+
+        log.info("[getSignInResult] access_token 객체 생성");
+        String accessToken = JWT_PROVIDER.generateJwtToken(String.valueOf(companyentity.getIcompany()),
+                Collections.singletonList(companyentity.getRole()),
+                JWT_PROVIDER.ACCESS_TOKEN_VALID_MS, JWT_PROVIDER.ACCESS_KEY);
+        String refreshToken = JWT_PROVIDER.generateJwtToken(String.valueOf(companyentity.getIcompany()),
+                Collections.singletonList(companyentity.getRole()),
+                JWT_PROVIDER.REFRESH_TOKEN_VALID_MS, JWT_PROVIDER.REFRESH_KEY);
+        Long accessTokenTime = JWT_PROVIDER.ACCESS_TOKEN_VALID_MS;
+
+        redisService.setValues(redisKey, refreshToken);
+
+        log.info("[getSignInResult] SignInResultDto 객체 생성");
+        SignInResultDto dto = SignInResultDto.builder()
+                .accessToken(accessToken)
+                .accessTokenTime(accessTokenTime)
+                .refreshToken(refreshToken)
+                .role(companyentity.getRole())
+                .id(p.getId())
                 .build();
 
         log.info("[getSignInResult] SignInResultDto 객체 값 주입");

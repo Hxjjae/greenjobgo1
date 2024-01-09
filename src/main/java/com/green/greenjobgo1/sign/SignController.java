@@ -1,10 +1,9 @@
-package com.green.greenjobgo1.student.sign;
+package com.green.greenjobgo1.sign;
 
-import com.green.greenjobgo1.security.sign.model.SignUpResultDto;
-import com.green.greenjobgo1.student.sign.model.SignInParam;
+import com.green.greenjobgo1.sign.model.SignInParam;
 import com.green.greenjobgo1.security.CommonRes;
 import com.green.greenjobgo1.security.sign.model.SignInResultDto;
-import com.green.greenjobgo1.student.sign.model.TokenDto;
+import com.green.greenjobgo1.sign.model.TokenDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,23 +11,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Tag(name = "수강생 로그인,로그아웃")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/student/sign")
-public class StudentSignController {
-    private final StudentSignService service;
+public class SignController {
+    private final SignService service;
     @PostMapping("/sign-in")
     @Operation(summary = "로그인", description = """
-            "email": 이메일<br>
+            "email(id)": 이메일(기업로그인은 아이디)<br>
             "pw": 비밀번호
             """)
     public SignInResultDto signIn(HttpServletRequest req, @RequestBody SignInParam p) {
         String ip = req.getRemoteAddr();
-        log.info("[signIn] 로그인을 시도하고 있습니다. email: {}, pw: {}, ip: {}", p.getEmail(), p.getPw(), ip);
+        log.info("[signIn] 로그인을 시도하고 있습니다. email(id): {}, pw: {}, ip: {}", p.getEmail(), p.getPw(), ip);
 
         SignInResultDto dto = service.signIn(p, ip);
         if(dto.getCode() == CommonRes.SUCCESS.getCode()) {
