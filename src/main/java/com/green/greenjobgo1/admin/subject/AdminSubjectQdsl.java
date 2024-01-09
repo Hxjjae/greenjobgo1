@@ -2,8 +2,8 @@ package com.green.greenjobgo1.admin.subject;
 
 import com.green.greenjobgo1.admin.category.model.AdminCategoryDto;
 import com.green.greenjobgo1.admin.subject.model.*;
-import com.green.greenjobgo1.config.entity.QCategorySubjectEntity;
-import com.green.greenjobgo1.config.entity.QCourseSubjectEntity;
+import com.green.greenjobgo1.common.entity.QCategorySubjectEntity;
+import com.green.greenjobgo1.common.entity.QCourseSubjectEntity;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;

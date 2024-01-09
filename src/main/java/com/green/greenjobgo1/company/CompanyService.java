@@ -2,10 +2,9 @@ package com.green.greenjobgo1.company;
 
 
 import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileVo;
-import com.green.greenjobgo1.common.entity.EmployeeProfileEntity;
+import com.green.greenjobgo1.common.entity.*;
 import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.company.model.*;
-import com.green.greenjobgo1.config.entity.*;
 import com.green.greenjobgo1.repository.CompanyRepository;
 import com.green.greenjobgo1.repository.EmployeeProfileRepository;
 import com.green.greenjobgo1.repository.StudentRepository;
