@@ -32,8 +32,8 @@ public class CompanyListEntity {
     @Column(length = 20, name = "leader_name")
     private String leaderName;
 
-    @Column(length = 50, name = "job_field")
-    private String jobField;
+    @Column(length = 100, name = "homepage")
+    private String homepage;
 
     @Column(length = 20, name = "manager")
     private String manager;

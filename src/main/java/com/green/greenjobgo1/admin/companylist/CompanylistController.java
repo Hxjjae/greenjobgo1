@@ -29,7 +29,7 @@ public class CompanylistController {
             "area: 지역 명 ex) 대구,서울 <br>"+
             "companyName: 회사 명 <br>"+
             "leaderName: 대표 이름 <br>"+
-            "JobField: 채용(직업)분야 <br>"+
+            "homepage: 홈페이지링크 <br>"+
             "manager : 담당자 이름 <br>"+
             "phonenumber : 전화번호 <br>"+
             "dateConslusion: 체결일자 <br>")
@@ -50,7 +50,7 @@ public class CompanylistController {
                     "leaderName: 대표 이름 <br>"+
                     "companyName: 회사 명 <br>"+
                     "leaderName: 대표 이름 <br>"+
-                    "JobField: 채용(직업)분야 <br>"+
+                    "homepage: 홈페이지링크 <br>"+
                     "manager : 담당자 이름<br>"+
                     "phonenumber : 전화번호 <br>"+
                     "dateConslusion: 체결일자 <br>")
@@ -65,7 +65,7 @@ public class CompanylistController {
             "area: 지역 <br>"+
             "companyName: 회사 명 <br>"+
             "leaderName: 대표 이름 <br>"+
-            "JobField: 채용(직업)분야 <br>"+
+            "homepage: 홈페이지링크 <br>"+
             "manager : 담당자 <br>"+
             "phonenumber : 전화번호 <br>"+
             "dateConslusion: 체결일자 <br>")
@@ -74,10 +74,10 @@ public class CompanylistController {
                                                               @RequestParam (required = false) String companyName,
                                                               @RequestParam (required = false) String manager,
                                                               @RequestParam (required = false) String leaderName,
-                                                              @RequestParam (required = false) String jobField,
+                                                              @RequestParam (required = false) String homepage,
                                                               @RequestParam (required = false) String phoneNumber,
                                                               @RequestParam (required = false) LocalDate dateConslusion){
-        CompanyListEntity entity = service.patchCompanyName(companyCode,area,companyName,manager,leaderName,jobField,phoneNumber,dateConslusion);
+        CompanyListEntity entity = service.patchCompanyName(companyCode,area,companyName,manager,leaderName,homepage,phoneNumber,dateConslusion);
         return ResponseEntity.ok(entity);
     }
 

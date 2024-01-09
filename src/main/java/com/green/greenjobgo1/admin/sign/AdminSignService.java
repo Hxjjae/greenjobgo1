@@ -100,18 +100,14 @@ public class AdminSignService {
             String pwfirst = birthday.substring(0, 6);
             String phone = user.getPhone();
             String pwsecond = phone.substring(9, 13);
-//
-//            int start = Integer.parseInt(user.getStartedAt());
-//            int end = Integer.parseInt(user.getEndedAt());
-//            LocalDate startedAt = LocalDate.of(1900, 1, 1).plusDays(start - 2);
-//            LocalDate endedAt = LocalDate.of(1900, 1, 1).plusDays(end - 2);
+
+
             EmployeeProfileEntity employeeEntity = employeeprofileRep.findByName(user.getEmployee());
             if (employeeEntity == null){
                 throw new RuntimeException("존재하지 않는 직원입니다.");
             }
 
             StudentEntity student = StudentEntity.builder()
-                    //.gender(user.getGender().equals("남") ? 1 : 0)
                     .gender(user.getGender())
                     .id(user.getEmail())
                     .pw(PW_ENCODER.encode(pwfirst + pwsecond))
@@ -136,8 +132,6 @@ public class AdminSignService {
                 log.info("과정명:{}",user.getSubjectName());
                 CourseSubjectEntity subjectentity = subjectRep.findBySubjectName(user.getSubjectName());
 
-
-
                 log.info("subject테이블 과정명:{}",subjectentity.getSubjectName());
                 if (subjectentity == null) {
                     throw new RuntimeException("존재하지 않는 과목입니다");
@@ -155,7 +149,6 @@ public class AdminSignService {
         }
         return 1;
     }
-
 
     public void downloadstd(HttpServletResponse response) throws IOException {
         Workbook wb = new XSSFWorkbook();

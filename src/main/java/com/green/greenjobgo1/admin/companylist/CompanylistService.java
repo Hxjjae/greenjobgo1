@@ -35,7 +35,7 @@ public class CompanylistService {
                 .area(dto.getArea())
                 .companyName(dto.getCompanyName())
                 .leaderName(dto.getLeaderName())
-                .jobField(dto.getJobField())
+                .homepage(dto.getHomepage())
                 .manager(dto.getManager())
                 .phoneNumber(dto.getPhoneNumber())
                 .dateConslusion(dto.getDateConslusion()).build();
@@ -55,7 +55,7 @@ public class CompanylistService {
                         qCompanyList.area,
                         qCompanyList.companyName,
                         qCompanyList.leaderName,
-                        qCompanyList.jobField,
+                        qCompanyList.homepage,
                         qCompanyList.manager,
                         qCompanyList.phoneNumber,
                         qCompanyList.dateConslusion))
@@ -84,7 +84,7 @@ public class CompanylistService {
                         .companyName(item.getCompanyName())
                         .area(item.getArea())
                         .leaderName(item.getLeaderName())
-                        .jobField(item.getJobField())
+                        .homepage(item.getHomepage())
                         .dateConslusion(item.getDateConslusion())
                         .manager(item.getManager())
                         .phoneNumber(item.getPhoneNumber()).build()).toList();
@@ -101,7 +101,7 @@ public class CompanylistService {
     }
 
     public CompanyListEntity patchCompanyName(Long companyCode, String area, String companyName, String manager
-            , String leaderName, String jobField, String phoneNumber, LocalDate dateConslusion ) {
+            , String leaderName, String homepage, String phoneNumber, LocalDate dateConslusion ) {
         CompanyListEntity entity = companylistRep.findById(companyCode).get();
         entity.setCompanyCode(companyCode);
 
@@ -111,7 +111,7 @@ public class CompanylistService {
         Optional.ofNullable(companyName).ifPresent(entity::setCompanyName);
         Optional.ofNullable(manager).ifPresent(entity::setManager);
         Optional.ofNullable(leaderName).ifPresent(entity::setLeaderName);
-        Optional.ofNullable(jobField).ifPresent(entity::setJobField);
+        Optional.ofNullable(homepage).ifPresent(entity::setHomepage);
         Optional.ofNullable(phoneNumber).ifPresent(entity::setPhoneNumber);
         Optional.ofNullable(dateConslusion).ifPresent(entity::setDateConslusion);
 
