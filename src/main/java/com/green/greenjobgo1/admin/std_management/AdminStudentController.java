@@ -112,7 +112,7 @@ public class AdminStudentController {
 
     @PatchMapping("/main")
     @Operation(summary = "메인 여부 결정")
-    public AdminMainPortfolioPatchRes patchMain(@RequestParam Long istudent,
+    public List<AdminMainPortfolioPatchRes> patchMain(@RequestParam List<Long> istudent,
                                                 @RequestParam int companyMainYn) {
         AdminMainPortfolioPatchDto dto = new AdminMainPortfolioPatchDto();
         dto.setIstudent(istudent);

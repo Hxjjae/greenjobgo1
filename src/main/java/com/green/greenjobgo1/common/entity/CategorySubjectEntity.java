@@ -9,6 +9,9 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.core.annotation.Order;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Table(name = "category_subject")
 @Order(1)
@@ -23,6 +26,9 @@ public class CategorySubjectEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false, length = 20)
     private Long iclassification;
+
+    @OneToMany(mappedBy = "categorySubjectEntity", cascade = CascadeType.ALL)
+    private List<CourseSubjectEntity> csList = new ArrayList<>();
 
     @Column(nullable = false, length = 10,unique = true)
     private String classification;

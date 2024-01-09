@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -107,7 +108,7 @@ public class AdminSubjectController {
 
     @DeleteMapping
     @Operation(summary = "수강과목 삭제", description = "")
-    public AdminSubjectDelRes delAdminSubject(@RequestParam Long icourseSubject) {
+    public List<AdminSubjectDelRes> delAdminSubject(@RequestParam List<Long> icourseSubject) {
         AdminSubjectDelDto dto = new AdminSubjectDelDto();
         dto.setIcourseSubject(icourseSubject);
         return SERVICE.delAdminSubject(dto);

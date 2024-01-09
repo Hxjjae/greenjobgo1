@@ -39,7 +39,8 @@ public class AdminStudentQdsl {
                 .join(scs.courseSubjectEntity, cos)
                 .join(cos.categorySubjectEntity, cas)
                 .where(eqIclassification(dto.getIcategory()),
-                        eqSubjectName(dto.getSubjectName())
+                        eqSubjectName(dto.getSubjectName()),
+                        stu.delYn.eq(0)
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -78,7 +79,7 @@ public class AdminStudentQdsl {
     public List<AdminPortfolioRes> portfolioVos(AdminPortfolioDto dto, Pageable pageable) {
         JPAQuery<AdminPortfolioRes> query = jpaQueryFactory.select(
                         Projections.bean(AdminPortfolioRes.class, stu.name.as("studentName")
-                                , cos.subjectName, file.file.as("img"), stu.istudent, stu.storageYn))
+                                , cos.subjectName, file.file.as("img"), stu.istudent, stu.storageYn, stu.huntJobYn))
                 .from(stu)
                 .join(stu.scsList, scs)
                 .join(scs.courseSubjectEntity, cos)
@@ -97,7 +98,7 @@ public class AdminStudentQdsl {
     public List<AdminStorageStudentRes> storageVos(AdminStorageStudentDto dto, Pageable pageable) {
         JPAQuery<AdminStorageStudentRes> query = jpaQueryFactory.select(
                         Projections.bean(AdminStorageStudentRes.class, stu.istudent ,stu.name.as("studentName")
-                                , cos.subjectName, file.file.as("img"), stu.introducedLine, stu.storageYn))
+                                , cos.subjectName, file.file.as("img"), stu.introducedLine, stu.storageYn, stu.companyMainYn, stu.huntJobYn))
                 .from(stu)
                 .join(stu.scsList, scs)
                 .join(scs.courseSubjectEntity, cos)

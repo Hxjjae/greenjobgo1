@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -145,20 +147,25 @@ public class AdminSubjectService {
         }
     }
 
-    public AdminSubjectDelRes delAdminSubject(AdminSubjectDelDto dto) {
-        Optional<CourseSubjectEntity> byId = AS_REP.findById(dto.getIcourseSubject());
-        if (byId.isPresent()) {
-            CourseSubjectEntity courseSubjectEntity = byId.get();
-            courseSubjectEntity.setDelYn(1);
+    public List<AdminSubjectDelRes> delAdminSubject(AdminSubjectDelDto dto) {
+        if (dto.getIcourseSubject() != null) {
+            List<CourseSubjectEntity> subjectList = AS_REP.findAllById(dto.getIcourseSubject());
+            List<AdminSubjectDelRes> resultList = new ArrayList<>();
 
-            CourseSubjectEntity save = AS_REP.save(courseSubjectEntity);
-            return AdminSubjectDelRes.builder()
-                    .icourseSubject(save.getIcourseSubject())
-                    .delYn(save.getDelYn())
-                    .courseSubjectName(courseSubjectEntity.getSubjectName())
-                    .build();
+            for (CourseSubjectEntity courseSubjectEntity : subjectList) {
+                courseSubjectEntity.setDelYn(1);
+                CourseSubjectEntity save = AS_REP.save(courseSubjectEntity);
+
+                AdminSubjectDelRes build = AdminSubjectDelRes.builder()
+                        .icourseSubject(save.getIcourseSubject())
+                        .courseSubjectName(save.getSubjectName())
+                        .delYn(save.getDelYn())
+                        .build();
+                resultList.add(build);
+            }
+            return resultList;
         } else {
-            throw new EntityNotFoundException("not found");
+            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
         }
     }
 

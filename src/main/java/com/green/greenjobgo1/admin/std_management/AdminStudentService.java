@@ -13,10 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -28,6 +25,7 @@ public class AdminStudentService {
     private final FileRepository FILE_REP;
     private final CertificateRepository CERT_REP;
     private final StudentCourseSubjectRepository SCS_REP;
+    private final AdminCategoryRepository A_CATE_REP;
     private final AdminStudentQdsl adminStudentQdsl;
     private final MyUserDetailsServiceImpl userDetailsService;
 
@@ -43,24 +41,24 @@ public class AdminStudentService {
 
         List<AdminStudentRes> list = adminStudentQdsl.studentVos(dto, pageable);
 
-            AdminStudentFindRes build = AdminStudentFindRes.builder()
-                    .page(utils)
-                    .res(list.stream().map(item -> AdminStudentRes.builder()
-                            .istudent(item.getIstudent())
-                            .address(item.getAddress())
-                            .endedAt(item.getEndedAt())
-                            .startedAt(item.getStartedAt())
-                            .name(item.getName())
-                            .gender(item.getGender())
-                            .education(item.getEducation())
-                            .classification(item.getClassification())
-                            .certificate(adminStudentQdsl.certificateCount(item.getIstudent()))
-                            .mobileNumber(item.getMobileNumber())
-                            .subjectName(item.getSubjectName())
-                            .file(adminStudentQdsl.fileCount(item.getIstudent()))
-                            .build()).toList())
-                    .build();
-            return ResponseEntity.ok(build);
+        AdminStudentFindRes build = AdminStudentFindRes.builder()
+                .page(utils)
+                .res(list.stream().map(item -> AdminStudentRes.builder()
+                        .istudent(item.getIstudent())
+                        .address(item.getAddress())
+                        .endedAt(item.getEndedAt())
+                        .startedAt(item.getStartedAt())
+                        .name(item.getName())
+                        .gender(item.getGender())
+                        .education(item.getEducation())
+                        .classification(item.getClassification())
+                        .certificate(adminStudentQdsl.certificateCount(item.getIstudent()))
+                        .mobileNumber(item.getMobileNumber())
+                        .subjectName(item.getSubjectName())
+                        .file(adminStudentQdsl.fileCount(item.getIstudent()))
+                        .build()).toList())
+                .build();
+        return ResponseEntity.ok(build);
     }
 
     public AdminStudentDetailFindRes selStudentDetail(AdminStudentDetailDto dto) {
@@ -149,20 +147,29 @@ public class AdminStudentService {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
         }
     }
-    public AdminMainPortfolioPatchRes patchMain(AdminMainPortfolioPatchDto dto) {
-        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
 
-        if (stdId.isPresent()) {
-            if (dto.getCompanyMainYn() == 1) {
-                stdId.get().setCompanyMainYn(1);
-            } else {
-                stdId.get().setCompanyMainYn(0);
+    public List<AdminMainPortfolioPatchRes> patchMain(AdminMainPortfolioPatchDto dto) {
+
+
+        if (dto.getIstudent() != null) {
+            List<StudentEntity> stdIdList = STU_REP.findAllById(dto.getIstudent());
+            List<AdminMainPortfolioPatchRes> resultList = new ArrayList<>();
+
+
+            for (StudentEntity studentEntity : stdIdList) {
+                if (dto.getCompanyMainYn() == 1) {
+                    studentEntity.setCompanyMainYn(1);
+                } else {
+                    studentEntity.setCompanyMainYn(0);
+                }
+                StudentEntity save = STU_REP.save(studentEntity);
+                AdminMainPortfolioPatchRes build = AdminMainPortfolioPatchRes.builder()
+                        .istudent(save.getIstudent())
+                        .companyMainYn(save.getCompanyMainYn())
+                        .build();
+                resultList.add(build);
             }
-            StudentEntity save = STU_REP.save(stdId.get());
-            return AdminMainPortfolioPatchRes.builder()
-                    .companyMainYn(save.getCompanyMainYn())
-                    .istudent(save.getIstudent())
-                    .build();
+            return resultList;
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
         }
@@ -173,8 +180,8 @@ public class AdminStudentService {
 
         if (stdId.isPresent()) {
             stdId.get().setDelYn(1);
-
             StudentEntity save = STU_REP.save(stdId.get());
+
             return AdminStudentDelRes.builder()
                     .istudent(save.getIstudent())
                     .delYn(save.getDelYn())
@@ -227,7 +234,6 @@ public class AdminStudentService {
                 student.setCertificates(certificates);
             }
             StudentEntity stdSave = STU_REP.save(student);
-
 
 
             return AdminStudentUpdRes.builder()
