@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
-@Tag(name = "기업 로그인,로그아웃,조회")
+@Tag(name = "기업 수강생 조회")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/company")

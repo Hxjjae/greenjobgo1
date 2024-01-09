@@ -13,16 +13,16 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
-@Tag(name = "수강생 로그인,로그아웃")
+@Tag(name = "수강생,기업 로그인,로그아웃")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/student/sign")
+@RequestMapping("/api/sign")
 public class SignController {
     private final SignService service;
     @PostMapping("/sign-in")
     @Operation(summary = "로그인", description = """
-            "email(id)": 이메일(기업로그인은 아이디)<br>
-            "pw": 비밀번호
+            "email(id)": 이메일(기업id: green100)<br>
+            "pw": 비밀번호(기업pw green1234)
             """)
     public SignInResultDto signIn(HttpServletRequest req, @RequestBody SignInParam p) {
         String ip = req.getRemoteAddr();
