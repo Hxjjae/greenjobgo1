@@ -277,7 +277,7 @@ public class AdminSignService {
         }
 
         // Download
-        response.setContentType("ms-vnd/excel");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment;filename=student.xlsx");
         try {
             wb.write(response.getOutputStream());
