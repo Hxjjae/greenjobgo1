@@ -1,8 +1,7 @@
 package com.green.greenjobgo1.admin.std_management;
 
 import com.green.greenjobgo1.admin.std_management.model.*;
-import com.green.greenjobgo1.common.entity.CertificateEntity;
-import com.green.greenjobgo1.common.entity.StudentEntity;
+import com.green.greenjobgo1.common.entity.*;
 import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.repository.*;
 import com.green.greenjobgo1.common.security.config.security.MyUserDetailsServiceImpl;
