@@ -1,13 +1,9 @@
 package com.green.greenjobgo1.admin.std_management.model;
 
-import com.green.greenjobgo1.config.entity.CourseSubjectEntity;
-import com.green.greenjobgo1.config.entity.FileEntity;
-import com.green.greenjobgo1.repository.CourseSubjectRepository;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;

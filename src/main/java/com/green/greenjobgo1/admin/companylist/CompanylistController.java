@@ -2,7 +2,7 @@ package com.green.greenjobgo1.admin.companylist;
 
 import com.green.greenjobgo1.admin.companylist.model.CompanyNameDto;
 import com.green.greenjobgo1.admin.companylist.model.CompanylistVo;
-import com.green.greenjobgo1.config.entity.CompanyListEntity;
+import com.green.greenjobgo1.common.entity.CompanyListEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

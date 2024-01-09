@@ -1,14 +1,12 @@
 package com.green.greenjobgo1.admin.category;
 
 import com.green.greenjobgo1.admin.category.model.*;
-import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
+import com.green.greenjobgo1.common.entity.CategorySubjectEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.NamedStoredProcedureQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

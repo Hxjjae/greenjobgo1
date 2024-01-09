@@ -1,9 +1,9 @@
 package com.green.greenjobgo1.student;
 
 import com.green.greenjobgo1.admin.std_management.model.AdminStudentDto;
-import com.green.greenjobgo1.config.entity.QCourseSubjectEntity;
-import com.green.greenjobgo1.config.entity.QStudentCourseSubjectEntity;
-import com.green.greenjobgo1.config.entity.QStudentEntity;
+import com.green.greenjobgo1.common.entity.QCourseSubjectEntity;
+import com.green.greenjobgo1.common.entity.QStudentCourseSubjectEntity;
+import com.green.greenjobgo1.common.entity.QStudentEntity;
 import com.green.greenjobgo1.student.model.StudentSelRes;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;

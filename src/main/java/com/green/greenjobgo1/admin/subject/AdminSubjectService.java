@@ -3,21 +3,16 @@ package com.green.greenjobgo1.admin.subject;
 import com.green.greenjobgo1.admin.category.model.AdminCategoryDto;
 import com.green.greenjobgo1.admin.subject.model.*;
 import com.green.greenjobgo1.common.utils.PagingUtils;
-import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
-import com.green.greenjobgo1.config.entity.CourseSubjectEntity;
+import com.green.greenjobgo1.common.entity.CategorySubjectEntity;
+import com.green.greenjobgo1.common.entity.CourseSubjectEntity;
 import com.green.greenjobgo1.repository.AdminCategoryRepository;
 import com.green.greenjobgo1.repository.AdminSubjectRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;

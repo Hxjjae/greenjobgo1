@@ -2,22 +2,15 @@ package com.green.greenjobgo1.admin.subject;
 
 import com.green.greenjobgo1.admin.category.model.AdminCategoryDto;
 import com.green.greenjobgo1.admin.subject.model.*;
-import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
-import com.green.greenjobgo1.config.entity.CourseSubjectEntity;
-import com.green.greenjobgo1.config.entity.QCategorySubjectEntity;
-import com.green.greenjobgo1.config.entity.QCourseSubjectEntity;
+import com.green.greenjobgo1.common.entity.QCategorySubjectEntity;
+import com.green.greenjobgo1.common.entity.QCourseSubjectEntity;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.util.StringUtils;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 

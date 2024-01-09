@@ -2,7 +2,7 @@ package com.green.greenjobgo1.admin.company;
 
 import com.green.greenjobgo1.admin.company.model.CompanyParam;
 import com.green.greenjobgo1.admin.company.model.CompanyVo;
-import com.green.greenjobgo1.config.entity.CompanyEntity;
+import com.green.greenjobgo1.common.entity.CompanyEntity;
 import com.green.greenjobgo1.repository.CompanyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
