@@ -21,7 +21,7 @@ public class SignController {
     private final SignService service;
     @PostMapping("/sign-in")
     @Operation(summary = "로그인", description = """
-            "email(id)": 이메일(기업id: green100)<br>
+            "email(id)": 이메일(기업id: greendg100)<br>
             "pw": 비밀번호(기업pw green1234)
             """)
     public SignInResultDto signIn(HttpServletRequest req, @RequestBody SignInParam p) {

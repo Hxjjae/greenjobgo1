@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Builder
 public class StudentExcel {
     private String subjectName;
-    private String number;
+    private String round;
     private String startedAt;
     private String endedAt;
     private String trainingTime;

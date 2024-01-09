@@ -34,7 +34,7 @@ public class AdminSignController {
         return ResponseEntity.ok(service.addExcel(studentfile));
     }
     @GetMapping("/student-download")
-    @Operation(summary = "다운로드")
+    @Operation(summary = "수강생 엑셀파일 다운로드")
     public void downloadMock(HttpServletResponse res) throws IOException {
         service.downloadstd(res);
     }

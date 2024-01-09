@@ -5,6 +5,7 @@ import com.green.greenjobgo1.admin.companylist.model.CompanylistVo;
 import com.green.greenjobgo1.common.entity.CompanyListEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -41,6 +43,11 @@ public class CompanylistController {
     @Operation(summary = "엑셀로 추가",description = "엑셀파일을 넣어주세요 <br> 리턴값이 1이면 정상 추가 됨")
     public ResponseEntity<Integer> addExcel(@RequestPart MultipartFile companyfile){
         return ResponseEntity.ok(service.addExcel(companyfile));
+    }
+    @GetMapping("/download")
+    @Operation(summary = "수강생 엑셀파일 다운로드")
+    public void downloadMock(HttpServletResponse res) throws IOException {
+        service.downloadCompanylist(res);
     }
 
     @GetMapping

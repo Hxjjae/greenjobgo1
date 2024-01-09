@@ -7,16 +7,14 @@ import com.green.greenjobgo1.admin.sign.model.StudentExcel;
 import com.green.greenjobgo1.common.entity.*;
 import com.green.greenjobgo1.common.utils.ExcelUtil;
 import com.green.greenjobgo1.common.utils.ResultUtils;
-import com.green.greenjobgo1.repository.AdminSubjectRepository;
-import com.green.greenjobgo1.repository.EmployeeProfileRepository;
-import com.green.greenjobgo1.repository.StudentCourseSubjectRepository;
-import com.green.greenjobgo1.repository.StudentRepository;
+import com.green.greenjobgo1.repository.*;
 import com.green.greenjobgo1.common.security.config.RedisService;
 import com.green.greenjobgo1.common.security.config.security.AuthenticationFacade;
 import com.green.greenjobgo1.common.security.config.security.JwtTokenProvider;
 import com.green.greenjobgo1.common.security.config.security.model.MyUserDetails;
 import com.green.greenjobgo1.common.security.sign.model.SignInResultDto;
 import io.jsonwebtoken.Claims;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +32,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.IntStream;
 
 @Slf4j
@@ -47,13 +42,15 @@ public class AdminSignService {
     private final StudentRepository stdRep;
     private final AdminSubjectRepository subjectRep;
     private final EmployeeProfileRepository employeeprofileRep;
-    private final StudentCourseSubjectRepository studentSubjectRep;
+    private final StudentCourseSubjectRepository studentCourseSubjectRep;
     private final PasswordEncoder PW_ENCODER;
     private final ExcelUtil excelUtil;
     private final AdminRepository AdminRep;
     private final RedisService redisService;
     private final JwtTokenProvider JWT_PROVIDER;
     private final AuthenticationFacade facade;
+    private final FileRepository fileRep;
+    private final FileCategoryRepository fileCategoryRep;
 
     @Transactional
     public int addExcel(MultipartFile studentfile) {
@@ -65,7 +62,7 @@ public class AdminSignService {
         for (Map<String, Object> map : listMap) {
             StudentExcel student = StudentExcel.builder()
                     .subjectName(map.get("0").toString())
-                    .number(map.get("1").toString())
+                    .round(map.get("1").toString())
                     .startedAt(map.get("2").toString())
                     .endedAt(map.get("3").toString())
                     .trainingTime(map.get("4").toString())
@@ -130,7 +127,7 @@ public class AdminSignService {
                 log.info("ID:{}",save.getIstudent());
                 //학생이 소속된 과목table 정보 가져오기
                 log.info("과정명:{}",user.getSubjectName());
-                CourseSubjectEntity subjectentity = subjectRep.findBySubjectName(user.getSubjectName());
+                CourseSubjectEntity subjectentity = subjectRep.findBySubjectNameAndRound(user.getSubjectName(), Integer.parseInt(user.getRound()));
 
                 log.info("subject테이블 과정명:{}",subjectentity.getSubjectName());
                 if (subjectentity == null) {
@@ -140,10 +137,27 @@ public class AdminSignService {
                         .studentEntity(save)
                         .courseSubjectEntity(subjectentity).build();
 
-                studentSubjectRep.save(entity);
+                studentCourseSubjectRep.save(entity);
                 if (save.getId() == null){
                     return 0;
                 }
+            }else {
+
+
+                // 한개의 아이디에 두개이상 과목추가
+                CourseSubjectEntity courseSubjectEntity = subjectRep.findBySubjectNameAndRound(user.getSubjectName(), Integer.parseInt(user.getRound()));
+                List<StudentCourseSubjectEntity> StudentEntity = studentCourseSubjectRep.findByStudentEntity(studententity);
+                StudentCourseSubjectEntity CourseSubjectEntity = studentCourseSubjectRep.findByCourseSubjectEntityAndStudentEntity(courseSubjectEntity, studententity);
+
+
+                if (CourseSubjectEntity == null) {
+                    log.info("수강과목:{}",courseSubjectEntity.getSubjectName());
+                    StudentCourseSubjectEntity entity = StudentCourseSubjectEntity.builder()
+                            .studentEntity(studententity)
+                            .courseSubjectEntity(courseSubjectEntity).build();
+                    studentCourseSubjectRep.save(entity);
+                }
+
             }
 
         }
@@ -229,9 +243,16 @@ public class AdminSignService {
 
             if (!scsList.isEmpty()) {
                 for (int i = 0; i < scsList.size(); i++) {
-                CourseSubjectEntity subjectEntity = subjectRep.findById(scsList.get(0).getCourseSubjectEntity().getIcourseSubject()).orElse(null);
+                CourseSubjectEntity subjectEntity = subjectRep.findById(scsList.get(i).getCourseSubjectEntity().getIcourseSubject()).orElse(null);
                 if (subjectEntity != null) {
+                    // 1L은 이력서
+                    FileCategoryEntity fileCategoryEntity = fileCategoryRep.findById(1L).get();
 
+                    //포트폴리오파일
+                    FileCategoryEntity fileCategoryportfolio = fileCategoryRep.findById(2L).get();
+
+                    List<FileEntity> FileCategoryEntity = fileRep.findByFileCategoryEntityAndStudentEntity(fileCategoryEntity, student);
+                    List<FileEntity> FileCategoryportfolio = fileRep.findByFileCategoryEntityAndStudentEntity(fileCategoryportfolio, student);
 
                     Row row = sheet.createRow(rowNum++);
                     row.createCell(0).setCellValue(subjectEntity.getSubjectName()); //과목명
@@ -249,14 +270,20 @@ public class AdminSignService {
                     row.createCell(11).setCellValue(student.getGender());
                     row.createCell(12).setCellValue(student.getAge());
                     row.createCell(13).setCellValue(student.getEducation()); // 학력
+                    row.createCell(14).setCellValue(FileCategoryEntity.size() !=0 ? "O": "-" );
+                    row.createCell(15).setCellValue(FileCategoryportfolio.size() !=0 ? "O": "-" );
                 }
                 }
             }
         }
 
         // Download
-        response.setContentType("ms-vnd/excel");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment;filename=student.xlsx");
+        ServletOutputStream servletOutputStream = response.getOutputStream();
+        servletOutputStream.flush();
+        servletOutputStream.close();
+
         try {
             wb.write(response.getOutputStream());
         } catch (IOException e) {
