@@ -34,10 +34,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.IntStream;
 
 @Slf4j
@@ -47,7 +44,7 @@ public class AdminSignService {
     private final StudentRepository stdRep;
     private final AdminSubjectRepository subjectRep;
     private final EmployeeProfileRepository employeeprofileRep;
-    private final StudentCourseSubjectRepository studentSubjectRep;
+    private final StudentCourseSubjectRepository studentCourseSubjectRep;
     private final PasswordEncoder PW_ENCODER;
     private final ExcelUtil excelUtil;
     private final AdminRepository AdminRep;
@@ -65,7 +62,7 @@ public class AdminSignService {
         for (Map<String, Object> map : listMap) {
             StudentExcel student = StudentExcel.builder()
                     .subjectName(map.get("0").toString())
-                    .number(map.get("1").toString())
+                    .round(map.get("1").toString())
                     .startedAt(map.get("2").toString())
                     .endedAt(map.get("3").toString())
                     .trainingTime(map.get("4").toString())
@@ -130,7 +127,7 @@ public class AdminSignService {
                 log.info("ID:{}",save.getIstudent());
                 //학생이 소속된 과목table 정보 가져오기
                 log.info("과정명:{}",user.getSubjectName());
-                CourseSubjectEntity subjectentity = subjectRep.findBySubjectName(user.getSubjectName());
+                CourseSubjectEntity subjectentity = subjectRep.findBySubjectNameAndRound(user.getSubjectName(), Integer.parseInt(user.getRound()));
 
                 log.info("subject테이블 과정명:{}",subjectentity.getSubjectName());
                 if (subjectentity == null) {
@@ -140,10 +137,27 @@ public class AdminSignService {
                         .studentEntity(save)
                         .courseSubjectEntity(subjectentity).build();
 
-                studentSubjectRep.save(entity);
+                studentCourseSubjectRep.save(entity);
                 if (save.getId() == null){
                     return 0;
                 }
+            }else {
+
+
+                // 한개의 아이디에 두개이상 과목추가
+                CourseSubjectEntity courseSubjectEntity = subjectRep.findBySubjectNameAndRound(user.getSubjectName(), Integer.parseInt(user.getRound()));
+                List<StudentCourseSubjectEntity> StudentEntity = studentCourseSubjectRep.findByStudentEntity(studententity);
+                StudentCourseSubjectEntity CourseSubjectEntity = studentCourseSubjectRep.findByCourseSubjectEntityAndStudentEntity(courseSubjectEntity, studententity);
+
+
+                if (CourseSubjectEntity == null) {
+                    log.info("수강과목:{}",courseSubjectEntity.getSubjectName());
+                    StudentCourseSubjectEntity entity = StudentCourseSubjectEntity.builder()
+                            .studentEntity(studententity)
+                            .courseSubjectEntity(courseSubjectEntity).build();
+                    studentCourseSubjectRep.save(entity);
+                }
+
             }
 
         }

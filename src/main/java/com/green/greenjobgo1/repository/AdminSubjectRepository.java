@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AdminSubjectRepository extends JpaRepository<CourseSubjectEntity, Long> {
-    CourseSubjectEntity findBySubjectName(String subjectName);
+    CourseSubjectEntity findBySubjectNameAndRound(String subjectName,int round);
 }
