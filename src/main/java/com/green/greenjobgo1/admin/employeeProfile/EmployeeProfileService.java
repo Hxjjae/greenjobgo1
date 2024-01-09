@@ -2,7 +2,7 @@ package com.green.greenjobgo1.admin.employeeProfile;
 
 import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileDto;
 import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileVo;
-import com.green.greenjobgo1.config.entity.EmployeeProfileEntity;
+import com.green.greenjobgo1.common.entity.EmployeeProfileEntity;
 import com.green.greenjobgo1.repository.EmployeeProfileRepository;
 import com.green.greenjobgo1.common.utils.MyFileUtils;
 import com.querydsl.jpa.impl.JPAQueryFactory;

@@ -1,7 +1,7 @@
 package com.green.greenjobgo1.common.utils;
 
-import com.green.greenjobgo1.security.CommonRes;
-import com.green.greenjobgo1.security.sign.model.SignUpResultDto;
+import com.green.greenjobgo1.common.security.CommonRes;
+import com.green.greenjobgo1.common.security.sign.model.SignUpResultDto;
 
 public class ResultUtils {
     public static void setSuccessResult(SignUpResultDto result) {

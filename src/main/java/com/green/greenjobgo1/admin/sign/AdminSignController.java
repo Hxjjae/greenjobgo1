@@ -2,9 +2,9 @@ package com.green.greenjobgo1.admin.sign;
 
 import com.green.greenjobgo1.admin.sign.model.AdminParam;
 import com.green.greenjobgo1.admin.sign.model.AdminSigInParam;
-import com.green.greenjobgo1.config.entity.AdminEntity;
-import com.green.greenjobgo1.security.CommonRes;
-import com.green.greenjobgo1.security.sign.model.SignInResultDto;
+import com.green.greenjobgo1.common.entity.AdminEntity;
+import com.green.greenjobgo1.common.security.CommonRes;
+import com.green.greenjobgo1.common.security.sign.model.SignInResultDto;
 import com.green.greenjobgo1.sign.model.TokenDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

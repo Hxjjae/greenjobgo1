@@ -1,9 +1,9 @@
 package com.green.greenjobgo1.student;
 
 import com.green.greenjobgo1.common.utils.MyFileUtils;
-import com.green.greenjobgo1.config.entity.FileCategoryEntity;
-import com.green.greenjobgo1.config.entity.FileEntity;
-import com.green.greenjobgo1.config.entity.StudentEntity;
+import com.green.greenjobgo1.common.entity.FileCategoryEntity;
+import com.green.greenjobgo1.common.entity.FileEntity;
+import com.green.greenjobgo1.common.entity.StudentEntity;
 import com.green.greenjobgo1.repository.FileCategoryRepository;
 import com.green.greenjobgo1.repository.FileRepository;
 import com.green.greenjobgo1.repository.StudentRepository;
@@ -20,10 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service

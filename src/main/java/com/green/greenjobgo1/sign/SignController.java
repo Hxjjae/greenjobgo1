@@ -1,8 +1,8 @@
 package com.green.greenjobgo1.sign;
 
 import com.green.greenjobgo1.sign.model.SignInParam;
-import com.green.greenjobgo1.security.CommonRes;
-import com.green.greenjobgo1.security.sign.model.SignInResultDto;
+import com.green.greenjobgo1.common.security.CommonRes;
+import com.green.greenjobgo1.common.security.sign.model.SignInResultDto;
 import com.green.greenjobgo1.sign.model.TokenDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

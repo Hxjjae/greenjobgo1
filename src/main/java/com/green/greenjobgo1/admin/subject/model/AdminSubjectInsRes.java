@@ -1,6 +1,5 @@
 package com.green.greenjobgo1.admin.subject.model;
 
-import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
 import lombok.Builder;
 import lombok.Getter;
 

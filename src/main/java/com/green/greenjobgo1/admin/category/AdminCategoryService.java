@@ -3,7 +3,7 @@ package com.green.greenjobgo1.admin.category;
 import com.green.greenjobgo1.admin.category.model.AdminCategoryInsDto;
 import com.green.greenjobgo1.admin.category.model.AdminCategoryInsRes;
 import com.green.greenjobgo1.admin.category.model.AdminCategoryVo;
-import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
+import com.green.greenjobgo1.common.entity.CategorySubjectEntity;
 import com.green.greenjobgo1.repository.AdminCategoryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

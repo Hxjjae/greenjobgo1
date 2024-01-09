@@ -1,6 +1,5 @@
 package com.green.greenjobgo1.admin.std_management.model;
 
-import com.green.greenjobgo1.config.entity.StudentEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

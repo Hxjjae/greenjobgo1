@@ -2,23 +2,19 @@ package com.green.greenjobgo1.company;
 
 
 import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileVo;
+import com.green.greenjobgo1.common.entity.EmployeeProfileEntity;
 import com.green.greenjobgo1.common.utils.PagingUtils;
-import com.green.greenjobgo1.common.utils.ResultUtils;
 import com.green.greenjobgo1.company.model.*;
 import com.green.greenjobgo1.config.entity.*;
 import com.green.greenjobgo1.repository.CompanyRepository;
 import com.green.greenjobgo1.repository.EmployeeProfileRepository;
 import com.green.greenjobgo1.repository.StudentRepository;
-import com.green.greenjobgo1.security.config.RedisService;
-import com.green.greenjobgo1.security.config.security.AuthenticationFacade;
-import com.green.greenjobgo1.security.config.security.JwtTokenProvider;
-import com.green.greenjobgo1.security.config.security.model.MyUserDetails;
-import com.green.greenjobgo1.security.sign.model.SignInResultDto;
+import com.green.greenjobgo1.common.security.config.RedisService;
+import com.green.greenjobgo1.common.security.config.security.AuthenticationFacade;
+import com.green.greenjobgo1.common.security.config.security.JwtTokenProvider;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -26,11 +22,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 @Slf4j
 @Service

@@ -1,11 +1,10 @@
 package com.green.greenjobgo1.admin.subject.model;
 
-import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
+import com.green.greenjobgo1.common.entity.CategorySubjectEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDate;
 

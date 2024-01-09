@@ -2,17 +2,10 @@ package com.green.greenjobgo1.company;
 
 import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileVo;
 import com.green.greenjobgo1.company.model.*;
-import com.green.greenjobgo1.security.CommonRes;
-import com.green.greenjobgo1.security.sign.model.SignInResultDto;
-import com.green.greenjobgo1.sign.model.TokenDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

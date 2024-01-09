@@ -2,22 +2,17 @@ package com.green.greenjobgo1.admin.subject;
 
 import com.green.greenjobgo1.admin.category.model.AdminCategoryDto;
 import com.green.greenjobgo1.admin.subject.model.*;
-import com.green.greenjobgo1.common.utils.PagingUtils;
-import com.green.greenjobgo1.config.entity.CategorySubjectEntity;
-import com.green.greenjobgo1.config.entity.CourseSubjectEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
