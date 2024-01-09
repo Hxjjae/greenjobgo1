@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 
@@ -15,4 +16,5 @@ public class StudentInsDto {
     private String file;
     private String fileLink;
     private String introducedLine;
+    private List<String> certificates;
 }

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -142,7 +143,7 @@ public class AdminStudentController {
         return SERVICE.delStudent(dto);
     }
 
-    @PutMapping()
+    @PutMapping
     @Operation(summary = "학생 정보 수정")
     public AdminStudentUpdRes putStudent(@RequestParam Long istudent,
                                          @RequestParam String studentName,
@@ -152,14 +153,14 @@ public class AdminStudentController {
                                          @RequestParam List<String> certificateList) {
 
         AdminStudentUpdDto dto = new AdminStudentUpdDto();
-        AdminStudentCertificateDto certiDto = new AdminStudentCertificateDto();
+        List<String> certiList = new ArrayList<>();
         dto.setIstudent(istudent);
         dto.setStudentName(studentName);
         dto.setAddress(address);
         dto.setEmail(email);
         dto.setEducation(education);
-        certiDto.setCertificate(certificateList.toString());
+        certiList = certificateList;
 
-        return SERVICE.updStudent(dto, certiDto);
+        return SERVICE.updStudent(dto, certiList);
     }
 }

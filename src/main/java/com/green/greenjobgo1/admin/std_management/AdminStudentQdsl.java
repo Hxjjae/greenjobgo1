@@ -76,6 +76,15 @@ public class AdminStudentQdsl {
         return query.fetchOne();
     }
 
+    public List<AdminStudentCertificateRes> certificateRes(Long istudent) {
+        JPAQuery<AdminStudentCertificateRes> query = jpaQueryFactory.select(
+                        Projections.bean(AdminStudentCertificateRes.class, certificate.icertificate, certificate.certificate))
+                .from(certificate)
+                .join(certificate.studentEntity, stu)
+                .where(stu.istudent.eq(istudent));
+        return query.fetch();
+    }
+
     public List<AdminPortfolioRes> portfolioVos(AdminPortfolioDto dto, Pageable pageable) {
         JPAQuery<AdminPortfolioRes> query = jpaQueryFactory.select(
                         Projections.bean(AdminPortfolioRes.class, stu.name.as("studentName")
@@ -88,7 +97,8 @@ public class AdminStudentQdsl {
                 .where(eqIclassification(dto.getIclassfication()),
                         eqSubjectName(dto.getSubjectName()),
                         eqStudentName(dto.getStudentName()),
-                        file.fileCategoryEntity.iFileCategory.eq(4L))
+                        file.fileCategoryEntity.iFileCategory.eq(4L),
+                        stu.delYn.eq(0))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(stu.storageYn.desc(), stu.istudent.asc());
@@ -108,7 +118,8 @@ public class AdminStudentQdsl {
                         eqSubjectName(dto.getSubjectName()),
                         eqStudentName(dto.getStudentName()),
                         file.fileCategoryEntity.iFileCategory.eq(4L),
-                        eqStorageYn(dto.getStorageYn()))
+                        eqStorageYn(dto.getStorageYn()),
+                        stu.delYn.eq(0))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(stu.companyMainYn.desc(), cos.endedAt.desc());

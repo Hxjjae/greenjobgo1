@@ -65,6 +65,7 @@ public class AdminStudentService {
         Optional<StudentEntity> byId = STU_REP.findById(dto.getIstudent());
         List<FileEntity> fileList = FILE_REP.findAllByStudentEntity(byId.get());
         List<AdminStudentFile> files = adminStudentQdsl.fileVos(dto);
+        List<AdminStudentCertificateRes> certiRes = adminStudentQdsl.certificateRes(dto.getIstudent());
 
         if (byId.isPresent()) {
             return AdminStudentDetailFindRes.builder()
@@ -78,6 +79,7 @@ public class AdminStudentService {
                             .education(byId.get().getEducation())
                             .email(byId.get().getId())
                             .mobileNumber(byId.get().getMobileNumber())
+                            .Certificates(certiRes)
                             .build())
                     .file(files)
                     .build();
@@ -149,8 +151,6 @@ public class AdminStudentService {
     }
 
     public List<AdminMainPortfolioPatchRes> patchMain(AdminMainPortfolioPatchDto dto) {
-
-
         if (dto.getIstudent() != null) {
             List<StudentEntity> stdIdList = STU_REP.findAllById(dto.getIstudent());
             List<AdminMainPortfolioPatchRes> resultList = new ArrayList<>();
@@ -215,24 +215,35 @@ public class AdminStudentService {
 
     }
 
-    public AdminStudentUpdRes updStudent(AdminStudentUpdDto dto, AdminStudentCertificateDto certificateDto) {
+    public AdminStudentUpdRes updStudent(AdminStudentUpdDto dto, List<String> certificateValue) {
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
 
         if (stdId.isPresent()) {
             List<CertificateEntity> certificates = stdId.get().getCertificates();
-            StudentEntity student = new StudentEntity();
-            student = stdId.get();
+            List<AdminStudentCertificateRes> resultList = new ArrayList<>();
 
-            student.setIstudent(stdId.get().getIstudent());
+            StudentEntity student = stdId.get();
+
             student.setName(dto.getStudentName());
             student.setId(dto.getEmail());
             student.setAddress(dto.getAddress());
             student.setEducation(dto.getEducation());
 
-            for (CertificateEntity certificate : certificates) {
-                certificate.setCertificate(certificateDto.getCertificate());
-                student.setCertificates(certificates);
+
+            for (int i = 0; i < certificates.size(); i++) {
+                CertificateEntity certificate = certificates.get(i);
+                if (i < certificateValue.size()) {
+                    certificate.setCertificate(certificateValue.get(i));
+                    CertificateEntity save = CERT_REP.save(certificate);
+                    AdminStudentCertificateRes build = AdminStudentCertificateRes.builder()
+                            .icertificate(save.getIcertificate())
+                            .certificate(save.getCertificate())
+                            .build();
+                    resultList.add(build);
+                }
             }
+            student.setCertificates(certificates);
+
             StudentEntity stdSave = STU_REP.save(student);
 
 
@@ -242,11 +253,7 @@ public class AdminStudentService {
                     .email(stdSave.getId())
                     .address(stdSave.getAddress() + stdSave.getAddressDetail())
                     .education(stdSave.getEducation())
-                    .certificate(certificates.stream().map(item ->
-                            AdminStudentCertificateRes.builder()
-                                    .icertificate(item.getIcertificate())
-                                    .certificate(item.getCertificate())
-                                    .build()).toList())
+                    .certificate(resultList)
                     .build();
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");

@@ -5,15 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentPatchTotalRes {
-    private StudentPatchRes res;
-    private StudentIntroducedLineRes std;
-    private List<CertificateRes> certRes;
+public class CertificateRes {
 
+    private Long icertificate;
+    private String certificate;
 }

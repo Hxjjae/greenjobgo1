@@ -1,9 +1,11 @@
 package com.green.greenjobgo1.student;
 
+import com.green.greenjobgo1.common.entity.CertificateEntity;
 import com.green.greenjobgo1.common.utils.MyFileUtils;
 import com.green.greenjobgo1.common.entity.FileCategoryEntity;
 import com.green.greenjobgo1.common.entity.FileEntity;
 import com.green.greenjobgo1.common.entity.StudentEntity;
+import com.green.greenjobgo1.repository.CertificateRepository;
 import com.green.greenjobgo1.repository.FileCategoryRepository;
 import com.green.greenjobgo1.repository.FileRepository;
 import com.green.greenjobgo1.repository.StudentRepository;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +32,7 @@ public class StudentService {
     private final StudentRepository STU_REP;
     private final FileRepository FILE_REP;
     private final FileCategoryRepository FILE_CATE_REP;
+    private final CertificateRepository CERT_REP;
     private final StudentQdsl studentQdsl;
 
     @Value("${file.dir}")
@@ -176,6 +180,7 @@ public class StudentService {
         Optional<FileCategoryEntity> fileCateId = FILE_CATE_REP.findById(dto.getIFileCategory());
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
 
+
         if (!fileCateId.isPresent() || !stdId.isPresent()) {
             return null;
         }
@@ -189,7 +194,6 @@ public class StudentService {
         studentEntity.setIntroducedLine(dto.getIntroducedLine());
 
         StudentEntity studentSave = (dto.getIntroducedLine() != null) ? STU_REP.save(studentEntity) : studentEntity;
-
         String savedFileNm;
 
         Long iFileCategory = fileCateId.get().getIFileCategory();
@@ -200,6 +204,7 @@ public class StudentService {
         } else {
             return null;
         }
+
 
         if (savedFileNm != null) {
             entity.setFile(savedFileNm);
@@ -306,7 +311,6 @@ public class StudentService {
         }
 
     }
-
 
 
     private void fileUpload(MultipartFile file, StudentPatchDto dto, FileEntity entity,
@@ -540,9 +544,47 @@ public class StudentService {
                     .mobileNumber(studentSelRes.getMobileNumber())
                     .id(studentSelRes.getId())
                     .education(studentSelRes.getEducation())
+                    .certificates(studentSelRes.getCertificates())
                     .build();
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
         }
     }
+
+    public StudentCertificateRes insCertificates(StudentCertificateDto dto) {
+        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+        if (stdId.isPresent()) {
+            List<CertificateEntity> certificates = new ArrayList<>();
+            List<CertificateRes> resultList = new ArrayList<>();
+
+            StudentEntity student = stdId.get();
+
+            for (int i = 0; i < dto.getCertificates().size(); i++) {
+                CertificateEntity entity = new CertificateEntity();
+                entity.setCertificate(dto.getCertificates().get(i));
+                entity.setStudentEntity(student);
+
+                CertificateEntity save = CERT_REP.save(entity);
+
+                CertificateRes certRes = CertificateRes.builder()
+                        .icertificate(save.getIcertificate())
+                        .certificate(save.getCertificate())
+                        .build();
+                resultList.add(certRes);
+                certificates.add(save);
+            }
+
+            student.setCertificates(certificates);
+
+            StudentEntity save = STU_REP.save(student);
+
+            return StudentCertificateRes.builder()
+                    .istudent(save.getIstudent())
+                    .res(resultList)
+                    .build();
+        } else {
+            throw new RuntimeException("존재하지 않는 pk 입니다.");
+        }
+    }
+
 }

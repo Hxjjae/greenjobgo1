@@ -26,7 +26,7 @@ public class StudentQdsl {
     public StudentSelRes studentVo(Long istudent) {
         JPAQuery<StudentSelRes> query = jpaQueryFactory
                 .select(Projections.bean(StudentSelRes.class, stu.istudent, stu.name, cos.subjectName
-                        , cos.startedAt, cos.endedAt, stu.address, stu.mobileNumber, stu.id, stu.education))
+                        , cos.startedAt, cos.endedAt, stu.address, stu.mobileNumber, stu.id, stu.education, stu.certificates))
                 .from(stu)
                 .join(stu.scsList, scs)
                 .join(scs.courseSubjectEntity, cos)

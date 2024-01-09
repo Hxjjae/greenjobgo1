@@ -11,9 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentPatchTotalRes {
-    private StudentPatchRes res;
-    private StudentIntroducedLineRes std;
-    private List<CertificateRes> certRes;
-
+public class StudentCertificateRes {
+    private List<CertificateRes> res;
+    private Long istudent;
 }

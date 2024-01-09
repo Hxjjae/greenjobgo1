@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -21,4 +22,5 @@ public class StudentSelRes {
     private String mobileNumber;
     private String id;
     private String education;
+    private List<String> certificates;
 }
