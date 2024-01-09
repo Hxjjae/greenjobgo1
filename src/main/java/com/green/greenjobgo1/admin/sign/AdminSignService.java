@@ -7,10 +7,7 @@ import com.green.greenjobgo1.admin.sign.model.StudentExcel;
 import com.green.greenjobgo1.common.entity.*;
 import com.green.greenjobgo1.common.utils.ExcelUtil;
 import com.green.greenjobgo1.common.utils.ResultUtils;
-import com.green.greenjobgo1.repository.AdminSubjectRepository;
-import com.green.greenjobgo1.repository.EmployeeProfileRepository;
-import com.green.greenjobgo1.repository.StudentCourseSubjectRepository;
-import com.green.greenjobgo1.repository.StudentRepository;
+import com.green.greenjobgo1.repository.*;
 import com.green.greenjobgo1.common.security.config.RedisService;
 import com.green.greenjobgo1.common.security.config.security.AuthenticationFacade;
 import com.green.greenjobgo1.common.security.config.security.JwtTokenProvider;
@@ -51,6 +48,8 @@ public class AdminSignService {
     private final RedisService redisService;
     private final JwtTokenProvider JWT_PROVIDER;
     private final AuthenticationFacade facade;
+    private final FileRepository fileRep;
+    private final FileCategoryRepository fileCategoryRep;
 
     @Transactional
     public int addExcel(MultipartFile studentfile) {
@@ -243,9 +242,16 @@ public class AdminSignService {
 
             if (!scsList.isEmpty()) {
                 for (int i = 0; i < scsList.size(); i++) {
-                CourseSubjectEntity subjectEntity = subjectRep.findById(scsList.get(0).getCourseSubjectEntity().getIcourseSubject()).orElse(null);
+                CourseSubjectEntity subjectEntity = subjectRep.findById(scsList.get(i).getCourseSubjectEntity().getIcourseSubject()).orElse(null);
                 if (subjectEntity != null) {
+                    // 1L은 이력서
+                    FileCategoryEntity fileCategoryEntity = fileCategoryRep.findById(1L).get();
 
+                    //포트폴리오파일
+                    FileCategoryEntity fileCategoryportfolio = fileCategoryRep.findById(2L).get();
+
+                    List<FileEntity> FileCategoryEntity = fileRep.findByFileCategoryEntityAndStudentEntity(fileCategoryEntity, student);
+                    List<FileEntity> FileCategoryportfolio = fileRep.findByFileCategoryEntityAndStudentEntity(fileCategoryportfolio, student);
 
                     Row row = sheet.createRow(rowNum++);
                     row.createCell(0).setCellValue(subjectEntity.getSubjectName()); //과목명
@@ -263,6 +269,8 @@ public class AdminSignService {
                     row.createCell(11).setCellValue(student.getGender());
                     row.createCell(12).setCellValue(student.getAge());
                     row.createCell(13).setCellValue(student.getEducation()); // 학력
+                    row.createCell(14).setCellValue(FileCategoryEntity.size() !=0 ? "O": "-" );
+                    row.createCell(15).setCellValue(FileCategoryportfolio.size() !=0 ? "O": "-" );
                 }
                 }
             }
