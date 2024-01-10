@@ -99,11 +99,18 @@ public class AdminSignService {
             String phone = user.getPhone();
             String pwsecond = phone.substring(9, 13);
 
+            CourseSubjectEntity subjectentity = subjectRep.findBySubjectNameAndRound(user.getSubjectName(), Integer.parseInt(user.getRound()));
+
+            if (subjectentity == null) {
+                throw new RuntimeException("존재하지 않는 과목입니다");
+            }
 
             EmployeeProfileEntity employeeEntity = employeeprofileRep.findByName(user.getEmployee());
             if (employeeEntity == null){
                 throw new RuntimeException("존재하지 않는 직원입니다.");
             }
+
+
 
             StudentEntity student = StudentEntity.builder()
                     .gender(user.getGender())
@@ -117,6 +124,7 @@ public class AdminSignService {
                     .age(Integer.parseInt(user.getAge()))
                     .role("ROLE_USER")
                     .employeeProfile(employeeEntity)
+                    .categorySubjectEntity(subjectentity.getCategorySubjectEntity())
                     .build();
 
             StudentEntity studententity = stdRep.findById(user.getEmail());
@@ -128,15 +136,20 @@ public class AdminSignService {
                 log.info("ID:{}",save.getIstudent());
                 //학생이 소속된 과목table 정보 가져오기
                 log.info("과정명:{}",user.getSubjectName());
-                CourseSubjectEntity subjectentity = subjectRep.findBySubjectNameAndRound(user.getSubjectName(), Integer.parseInt(user.getRound()));
+                CourseSubjectEntity courseSubjectEntity = subjectRep.findBySubjectNameAndRound(user.getSubjectName(), Integer.parseInt(user.getRound()));
 
                 log.info("subject테이블 과정명:{}",subjectentity.getSubjectName());
                 if (subjectentity == null) {
                     throw new RuntimeException("존재하지 않는 과목입니다");
                 }
+                Long iclassification = courseSubjectEntity.getCategorySubjectEntity().getIclassification();
+
+
                 StudentCourseSubjectEntity entity = StudentCourseSubjectEntity.builder()
                         .studentEntity(save)
-                        .courseSubjectEntity(subjectentity).build();
+                        .courseSubjectEntity(subjectentity)
+                        .iclassification(iclassification)
+                        .build();
 
                 studentCourseSubjectRep.save(entity);
                 if (save.getId() == null){
