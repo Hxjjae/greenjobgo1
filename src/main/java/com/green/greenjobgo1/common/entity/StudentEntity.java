@@ -36,6 +36,7 @@ public class StudentEntity {
     @OneToMany(mappedBy = "studentEntity")
     private List<CertificateEntity> certificates;
 
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "iclassification")
     private CategorySubjectEntity categorySubjectEntity;

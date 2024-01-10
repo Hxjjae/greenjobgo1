@@ -132,11 +132,14 @@ public class AdminStudentQdsl {
         return query.fetch();
     }
 
-    public List<StudentCourseSubjectEntity> getStudentCourseSubjects(StudentEntity studentEntity) {
-        return jpaQueryFactory
-                .selectFrom(scs)
-                .where(scs.studentEntity.eq(studentEntity))
-                .fetch();
+    public Long rowCount(Long iclassification) {
+        JPAQuery<Long> query = jpaQueryFactory
+                .select(stu.istudent.count())
+                .from(scs)
+                .join(scs.studentEntity, stu)
+                .where(stu.categorySubjectEntity.iclassification.eq(iclassification),
+                        stu.companyMainYn.eq(1));
+        return query.fetchOne();
     }
 
     public List<AdminStudentRoleRes> RoleVos(AdminStudentRoleDto dto) {

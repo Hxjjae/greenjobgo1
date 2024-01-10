@@ -5,6 +5,7 @@ import com.green.greenjobgo1.common.entity.*;
 import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.repository.*;
 import com.green.greenjobgo1.common.security.config.security.MyUserDetailsServiceImpl;
+import com.green.greenjobgo1.student.model.StudentDelDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -150,126 +152,129 @@ public class AdminStudentService {
         }
     }
 
+    @Transactional
     public List<AdminMainPortfolioPatchRes> patchMain(AdminMainPortfolioPatchDto dto) {
-        if (dto.getIstudent() != null && !dto.getIstudent().isEmpty()) {
-            List<StudentEntity> stdIdList = STU_REP.findAllById(dto.getIstudent());
+        if (dto.getIstudent() != null) {
+            List<StudentEntity> stdList = STU_REP.findAllById(dto.getIstudent());
             List<AdminMainPortfolioPatchRes> resultList = new ArrayList<>();
 
-            for (StudentEntity studentEntity : stdIdList) {
-                CategorySubjectEntity categorySubjectEntity = studentEntity.getCategorySubjectEntity();
+            if (!stdList.isEmpty()) {
+                for (StudentEntity studentEntity : stdList) {
+                    Long rowCount = adminStudentQdsl.rowCount(studentEntity.getCategorySubjectEntity().getIclassification());
 
-                if (categorySubjectEntity != null) {
-                    List<StudentEntity> categoryStudents = categorySubjectEntity.getStudents();
-
-                    int maxIclassification = categoryStudents.stream()
-                            .map(StudentEntity::getCompanyMainYn)
-                            .max(Integer::compareTo)
-                            .orElse(Integer.MIN_VALUE);
-
-                    if (maxIclassification > 10) {
-                        studentEntity.setCompanyMainYn(dto.getCompanyMainYn());
-                        StudentEntity save = STU_REP.save(studentEntity);
-                        AdminMainPortfolioPatchRes build = AdminMainPortfolioPatchRes.builder()
-                                .istudent(save.getIstudent())
-                                .companyMainYn(save.getCompanyMainYn())
-                                .build();
-                        resultList.add(build);
+                    if (dto.getCompanyMainYn() == 1) {
+                        try {
+                            if (rowCount < 10) {
+                                studentEntity.setCompanyMainYn(1);
+                            }
+                        } catch (RuntimeException e) {
+                            throw new RuntimeException("특정 카테고리의 row 값은 이미 10개입니다.");
+                        }
+                    } else {
+                        studentEntity.setCompanyMainYn(0);
                     }
+                    StudentEntity savedStudent = STU_REP.save(studentEntity);
+                    AdminMainPortfolioPatchRes build = AdminMainPortfolioPatchRes.builder()
+                            .istudent(savedStudent.getIstudent())
+                            .companyMainYn(savedStudent.getCompanyMainYn())
+                            .build();
+
+                    resultList.add(build);
                 }
+                return resultList;
             }
-            return resultList;
+        } else {
+            throw new EntityNotFoundException("찾을 수 없는 Pk 입니다.");
+        }
+        return null;
+    }
+
+
+    public AdminStudentDelRes delStudent(AdminStudentDelDto dto) {
+        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+
+        if (stdId.isPresent()) {
+            stdId.get().setDelYn(1);
+            StudentEntity save = STU_REP.save(stdId.get());
+
+            return AdminStudentDelRes.builder()
+                    .istudent(save.getIstudent())
+                    .delYn(save.getDelYn())
+                    .build();
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
         }
     }
 
-
-
-    public AdminStudentDelRes delStudent(AdminStudentDelDto dto) {
-    Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
-
-    if (stdId.isPresent()) {
-        stdId.get().setDelYn(1);
-        StudentEntity save = STU_REP.save(stdId.get());
-
-        return AdminStudentDelRes.builder()
-                .istudent(save.getIstudent())
-                .delYn(save.getDelYn())
-                .build();
-    } else {
-        throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
-    }
-}
-
-public AdminStudentRoleRes patchRole(AdminStudentRoleDto dto) {
-    List<StudentEntity> all = STU_REP.findAll();
-    StudentEntity stdEntity = new StudentEntity();
-    StudentEntity tempEntity = new StudentEntity();
-    for (StudentEntity entity : all) {
-        stdEntity = entity;
-        tempEntity = stdEntity;
-    }
-    for (int i = 0; i < all.size(); i++) {
-        tempEntity.setStartedAt(dto.getStartedAt());
-        tempEntity.setEndedAt(dto.getEndedAt());
-        tempEntity.setEditableYn(dto.getEditableYn());
-    }
-    StudentEntity save = STU_REP.save(tempEntity);
-
-
-    return AdminStudentRoleRes.builder()
-            .editableYn(save.getEditableYn())
-            .startedAt(save.getStartedAt())
-            .endedAt(save.getEndedAt())
-            .build();
-
-}
-
-public AdminStudentUpdRes updStudent(AdminStudentUpdDto dto, List<String> certificateValue) {
-    Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
-
-    if (stdId.isPresent()) {
-        List<CertificateEntity> certificates = stdId.get().getCertificates();
-        List<AdminStudentCertificateRes> resultList = new ArrayList<>();
-
-        StudentEntity student = stdId.get();
-
-        student.setName(dto.getStudentName());
-        student.setId(dto.getEmail());
-        student.setAddress(dto.getAddress());
-        student.setEducation(dto.getEducation());
-
-
-        for (int i = 0; i < certificates.size(); i++) {
-            CertificateEntity certificate = certificates.get(i);
-            if (i < certificateValue.size()) {
-                certificate.setCertificate(certificateValue.get(i));
-                CertificateEntity save = CERT_REP.save(certificate);
-                AdminStudentCertificateRes build = AdminStudentCertificateRes.builder()
-                        .icertificate(save.getIcertificate())
-                        .certificate(save.getCertificate())
-                        .build();
-                resultList.add(build);
-            }
+    public AdminStudentRoleRes patchRole(AdminStudentRoleDto dto) {
+        List<StudentEntity> all = STU_REP.findAll();
+        StudentEntity stdEntity = new StudentEntity();
+        StudentEntity tempEntity = new StudentEntity();
+        for (StudentEntity entity : all) {
+            stdEntity = entity;
+            tempEntity = stdEntity;
         }
-        student.setCertificates(certificates);
+        for (int i = 0; i < all.size(); i++) {
+            tempEntity.setStartedAt(dto.getStartedAt());
+            tempEntity.setEndedAt(dto.getEndedAt());
+            tempEntity.setEditableYn(dto.getEditableYn());
+        }
+        StudentEntity save = STU_REP.save(tempEntity);
 
-        StudentEntity stdSave = STU_REP.save(student);
 
-
-        return AdminStudentUpdRes.builder()
-                .istudent(stdSave.getIstudent())
-                .studentName(stdSave.getName())
-                .email(stdSave.getId())
-                .address(stdSave.getAddress() + stdSave.getAddressDetail())
-                .education(stdSave.getEducation())
-                .certificate(resultList)
+        return AdminStudentRoleRes.builder()
+                .editableYn(save.getEditableYn())
+                .startedAt(save.getStartedAt())
+                .endedAt(save.getEndedAt())
                 .build();
-    } else {
-        throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
+
     }
 
-}
+    public AdminStudentUpdRes updStudent(AdminStudentUpdDto dto, List<String> certificateValue) {
+        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+
+        if (stdId.isPresent()) {
+            List<CertificateEntity> certificates = stdId.get().getCertificates();
+            List<AdminStudentCertificateRes> resultList = new ArrayList<>();
+
+            StudentEntity student = stdId.get();
+
+            student.setName(dto.getStudentName());
+            student.setId(dto.getEmail());
+            student.setAddress(dto.getAddress());
+            student.setEducation(dto.getEducation());
+
+
+            for (int i = 0; i < certificates.size(); i++) {
+                CertificateEntity certificate = certificates.get(i);
+                if (i < certificateValue.size()) {
+                    certificate.setCertificate(certificateValue.get(i));
+                    CertificateEntity save = CERT_REP.save(certificate);
+                    AdminStudentCertificateRes build = AdminStudentCertificateRes.builder()
+                            .icertificate(save.getIcertificate())
+                            .certificate(save.getCertificate())
+                            .build();
+                    resultList.add(build);
+                }
+            }
+            student.setCertificates(certificates);
+
+            StudentEntity stdSave = STU_REP.save(student);
+
+
+            return AdminStudentUpdRes.builder()
+                    .istudent(stdSave.getIstudent())
+                    .studentName(stdSave.getName())
+                    .email(stdSave.getId())
+                    .address(stdSave.getAddress() + stdSave.getAddressDetail())
+                    .education(stdSave.getEducation())
+                    .certificate(resultList)
+                    .build();
+        } else {
+            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
+        }
+
+    }
 
 
 }

@@ -30,6 +30,7 @@ public class CategorySubjectEntity {
     @OneToMany(mappedBy = "categorySubjectEntity", cascade = CascadeType.ALL)
     private List<CourseSubjectEntity> csList = new ArrayList<>();
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "categorySubjectEntity")
     private List<StudentEntity> students = new ArrayList<>();
 
