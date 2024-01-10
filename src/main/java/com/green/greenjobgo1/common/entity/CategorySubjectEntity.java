@@ -30,6 +30,9 @@ public class CategorySubjectEntity {
     @OneToMany(mappedBy = "categorySubjectEntity", cascade = CascadeType.ALL)
     private List<CourseSubjectEntity> csList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "categorySubjectEntity")
+    private List<StudentEntity> students = new ArrayList<>();
+
     @Column(nullable = false, length = 10,unique = true)
     private String classification;
 

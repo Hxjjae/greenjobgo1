@@ -37,6 +37,10 @@ public class StudentEntity {
     private List<CertificateEntity> certificates;
 
     @ManyToOne
+    @JoinColumn(name = "iclassification")
+    private CategorySubjectEntity categorySubjectEntity;
+
+    @ManyToOne
     @JoinColumn(name = "employee_profile")
     private EmployeeProfileEntity employeeProfile;
 

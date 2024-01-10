@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CourseSubjectRepository extends JpaRepository<CourseSubjectEntity, Long> {
+    CourseSubjectEntity findByScsListIn(List<StudentCourseSubjectEntity> scsList);
 }

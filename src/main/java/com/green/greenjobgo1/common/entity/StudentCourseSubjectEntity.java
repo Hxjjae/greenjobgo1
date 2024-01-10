@@ -27,4 +27,7 @@ public class StudentCourseSubjectEntity {
     @JoinColumn(name = "istudent")
     private StudentEntity studentEntity;
 
+    @Column
+    private Long iclassification;
+
 }

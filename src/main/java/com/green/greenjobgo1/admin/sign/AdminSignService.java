@@ -51,6 +51,7 @@ public class AdminSignService {
     private final AuthenticationFacade facade;
     private final FileRepository fileRep;
     private final FileCategoryRepository fileCategoryRep;
+    private final AdminCategoryRepository adminCategoryRepository;
 
     @Transactional
     public int addExcel(MultipartFile studentfile) {
@@ -152,11 +153,21 @@ public class AdminSignService {
 
                 if (CourseSubjectEntity == null) {
                     log.info("수강과목:{}",courseSubjectEntity.getSubjectName());
+
+                    CategorySubjectEntity categorySubjectEntity = courseSubjectEntity.getCategorySubjectEntity();
+
+                    Long iclassification = (categorySubjectEntity != null) ? categorySubjectEntity.getIclassification() : null;
+
                     StudentCourseSubjectEntity entity = StudentCourseSubjectEntity.builder()
                             .studentEntity(studententity)
-                            .courseSubjectEntity(courseSubjectEntity).build();
+                            .courseSubjectEntity(courseSubjectEntity)
+                            .iclassification(iclassification)
+                            .build();
                     studentCourseSubjectRep.save(entity);
                 }
+
+
+
 
             }
 

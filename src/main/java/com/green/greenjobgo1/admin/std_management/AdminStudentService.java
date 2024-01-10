@@ -151,23 +151,31 @@ public class AdminStudentService {
     }
 
     public List<AdminMainPortfolioPatchRes> patchMain(AdminMainPortfolioPatchDto dto) {
-        if (dto.getIstudent() != null) {
+        if (dto.getIstudent() != null && !dto.getIstudent().isEmpty()) {
             List<StudentEntity> stdIdList = STU_REP.findAllById(dto.getIstudent());
             List<AdminMainPortfolioPatchRes> resultList = new ArrayList<>();
 
-
             for (StudentEntity studentEntity : stdIdList) {
-                if (dto.getCompanyMainYn() == 1) {
-                    studentEntity.setCompanyMainYn(1);
-                } else {
-                    studentEntity.setCompanyMainYn(0);
+                CategorySubjectEntity categorySubjectEntity = studentEntity.getCategorySubjectEntity();
+
+                if (categorySubjectEntity != null) {
+                    List<StudentEntity> categoryStudents = categorySubjectEntity.getStudents();
+
+                    int maxIclassification = categoryStudents.stream()
+                            .map(StudentEntity::getCompanyMainYn)
+                            .max(Integer::compareTo)
+                            .orElse(Integer.MIN_VALUE);
+
+                    if (maxIclassification > 10) {
+                        studentEntity.setCompanyMainYn(dto.getCompanyMainYn());
+                        StudentEntity save = STU_REP.save(studentEntity);
+                        AdminMainPortfolioPatchRes build = AdminMainPortfolioPatchRes.builder()
+                                .istudent(save.getIstudent())
+                                .companyMainYn(save.getCompanyMainYn())
+                                .build();
+                        resultList.add(build);
+                    }
                 }
-                StudentEntity save = STU_REP.save(studentEntity);
-                AdminMainPortfolioPatchRes build = AdminMainPortfolioPatchRes.builder()
-                        .istudent(save.getIstudent())
-                        .companyMainYn(save.getCompanyMainYn())
-                        .build();
-                resultList.add(build);
             }
             return resultList;
         } else {
@@ -175,91 +183,93 @@ public class AdminStudentService {
         }
     }
 
+
+
     public AdminStudentDelRes delStudent(AdminStudentDelDto dto) {
-        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+    Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
 
-        if (stdId.isPresent()) {
-            stdId.get().setDelYn(1);
-            StudentEntity save = STU_REP.save(stdId.get());
+    if (stdId.isPresent()) {
+        stdId.get().setDelYn(1);
+        StudentEntity save = STU_REP.save(stdId.get());
 
-            return AdminStudentDelRes.builder()
-                    .istudent(save.getIstudent())
-                    .delYn(save.getDelYn())
-                    .build();
-        } else {
-            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
-        }
-    }
-
-    public AdminStudentRoleRes patchRole(AdminStudentRoleDto dto) {
-        List<StudentEntity> all = STU_REP.findAll();
-        StudentEntity stdEntity = new StudentEntity();
-        StudentEntity tempEntity = new StudentEntity();
-        for (StudentEntity entity : all) {
-            stdEntity = entity;
-            tempEntity = stdEntity;
-        }
-        for (int i = 0; i < all.size(); i++) {
-            tempEntity.setStartedAt(dto.getStartedAt());
-            tempEntity.setEndedAt(dto.getEndedAt());
-            tempEntity.setEditableYn(dto.getEditableYn());
-        }
-        StudentEntity save = STU_REP.save(tempEntity);
-
-
-        return AdminStudentRoleRes.builder()
-                .editableYn(save.getEditableYn())
-                .startedAt(save.getStartedAt())
-                .endedAt(save.getEndedAt())
+        return AdminStudentDelRes.builder()
+                .istudent(save.getIstudent())
+                .delYn(save.getDelYn())
                 .build();
-
+    } else {
+        throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
     }
+}
 
-    public AdminStudentUpdRes updStudent(AdminStudentUpdDto dto, List<String> certificateValue) {
-        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+public AdminStudentRoleRes patchRole(AdminStudentRoleDto dto) {
+    List<StudentEntity> all = STU_REP.findAll();
+    StudentEntity stdEntity = new StudentEntity();
+    StudentEntity tempEntity = new StudentEntity();
+    for (StudentEntity entity : all) {
+        stdEntity = entity;
+        tempEntity = stdEntity;
+    }
+    for (int i = 0; i < all.size(); i++) {
+        tempEntity.setStartedAt(dto.getStartedAt());
+        tempEntity.setEndedAt(dto.getEndedAt());
+        tempEntity.setEditableYn(dto.getEditableYn());
+    }
+    StudentEntity save = STU_REP.save(tempEntity);
 
-        if (stdId.isPresent()) {
-            List<CertificateEntity> certificates = stdId.get().getCertificates();
-            List<AdminStudentCertificateRes> resultList = new ArrayList<>();
 
-            StudentEntity student = stdId.get();
+    return AdminStudentRoleRes.builder()
+            .editableYn(save.getEditableYn())
+            .startedAt(save.getStartedAt())
+            .endedAt(save.getEndedAt())
+            .build();
 
-            student.setName(dto.getStudentName());
-            student.setId(dto.getEmail());
-            student.setAddress(dto.getAddress());
-            student.setEducation(dto.getEducation());
+}
+
+public AdminStudentUpdRes updStudent(AdminStudentUpdDto dto, List<String> certificateValue) {
+    Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+
+    if (stdId.isPresent()) {
+        List<CertificateEntity> certificates = stdId.get().getCertificates();
+        List<AdminStudentCertificateRes> resultList = new ArrayList<>();
+
+        StudentEntity student = stdId.get();
+
+        student.setName(dto.getStudentName());
+        student.setId(dto.getEmail());
+        student.setAddress(dto.getAddress());
+        student.setEducation(dto.getEducation());
 
 
-            for (int i = 0; i < certificates.size(); i++) {
-                CertificateEntity certificate = certificates.get(i);
-                if (i < certificateValue.size()) {
-                    certificate.setCertificate(certificateValue.get(i));
-                    CertificateEntity save = CERT_REP.save(certificate);
-                    AdminStudentCertificateRes build = AdminStudentCertificateRes.builder()
-                            .icertificate(save.getIcertificate())
-                            .certificate(save.getCertificate())
-                            .build();
-                    resultList.add(build);
-                }
+        for (int i = 0; i < certificates.size(); i++) {
+            CertificateEntity certificate = certificates.get(i);
+            if (i < certificateValue.size()) {
+                certificate.setCertificate(certificateValue.get(i));
+                CertificateEntity save = CERT_REP.save(certificate);
+                AdminStudentCertificateRes build = AdminStudentCertificateRes.builder()
+                        .icertificate(save.getIcertificate())
+                        .certificate(save.getCertificate())
+                        .build();
+                resultList.add(build);
             }
-            student.setCertificates(certificates);
-
-            StudentEntity stdSave = STU_REP.save(student);
-
-
-            return AdminStudentUpdRes.builder()
-                    .istudent(stdSave.getIstudent())
-                    .studentName(stdSave.getName())
-                    .email(stdSave.getId())
-                    .address(stdSave.getAddress() + stdSave.getAddressDetail())
-                    .education(stdSave.getEducation())
-                    .certificate(resultList)
-                    .build();
-        } else {
-            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
         }
+        student.setCertificates(certificates);
 
+        StudentEntity stdSave = STU_REP.save(student);
+
+
+        return AdminStudentUpdRes.builder()
+                .istudent(stdSave.getIstudent())
+                .studentName(stdSave.getName())
+                .email(stdSave.getId())
+                .address(stdSave.getAddress() + stdSave.getAddressDetail())
+                .education(stdSave.getEducation())
+                .certificate(resultList)
+                .build();
+    } else {
+        throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
     }
+
+}
 
 
 }

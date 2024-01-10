@@ -6,8 +6,10 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +21,10 @@ import java.util.List;
 public class AdminStudentQdsl {
 
     private final JPAQueryFactory jpaQueryFactory;
+    @Autowired
+    public AdminStudentQdsl(EntityManager entityManager) {
+        this.jpaQueryFactory = new JPAQueryFactory(entityManager);
+    }
 
     QCategorySubjectEntity cas = QCategorySubjectEntity.categorySubjectEntity;
     QCourseSubjectEntity cos = QCourseSubjectEntity.courseSubjectEntity;
@@ -124,6 +130,13 @@ public class AdminStudentQdsl {
                 .limit(pageable.getPageSize())
                 .orderBy(stu.companyMainYn.desc(), cos.endedAt.desc());
         return query.fetch();
+    }
+
+    public List<StudentCourseSubjectEntity> getStudentCourseSubjects(StudentEntity studentEntity) {
+        return jpaQueryFactory
+                .selectFrom(scs)
+                .where(scs.studentEntity.eq(studentEntity))
+                .fetch();
     }
 
     public List<AdminStudentRoleRes> RoleVos(AdminStudentRoleDto dto) {
