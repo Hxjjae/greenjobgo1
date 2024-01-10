@@ -16,8 +16,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,117 +25,32 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CompanyService {
-    private final PasswordEncoder PW_ENCODER;
-    private final JwtTokenProvider JWT_PROVIDER;
-    private final AuthenticationFacade facade;
-    private final RedisService redisService;
-    private final CompanyRepository companyRep;
-    private final StudentRepository StudentRep;
     private final JPAQueryFactory jpaQueryFactory;
     private final EmployeeProfileRepository EmployeeProfileRep;
 
     QStudentEntity qstudent = QStudentEntity.studentEntity;
-
     QStudentCourseSubjectEntity qstudentCourseSubject = QStudentCourseSubjectEntity.studentCourseSubjectEntity;
     QCourseSubjectEntity qCourseSubject  = QCourseSubjectEntity.courseSubjectEntity;
     QFileEntity qfileEntity = QFileEntity.fileEntity;
     QCategorySubjectEntity qCategorySubjectEntity = QCategorySubjectEntity.categorySubjectEntity;
 
-//    public String refreshToken(HttpServletRequest req, String refreshToken) throws RuntimeException {
-//        String error = "유효하지 않은 토큰";
-//        if(!(JWT_PROVIDER.isValidateToken(refreshToken, JWT_PROVIDER.REFRESH_KEY))) { return error; }
-//
-//        Claims claims = null;
-//        try {
-//            claims = JWT_PROVIDER.getClaims(refreshToken, JWT_PROVIDER.REFRESH_KEY);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        if (claims == null) {
-//            return error;
-//        }
-//
-//        String strIuser = claims.getSubject();
-//        Long iuser = Long.valueOf(strIuser);
-//        String ip = req.getRemoteAddr();
-//        List<String> roles = (List<String>)claims.get("roles");
-//
-//        log.info("iuser:{}",iuser);
-//        String redisKey ;
-//
-//        if ("ROLE_ADMIN".equals(roles.get(0))){
-//            redisKey = String.format("c:RT(%s):ADMIN:%s:%s", "Server", iuser, ip);
-//        } else if ("ROLE_USER".equals(roles.get(0))){
-//            redisKey = String.format("c:RT(%s):USER:%s:%s", "Server", iuser, ip);
-//        }else
-//            redisKey = String.format("c:RT(%s):COMPANY:%s:%s", "Server", iuser, ip);
-//
-//        log.info("redisKey 키값 확인:{}",redisKey);
-//
-//        String redisRt = redisService.getValues(redisKey);
-//        if (redisRt == null) {
-//            return error;
-//        }
-//
-//        try {
-//            if (!redisRt.equals(refreshToken)) {
-//                return error;
-//            }
-//
-//            return JWT_PROVIDER.generateJwtToken(strIuser, roles,
-//                    JWT_PROVIDER.ACCESS_TOKEN_VALID_MS, JWT_PROVIDER.ACCESS_KEY);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return error;
-//    }
-//
-//    public void logout(HttpServletRequest req) {
-//        String accessToken = JWT_PROVIDER.resolveToken(req, JWT_PROVIDER.TOKEN_TYPE);
-//        Long iuser = facade.getLoginUserPk();
-//        String ip = req.getRemoteAddr();
-//        MyUserDetails userDetails = facade.getLoginUser();
-//
-//
-//        String redisKey = null;
-//        if ("ROLE_ADMIN".equals(userDetails.getRoles().get(0))){
-//            redisKey = String.format("c:RT(%s):ADMIN:%s:%s", "Server", iuser, ip);
-//        }else if ("ROLE_USER".equals(userDetails.getRoles().get(0))){
-//            redisKey = String.format("c:RT(%s):USER:%s:%s", "Server", iuser, ip);
-//        }else {
-//            redisKey = String.format("c:RT(%s):COMPANY:%s:%s", "Server", iuser, ip);
-//        }
-//
-//        log.info("rediskeys: {}",redisKey);
-//
-//        String refreshTokenInRedis = redisService.getValues(redisKey);
-//        if (refreshTokenInRedis != null) {
-//            redisService.deleteValues(redisKey);
-//        }
-//
-//        long expiration = JWT_PROVIDER.getTokenExpirationTime(accessToken, JWT_PROVIDER.ACCESS_KEY) -
-//                LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-//        log.info("expiration: {}", expiration);
-//        log.info("localDateTime-getTime(): {}", LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
-//
-//        redisService.setValuesWithTimeout(accessToken, "logout", expiration);
-//    }
 
+    public CompanyStdRes getstudent(Pageable pageable,Long icategory,String subjectName,String studentName){
 
-    public CompanyStdRes getstudent(int page,int size,Long icategory,String subjectName,String studentName){
+        String sort = "istudent,DESC";
         //page 값이 1이상인 경우 -1
-        int page2 = (page > 0) ? (page - 1) : 0;
-        Pageable pageable = PageRequest.of(page2, size);
+        //int page2 = (page > 0) ? (page - 1) : 0;
+        //String[] parts = sort.split(",");
+        //Pageable pageable = PageRequest.of(page2, size, Sort.Direction.fromString(parts[1]), parts[0]);
 
-
+        //Pageable pageable = PageRequest.of(page2, size, Sort.Direction.valueOf(sort));
 
         List<CompanyStdVo> StudentEntity  = jpaQueryFactory.select(
                 Projections.bean(CompanyStdVo.class,
-                        qstudent.istudent,
-                        qfileEntity.file,
-                        qstudent.name,
                         qCourseSubject.subjectName,
-                        qCategorySubjectEntity.classification
+                        qstudent.name.as("studentName"),
+                        qstudent.istudent,
+                        qfileEntity.file.as("img")
                 )).from(qstudent)
                 .innerJoin(qstudentCourseSubject)
                 .on(qstudentCourseSubject.studentEntity.istudent.eq(qstudent.istudent))
@@ -153,7 +67,7 @@ public class CompanyService {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        Long count = jpaQueryFactory.select(
+        long count = jpaQueryFactory.select(
                         qstudent.istudent.count()
                 ).from(qstudent)
                 .innerJoin(qstudentCourseSubject)
@@ -169,17 +83,23 @@ public class CompanyService {
                 .where(eqsubjectName(subjectName))
                 .where(eqstudentName(studentName)).fetchOne();
 
-        int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
+
         int totalcount = Math.toIntExact(count);
         int maxpage = (int) Math.ceil((double) count / pageable.getPageSize());
 
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber(), (int) maxpage, pageable);
-        utils.setIdx((int) maxpage);
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber() + 1,  (int)count, pageable);
+        utils.setIdx( (int)count);
 
         log.info("maxpage:{}",maxpage);
 
-        return CompanyStdRes.builder().page(utils).maxpage(maxpage).totalcount(totalcount).list(StudentEntity).build();
+        //url 위치 붙여주기
+        List<CompanyStdVo> list = StudentEntity.stream().map(item -> CompanyStdVo.builder()
+                .img("/img/student/"+item.getIstudent()+"/"+item.getImg())
+                .istudent(item.getIstudent())
+                .studentName(item.getStudentName())
+                .subjectName(item.getSubjectName()).build()).toList();
+
+        return CompanyStdRes.builder().page(utils).maxpage(maxpage).totalcount(totalcount).vo(list).build();
 
     }
 
@@ -265,7 +185,7 @@ public class CompanyService {
                 .name(profile.getName())
                 .phoneNumber(profile.getPhoneNumber())
                 .email(profile.getEmail())
-                .profilePic("/home/download/employee/"+profile.getIemply()+"/"+profile.getProfilePic()).build()).toList();
+                .profilePic("/img/employee/"+profile.getIemply()+"/"+profile.getProfilePic()).build()).toList();
     }
 
 }

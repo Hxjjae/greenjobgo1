@@ -12,5 +12,5 @@ public class CompanyStdRes {
     private PagingUtils page;
     private int maxpage;
     private int totalcount;
-    private List<CompanyStdVo> list;
+    private List<CompanyStdVo> vo;
 }

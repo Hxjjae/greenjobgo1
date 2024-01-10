@@ -30,7 +30,7 @@ public class SignController {
 
         SignInResultDto dto = service.signIn(p, ip);
         if(dto.getCode() == CommonRes.SUCCESS.getCode()) {
-            log.info("[signIn] 정상적으로 로그인 되었습니다. email: {}, token: {}", p.getEmail(), dto.getAccessToken());
+            log.info("[signIn] 정상적으로 로그인 되었습니다. email(id): {}, token: {}", p.getEmail(), dto.getAccessToken());
         }
 
         return dto;
