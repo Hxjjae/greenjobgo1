@@ -2,10 +2,11 @@ package com.green.greenjobgo1.admin.std_management;
 
 import com.green.greenjobgo1.admin.std_management.model.*;
 import com.green.greenjobgo1.common.entity.*;
+import com.green.greenjobgo1.common.utils.MyFileUtils;
 import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.repository.*;
 import com.green.greenjobgo1.common.security.config.security.MyUserDetailsServiceImpl;
-import com.green.greenjobgo1.student.model.StudentDelDto;
+import com.green.greenjobgo1.student.model.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -28,6 +32,7 @@ public class AdminStudentService {
     private final CertificateRepository CERT_REP;
     private final StudentCourseSubjectRepository SCS_REP;
     private final AdminCategoryRepository A_CATE_REP;
+    private final FileCategoryRepository FILE_CATE_REP;
     private final AdminStudentQdsl adminStudentQdsl;
     private final MyUserDetailsServiceImpl userDetailsService;
 
@@ -277,4 +282,81 @@ public class AdminStudentService {
     }
 
 
+    public AdminStudentFileUpdTotalRes updFile(MultipartFile file, AdminStudentFileUpdDto dto) {
+        Optional<FileCategoryEntity> fileCateId = FILE_CATE_REP.findById(dto.getIFileCategory());
+        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+        List<FileEntity> fileAll = FILE_REP.findAllByStudentEntity(stdId.orElseThrow(EntityNotFoundException::new));
+
+        FileEntity entity = new FileEntity();
+        StudentEntity studentEntity = new StudentEntity();
+        studentEntity.setIntroducedLine(dto.getIntroducedLine());
+        StudentEntity studentSave = (dto.getIntroducedLine() != null) ? STU_REP.save(studentEntity) : studentEntity;
+
+        for (FileEntity fileEntity : fileAll) {
+            if (fileCateId.isPresent()) {
+                Long iFileCategory = fileCateId.get().getIFileCategory();
+                if (iFileCategory == 1 || iFileCategory == 2 || iFileCategory == 4) {
+                    fileUpload(file, dto, entity, fileEntity, studentSave);
+                } else if (iFileCategory == 3) {
+                    fileLinkUpload(dto, entity, fileEntity, studentSave);
+                }
+            }
+        }
+        FileEntity save = FILE_REP.save(entity);
+
+        AdminStudentFileUpdRes res = AdminStudentFileUpdRes.builder()
+                .file(save.getFile())
+                .ifile(save.getIfile())
+                .createdAt(save.getCreatedAt())
+                .istudent(save.getStudentEntity().getIstudent())
+                .build();
+        AdminStudentIntroducedLineRes std = AdminStudentIntroducedLineRes.builder()
+                .introducedLine(studentSave.getIntroducedLine())
+                .build();
+
+        return AdminStudentFileUpdTotalRes.builder()
+                .res(res)
+                .std(std)
+                .build();
+
+    }
+
+    private void fileUpload(MultipartFile file, AdminStudentFileUpdDto dto, FileEntity entity,
+                            FileEntity fileEntity, StudentEntity studentSave) {
+        String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
+        entity.setFile(savedFileNm);
+
+        try {
+            handleFileOperations(file, entity, fileEntity, savedFileNm);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("파일 업로드 또는 삭제 중 오류 발생", e);
+        }
+    }
+
+    private void fileLinkUpload(AdminStudentFileUpdDto dto, FileEntity entity,
+                                FileEntity fileEntity, StudentEntity studentSave) {
+        String savedFileNm = dto.getFileLink();
+        entity.setFile(savedFileNm);
+
+        try {
+            FILE_REP.save(fileEntity);
+        } catch (Exception e) {
+            throw new RuntimeException("파일 링크 업로드 중 오류 발생", e);
+        }
+    }
+
+    private void handleFileOperations(MultipartFile file, FileEntity entity, FileEntity fileEntity, String savedFileNm) throws IOException {
+        File targetDir = new File(String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent()));
+        File fileTarget = new File(targetDir, savedFileNm);
+
+        if (targetDir.exists()) {
+            targetDir.delete();
+        }
+
+        fileEntity.setFile(null);
+        FILE_REP.save(fileEntity);
+
+        file.transferTo(fileTarget);
+    }
 }
