@@ -125,16 +125,16 @@ public class CompanyService {
 
     public CompanystdDetailRes detailStd(Long istudent){
         CompanyStdDetailVo Vo = jpaQueryFactory.select(Projections.bean(CompanyStdDetailVo.class,
-                        qfileEntity.file,
-                        qstudent.istudent,
                         qstudent.name,
                         qstudent.birthday,
-                        qCourseSubject.subjectName,
-                        qstudent.id,
+                        qfileEntity.file,
+                        qstudent.address,
+                        qstudent.addressDetail,
+                        qstudent.id.as("email"),
                         qCourseSubject.startedAt,
                         qCourseSubject.endedAt,
-                        qstudent.education,
-                        qCategorySubjectEntity.classification
+                        qstudent.mobileNumber,
+                        qstudent.education
                 )).from(qstudent)
                 .innerJoin(qstudentCourseSubject)
                 .on(qstudentCourseSubject.studentEntity.istudent.eq(qstudent.istudent))
