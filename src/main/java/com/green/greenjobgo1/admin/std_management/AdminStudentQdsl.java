@@ -124,7 +124,7 @@ public class AdminStudentQdsl {
                         eqSubjectName(dto.getSubjectName()),
                         eqStudentName(dto.getStudentName()),
                         file.fileCategoryEntity.iFileCategory.eq(4L),
-                        eqStorageYn(dto.getStorageYn()),
+                        stu.storageYn.eq(1),
                         stu.delYn.eq(0))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
