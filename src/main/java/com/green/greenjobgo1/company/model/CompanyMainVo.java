@@ -14,5 +14,4 @@ public class CompanyMainVo {
     private Long  istudent;
     private String name;
     private String subjectName;
-    private String classification;
 }
