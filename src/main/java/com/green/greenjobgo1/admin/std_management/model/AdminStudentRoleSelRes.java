@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class AdminStudentRoleSelRes {
     private String subjectName;
+    private int round;
     private LocalDate startedAt;
     private LocalDate endedAt;
 

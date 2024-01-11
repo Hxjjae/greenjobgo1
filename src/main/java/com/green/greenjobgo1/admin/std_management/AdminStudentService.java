@@ -227,13 +227,12 @@ public class AdminStudentService {
         StudentEntity tempEntity = new StudentEntity();
         for (StudentEntity entity : all) {
             stdEntity = entity;
+            stdEntity.setStartedAt(dto.getStartedAt());
+            stdEntity.setEndedAt(dto.getEndedAt());
+            stdEntity.setEditableYn(dto.getEditableYn());
             tempEntity = stdEntity;
         }
-        for (int i = 0; i < all.size(); i++) {
-            tempEntity.setStartedAt(dto.getStartedAt());
-            tempEntity.setEndedAt(dto.getEndedAt());
-            tempEntity.setEditableYn(dto.getEditableYn());
-        }
+
         StudentEntity save = STU_REP.save(tempEntity);
 
 
@@ -241,6 +240,7 @@ public class AdminStudentService {
                 .icourseSubject(dto.getIcourseSubject())
                 .editableYn(save.getEditableYn())
                 .startedAt(save.getStartedAt())
+                .editableYn(save.getEditableYn())
                 .endedAt(save.getEndedAt())
                 .build();
 

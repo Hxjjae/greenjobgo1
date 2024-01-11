@@ -60,7 +60,8 @@ public class StudentQdsl {
                 .from(qCompanyList)
                 .where(eqCompanyName(companyName))
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize());
+                .limit(pageable.getPageSize())
+                .orderBy(qCompanyList.companyCode.desc());
         return query.fetch();
     }
 

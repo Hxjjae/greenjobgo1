@@ -143,11 +143,11 @@ public class AdminStudentQdsl {
     }
 
     public List<AdminStudentRoleSelRes> roleList() {
-        JPAQuery<AdminStudentRoleSelRes> query = jpaQueryFactory.selectDistinct
-                        (Projections.bean(AdminStudentRoleSelRes.class, cos.subjectName,cos.round, stu.startedAt, stu.endedAt))
-                .from(stu)
-                .join(stu.scsList, scs)
-                .join(scs.courseSubjectEntity, cos)
+        JPAQuery<AdminStudentRoleSelRes> query = jpaQueryFactory.select
+                        (Projections.bean(AdminStudentRoleSelRes.class, cos.subjectName, cos.round, stu.startedAt, stu.endedAt))
+                .from(cos)
+                .join(cos.scsList, scs)
+                .join(scs.studentEntity, stu)
                 .where(stu.editableYn.eq(1));
         return query.fetch();
     }
