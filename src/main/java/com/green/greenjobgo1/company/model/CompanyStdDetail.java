@@ -1,15 +1,16 @@
 package com.green.greenjobgo1.company.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanyStdDetailVo {
+public class CompanyStdDetail {
     private String name;
     private String gender;
     private int age;
@@ -20,7 +21,4 @@ public class CompanyStdDetailVo {
     private LocalDate endedAt;
     private String mobileNumber;
     private String education;
-    private List<CompanyStudentCertificateRes> certificates;
-    private List<CompanyDetailSubjectRes> subject;
-
 }
