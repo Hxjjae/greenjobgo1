@@ -9,8 +9,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -99,6 +101,11 @@ public class AdminStudentController {
         return SERVICE.selStorage(dto, pageable);
     }
 
+    @GetMapping("/role-list")
+    @Operation(summary = "수강생 열람 가능기간 조회")
+    public AdminStudentRoleSelListRes getRoleList() {
+        return SERVICE.setRoleList();
+    }
 
     @PatchMapping("/storage")
     @Operation(summary = "보관 여부 결정")
@@ -114,12 +121,13 @@ public class AdminStudentController {
     @PatchMapping("/main")
     @Operation(summary = "메인 여부 결정 (대분류당 10개) 상한")
     public List<AdminMainPortfolioPatchRes> patchMain(@RequestParam List<Long> istudent,
-                                                @RequestParam int companyMainYn) {
+                                                      @RequestParam int companyMainYn) {
         AdminMainPortfolioPatchDto dto = new AdminMainPortfolioPatchDto();
         dto.setIstudent(istudent);
         dto.setCompanyMainYn(companyMainYn);
         return SERVICE.patchMain(dto);
     }
+
     @PatchMapping("/editable-yn")
     @Operation(summary = "학생 권한 수정")
     public AdminStudentRoleRes patchRole(@RequestParam Long icourseSubject,
@@ -135,13 +143,7 @@ public class AdminStudentController {
         return SERVICE.patchRole(dto);
     }
 
-    @DeleteMapping()
-    @Operation(summary = "학생 삭제")
-    public AdminStudentDelRes delStudent(@RequestParam Long istudent) {
-        AdminStudentDelDto dto = new AdminStudentDelDto();
-        dto.setIstudent(istudent);
-        return SERVICE.delStudent(dto);
-    }
+
 
     @PutMapping
     @Operation(summary = "학생 정보 수정")
@@ -162,5 +164,29 @@ public class AdminStudentController {
         certiList = certificateList;
 
         return SERVICE.updStudent(dto, certiList);
+    }
+
+    @PutMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, path = "/file")
+    @Operation(summary = "학생 업로드 파일 수정")
+    public AdminStudentFileUpdTotalRes putFile(@RequestPart(required = false) MultipartFile file,
+                                          @RequestParam Long istudent,
+                                          @RequestParam Long iFileCategory,
+                                          @RequestParam (required = false) String introducedLine,
+                                          @RequestParam (required = false) String fileLink) {
+        AdminStudentFileUpdDto dto = new AdminStudentFileUpdDto();
+        dto.setIstudent(istudent);
+        dto.setIFileCategory(iFileCategory);
+        dto.setFileLink(fileLink);
+        dto.setIntroducedLine(introducedLine);
+        return SERVICE.updFile(file, dto);
+
+    }
+
+    @DeleteMapping()
+    @Operation(summary = "학생 삭제")
+    public AdminStudentDelRes delStudent(@RequestParam Long istudent) {
+        AdminStudentDelDto dto = new AdminStudentDelDto();
+        dto.setIstudent(istudent);
+        return SERVICE.delStudent(dto);
     }
 }

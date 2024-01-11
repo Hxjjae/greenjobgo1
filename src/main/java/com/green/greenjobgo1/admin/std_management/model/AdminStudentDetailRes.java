@@ -24,4 +24,5 @@ public class AdminStudentDetailRes {
     private String mobileNumber;
     private String education;
     private List<AdminStudentCertificateRes> Certificates;
+    private List<AdminStudentDetailSubjectRes> subject;
 }

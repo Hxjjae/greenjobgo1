@@ -91,6 +91,16 @@ public class AdminStudentQdsl {
         return query.fetch();
     }
 
+    public List<AdminStudentDetailSubjectRes> subjectList(Long istudent) {
+        JPAQuery<AdminStudentDetailSubjectRes> query = jpaQueryFactory.select(
+                Projections.bean(AdminStudentDetailSubjectRes.class, cos.icourseSubject, cos.subjectName))
+                .from(cos)
+                .join(cos.scsList, scs)
+                .join(scs.studentEntity, stu)
+                .where(stu.istudent.eq(istudent));
+        return query.fetch();
+    }
+
     public List<AdminPortfolioRes> portfolioVos(AdminPortfolioDto dto, Pageable pageable) {
         JPAQuery<AdminPortfolioRes> query = jpaQueryFactory.select(
                         Projections.bean(AdminPortfolioRes.class, stu.name.as("studentName")
@@ -132,6 +142,16 @@ public class AdminStudentQdsl {
         return query.fetch();
     }
 
+    public List<AdminStudentRoleSelRes> roleList() {
+        JPAQuery<AdminStudentRoleSelRes> query = jpaQueryFactory.selectDistinct
+                        (Projections.bean(AdminStudentRoleSelRes.class, cos.subjectName,cos.round, stu.startedAt, stu.endedAt))
+                .from(stu)
+                .join(stu.scsList, scs)
+                .join(scs.courseSubjectEntity, cos)
+                .where(stu.editableYn.eq(1));
+        return query.fetch();
+    }
+
     public Long rowCount(Long iclassification) {
         JPAQuery<Long> query = jpaQueryFactory
                 .select(stu.istudent.count())
@@ -142,15 +162,13 @@ public class AdminStudentQdsl {
         return query.fetchOne();
     }
 
-    public List<AdminStudentRoleRes> RoleVos(AdminStudentRoleDto dto) {
-        JPAQuery<AdminStudentRoleRes> query = jpaQueryFactory.select(
-                        Projections.bean(AdminStudentRoleRes.class, stu.istudent,
-                                stu.startedAt, stu.endedAt, stu.editableYn))
-                .from(stu)
-                .join(stu.scsList, scs)
-                .join(scs.courseSubjectEntity, cos)
-                .where(cos.icourseSubject.eq(dto.getIcourseSubject()));
-        return query.fetch();
+    public Long countByFileCategoryEntityIFileCategoryInAndStudentEntityIstudent(List<Long> fileCategoryIds, Long studentId) {
+        JPAQuery<Long> query = jpaQueryFactory
+                .select(file.file.count())
+                .from(file)
+                .where(file.fileCategoryEntity.iFileCategory.in(fileCategoryIds)
+                        .and(file.studentEntity.istudent.eq(studentId).or(file.studentEntity.isNull())));
+        return query.fetchOne();
     }
 
     public Long stdIdx(AdminStudentDto dto) {
@@ -160,7 +178,7 @@ public class AdminStudentQdsl {
                 .join(scs.courseSubjectEntity, cos)
                 .join(cos.categorySubjectEntity, cas)
                 .where(eqIclassification(dto.getIcategory())
-                        , eqSubjectName(dto.getSubjectName()));
+                        , eqSubjectName(dto.getSubjectName()), stu.delYn.eq(0));
         return query.fetchOne();
     }
 
@@ -174,9 +192,11 @@ public class AdminStudentQdsl {
                 .where(eqIclassification(dto.getIclassfication()),
                         eqSubjectName(dto.getSubjectName()),
                         eqStudentName(dto.getStudentName()),
-                        file.fileCategoryEntity.iFileCategory.eq(4L));
+                        file.fileCategoryEntity.iFileCategory.eq(4L),
+                        stu.delYn.eq(0));
         return query.fetchOne();
     }
+
 
     public Long storageIdx(AdminStorageStudentDto dto) {
         JPAQuery<Long> query = jpaQueryFactory.selectDistinct(stu.istudent.count())
@@ -189,7 +209,8 @@ public class AdminStudentQdsl {
                         eqSubjectName(dto.getSubjectName()),
                         eqStudentName(dto.getStudentName()),
                         file.fileCategoryEntity.iFileCategory.eq(4L),
-                        stu.storageYn.eq(1));
+                        stu.storageYn.eq(1),
+                        stu.delYn.eq(0));
         return query.fetchOne();
     }
 
@@ -208,5 +229,9 @@ public class AdminStudentQdsl {
     private BooleanExpression eqStorageYn(Integer storageYn) {
         return storageYn != null ? stu.storageYn.eq(storageYn) : null;
 
+    }
+
+    private BooleanExpression eqDelYn(Integer delYn) {
+        return delYn != null ? cos.delYn.eq(delYn) : null;
     }
 }
