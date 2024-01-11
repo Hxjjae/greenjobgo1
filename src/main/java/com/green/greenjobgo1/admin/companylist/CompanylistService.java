@@ -17,6 +17,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,6 +72,7 @@ public class CompanylistService {
                 .where(eqCompanyName(companyName))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .orderBy(qCompanyList.companyCode.desc())
                 .fetch();
 
         Long count = jpaQueryFactory.select(qCompanyList.companyCode.count())
