@@ -240,9 +240,9 @@ public class CompanylistService {
         // Download
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment;filename=company.xlsx");
-        ServletOutputStream servletOutputStream = response.getOutputStream();
-        servletOutputStream.flush();
-        servletOutputStream.close();
+//        ServletOutputStream servletOutputStream = response.getOutputStream();
+//        servletOutputStream.flush();
+//        servletOutputStream.close();
 
         try {
             wb.write(response.getOutputStream());

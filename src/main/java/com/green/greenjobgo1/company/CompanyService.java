@@ -2,6 +2,7 @@ package com.green.greenjobgo1.company;
 
 
 import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileVo;
+import com.green.greenjobgo1.admin.std_management.model.AdminStudentCertificateRes;
 import com.green.greenjobgo1.common.entity.*;
 import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.company.model.*;
@@ -33,7 +34,7 @@ public class CompanyService {
     QCourseSubjectEntity qCourseSubject  = QCourseSubjectEntity.courseSubjectEntity;
     QFileEntity qfileEntity = QFileEntity.fileEntity;
     QCategorySubjectEntity qCategorySubjectEntity = QCategorySubjectEntity.categorySubjectEntity;
-
+    QCertificateEntity certificate = QCertificateEntity.certificateEntity;
 
     public CompanyStdRes getstudent(Pageable pageable,Long icategory,String subjectName,String studentName){
 
@@ -148,18 +149,27 @@ public class CompanyService {
                 .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(4L))
                 .fetchOne();
 
+        List<CompanyStudentCertificateRes> res = jpaQueryFactory.select(
+                        Projections.bean(CompanyStudentCertificateRes.class, certificate.icertificate, certificate.certificate))
+                .from(certificate)
+                .join(certificate.studentEntity, qstudent)
+                .where(qstudent.istudent.eq(istudent)).fetch();
+
+
+
         List<CompanyStdfileVo> file = jpaQueryFactory.select(Projections.constructor(CompanyStdfileVo.class,
                         qfileEntity.file
                 )).from(qstudent)
                 .innerJoin(qfileEntity)
                 .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
                 .where(qstudent.istudent.eq(istudent))
-                .where(qfileEntity.fileCategoryEntity.iFileCategory.ne(4L))
                 .fetch();
+
+        Vo.setCertificates(res);
         return CompanystdDetailRes.builder().vo(Vo).file(file).build();
     }
 
-    public List<CompanyMainVo> mainselstd(){
+    public List<CompanyMainVo> mainselstd(long icategory){
         List<CompanyMainVo> list = jpaQueryFactory.select(Projections.constructor(CompanyMainVo.class,
                         qfileEntity.file,
                         qstudent.istudent,
@@ -171,6 +181,7 @@ public class CompanyService {
                 .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
                 .innerJoin(qCourseSubject)
                 .on(qCourseSubject.icourseSubject.eq(qstudentCourseSubject.courseSubjectEntity.icourseSubject))
+                //.where(qCourseSubject.icourseSubject.eq(icategory))
                 .fetch();
         return list;
     }

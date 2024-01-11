@@ -307,9 +307,9 @@ public class AdminSignService {
         // Download
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment;filename=student.xlsx");
-        ServletOutputStream servletOutputStream = response.getOutputStream();
-        servletOutputStream.flush();
-        servletOutputStream.close();
+//        ServletOutputStream servletOutputStream = response.getOutputStream();
+//        servletOutputStream.flush();
+//        servletOutputStream.close();
 
         try {
             wb.write(response.getOutputStream());

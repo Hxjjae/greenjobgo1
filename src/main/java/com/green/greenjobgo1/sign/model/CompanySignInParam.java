@@ -1,4 +1,4 @@
-package com.green.greenjobgo1.company.model;
+package com.green.greenjobgo1.sign.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

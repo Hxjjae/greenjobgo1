@@ -50,9 +50,10 @@ public class CompanyController {
 
 
     @GetMapping("/mainstudent")
-    public List<CompanyMainVo> list(){
-        return null;
+    public List<CompanyMainVo> list(@RequestParam(required = false)Long icategory){
+        return service.mainselstd(icategory);
     }
+
     @GetMapping("/employee")
     @Operation(summary = "직원 프로필 리스트",description = "사진위치: /home/download/employee/pk번호/사진 <br>" +
             "oneWord: 한마디 <br>"+
@@ -60,6 +61,7 @@ public class CompanyController {
             "counselingNumber : 상담 전화 <br>"+
             "phone : 휴대폰 번호 <br>"+
             "email : 이메일 <br>")
+
     public ResponseEntity<List<EmployeeProfileVo>> getProfile(){
         return ResponseEntity.ok(service.getProfile());
     }
