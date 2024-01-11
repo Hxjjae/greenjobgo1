@@ -7,10 +7,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompanyStdVo {
-    private String file;
-    private Long  istudent;
-    private String name;
     private String subjectName;
-    private String classification;
+    private String studentName;
+    private Long istudent;
+    private String img;
 
 }

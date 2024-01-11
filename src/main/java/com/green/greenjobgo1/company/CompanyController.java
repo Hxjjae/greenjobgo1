@@ -6,6 +6,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,54 +24,23 @@ import java.util.List;
 public class CompanyController {
 
     private final CompanyService service;
-
-//    @PostMapping("/sign-in")
-//    @Operation(summary = "로그인", description = """
-//            "id": 아이디<br>
-//            "pw": 비밀번호
-//            """)
-//    public SignInResultDto signIn(HttpServletRequest req, @RequestBody CompanySignInParam p) {
-//        String ip = req.getRemoteAddr();
-//        log.info("[signIn] 로그인을 시도하고 있습니다. id: {}, pw: {}, ip: {}", p.getId(), p.getPw(), ip);
-//
-//        SignInResultDto dto = service.signIn(p, ip);
-//        if(dto.getCode() == CommonRes.SUCCESS.getCode()) {
-//            log.info("[signIn] 정상적으로 로그인 되었습니다. id: {}, token: {}", p.getId(), dto.getAccessToken());
-//        }
-//
-//        return dto;
-//    }
-//
-//    @PostMapping("/refresh-token")
-//    @Operation(summary = "accessToken 재발행")
-//    public String refreshToken(HttpServletRequest req, @RequestBody TokenDto token) {
-//        return service.refreshToken(req, token.getRefreshToken());
-//    }
-//
-//    @PostMapping("/logout")
-//    @Operation(summary = "로그아웃")
-//    public ResponseEntity<?> logout(HttpServletRequest req) {
-//        service.logout(req);
-//        ResponseCookie responseCookie = ResponseCookie.from("refresh-token", "")
-//                .maxAge(0)
-//                .path("/")
-//                .build();
-//
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
-//                .build();
-//    }
-//    @GetMapping("/student")
-//    @Operation(summary = "수강생을 검색합니다.")
-//    public CompanyStdRes getstudent(@RequestParam(required = false)int page,
-//                                    @RequestParam(required = false)int size,
-//                                    @RequestParam(required = false)Long icategory,
-//                                    @RequestParam(required = false)String subjectName,
-//                                    @RequestParam(required = false)String studentName)
-//    {
-//        return service.getstudent(page,size,icategory,subjectName,studentName);
-//    }
+    @GetMapping("/student")
+    @Operation(summary = "수강생을 검색합니다.", description = "<br>"+
+            "file: 썸네일 이미지 <br>"+
+            "istudent: 수강생 pk번호 <br>"+
+            "name: 수강생 이름 <br>"+
+            "subjectName: 과목명 <br>"+
+            "classification: 대분류 카테고리 명<br>"+
+            "icategory: 1번 IT분야, 2번 건축 기계 분야, 3번 UIUX분야, 4번 영상분야, 6번 편집디자인 분야<br>"+
+            "<br>")
+    public CompanyStdRes getstudent(@ParameterObject @PageableDefault(page = 1)
+                                        @SortDefault(sort = "istudent", direction = Sort.Direction.ASC)Pageable pageable,
+                                    @RequestParam(required = false)Long icategory,
+                                    @RequestParam(required = false)String subjectName,
+                                    @RequestParam(required = false)String studentName)
+    {
+        return service.getstudent(pageable,icategory,subjectName,studentName);
+    }
 
     @GetMapping("/student/{istudent}")
     @Operation(summary = "수강생을 상세조회.")
@@ -76,9 +50,10 @@ public class CompanyController {
 
 
     @GetMapping("/mainstudent")
-    public List<CompanyMainVo> list(){
-        return null;
+    public List<CompanyMainVo> list(@RequestParam(required = false)Long icategory){
+        return service.mainselstd(icategory);
     }
+
     @GetMapping("/employee")
     @Operation(summary = "직원 프로필 리스트",description = "사진위치: /home/download/employee/pk번호/사진 <br>" +
             "oneWord: 한마디 <br>"+
@@ -86,6 +61,7 @@ public class CompanyController {
             "counselingNumber : 상담 전화 <br>"+
             "phone : 휴대폰 번호 <br>"+
             "email : 이메일 <br>")
+
     public ResponseEntity<List<EmployeeProfileVo>> getProfile(){
         return ResponseEntity.ok(service.getProfile());
     }

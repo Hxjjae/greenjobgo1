@@ -51,7 +51,7 @@ public class AdminSignService {
     private final AuthenticationFacade facade;
     private final FileRepository fileRep;
     private final FileCategoryRepository fileCategoryRep;
-    private final AdminCategoryRepository adminCategoryRepository;
+    private final AdminCategoryRepository adminCategoryRep;
 
     @Transactional
     public int addExcel(MultipartFile studentfile) {
@@ -82,17 +82,16 @@ public class AdminSignService {
 
         //DB에 저장
         for (StudentExcel user : studentlist) {
-            String birthday = user.getBirthday();
 
             // 주민번호 뒷자리가 1 또는 2 이면 19를 반환하고 아니면 20을 반환한다. 19**년생 20**년생
-            int year = (birthday.substring(7, 8).equals("1") || birthday.substring(7, 8).equals("2")) ? 19 : 20;
+            int year = (user.getBirthday().substring(7, 8).equals("1") || user.getBirthday().substring(7, 8).equals("2")) ? 19 : 20;
 
+
+            String birthday = year + user.getBirthday().substring(0, 2) + "-" + user.getBirthday().substring(2, 4) + "-" + user.getBirthday().substring(4, 6);
             log.info("birthday:{}", birthday);
-            String birthdayfirst = year+birthday.substring(0,2);
-            String birthdaysecond = "-"+birthday.substring(2,4);
-            String birthdaythird = "-"+birthday.substring(4,6);
+            LocalDate birth = LocalDate.parse(birthday);
+            log.info("birthday:{}", birthday);
             //생년월일 생성
-            LocalDate birth= LocalDate.parse((birthdayfirst + birthdaysecond + birthdaythird));
             
             // 생년월일 앞자리와 전화번호 뒷자리를 조합하여 비밀번호 생성
             String pwfirst = birthday.substring(0, 6);
@@ -138,6 +137,9 @@ public class AdminSignService {
                 log.info("과정명:{}",user.getSubjectName());
                 CourseSubjectEntity courseSubjectEntity = subjectRep.findBySubjectNameAndRound(user.getSubjectName(), Integer.parseInt(user.getRound()));
 
+                //subject의 대분류 조회
+                CategorySubjectEntity categorySubjectEntity = adminCategoryRep.findById(courseSubjectEntity.getCategorySubjectEntity().getIclassification()).get();
+
                 log.info("subject테이블 과정명:{}",subjectentity.getSubjectName());
                 if (subjectentity == null) {
                     throw new RuntimeException("존재하지 않는 과목입니다");
@@ -149,6 +151,7 @@ public class AdminSignService {
                         .studentEntity(save)
                         .courseSubjectEntity(subjectentity)
                         .iclassification(iclassification)
+                        .iclassification(categorySubjectEntity.getIclassification())
                         .build();
 
                 studentCourseSubjectRep.save(entity);
@@ -304,9 +307,9 @@ public class AdminSignService {
         // Download
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment;filename=student.xlsx");
-        ServletOutputStream servletOutputStream = response.getOutputStream();
-        servletOutputStream.flush();
-        servletOutputStream.close();
+//        ServletOutputStream servletOutputStream = response.getOutputStream();
+//        servletOutputStream.flush();
+//        servletOutputStream.close();
 
         try {
             wb.write(response.getOutputStream());

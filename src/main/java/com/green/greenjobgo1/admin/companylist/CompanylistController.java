@@ -45,8 +45,8 @@ public class CompanylistController {
         return ResponseEntity.ok(service.addExcel(companyfile));
     }
     @GetMapping("/download")
-    @Operation(summary = "수강생 엑셀파일 다운로드")
-    public void downloadMock(HttpServletResponse res) throws IOException {
+    @Operation(summary = "기업리스트 엑셀파일 다운로드")
+    public void downloadCompanylist(HttpServletResponse res) throws IOException {
         service.downloadCompanylist(res);
     }
 
