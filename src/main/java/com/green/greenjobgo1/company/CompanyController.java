@@ -50,7 +50,7 @@ public class CompanyController {
 
 
     @GetMapping("/mainstudent")
-    public List<CompanyMainVo> list(@RequestParam(required = false)Long icategory){
+    public List<CompanyMainVo> list(@RequestParam(required = false) Long icategory){
         return service.mainselstd(icategory);
     }
 

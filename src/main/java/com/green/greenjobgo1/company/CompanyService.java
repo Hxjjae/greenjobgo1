@@ -174,14 +174,17 @@ public class CompanyService {
                         qfileEntity.file,
                         qstudent.istudent,
                         qstudent.name,
-                        qCourseSubject.subjectName,
-                        qCourseSubject.icourseSubject))
+                        qCourseSubject.subjectName))
                 .from(qstudent)
                 .innerJoin(qfileEntity)
                 .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
+                .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(4L))
+                .innerJoin(qstudentCourseSubject)
+                .on(qstudentCourseSubject.studentEntity.istudent.eq(qstudent.istudent))
                 .innerJoin(qCourseSubject)
                 .on(qCourseSubject.icourseSubject.eq(qstudentCourseSubject.courseSubjectEntity.icourseSubject))
-                //.where(qCourseSubject.icourseSubject.eq(icategory))
+                .where(qCourseSubject.icourseSubject.eq(icategory))
+                //.where(qfileEntity.file.eq())
                 .fetch();
         return list;
     }

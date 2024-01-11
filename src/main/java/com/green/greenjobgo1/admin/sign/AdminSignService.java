@@ -158,6 +158,7 @@ public class AdminSignService {
                 if (save.getId() == null){
                     return 0;
                 }
+
             }else {
 
 
@@ -181,10 +182,6 @@ public class AdminSignService {
                             .build();
                     studentCourseSubjectRep.save(entity);
                 }
-
-
-
-
             }
 
         }
@@ -243,7 +240,7 @@ public class AdminSignService {
 
 
             if (col <= 4) {
-                style = oliveGreen;
+                style = paleBlue;
             } else if (col <= 9) {
                 style = lightGreen;
             } else {

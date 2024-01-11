@@ -93,7 +93,7 @@ public class SignService {
 
         log.info("Icompany :{}",companyentity.getIcompany());
         if (companyentity == null) {
-            throw new RuntimeException("존재하지 않는 이메일");
+            throw new RuntimeException("존재하지 않는 아이디");
         }
         if(!PW_ENCODER.matches(p.getPw(), companyentity.getPassword())) {
             throw new RuntimeException("비밀번호 불일치");
