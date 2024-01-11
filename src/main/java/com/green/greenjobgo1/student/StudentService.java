@@ -1,19 +1,21 @@
 package com.green.greenjobgo1.student;
 
-import com.green.greenjobgo1.common.entity.CertificateEntity;
+import com.green.greenjobgo1.admin.companylist.model.CompanylistRes;
+import com.green.greenjobgo1.admin.companylist.model.CompanylistVo;
+import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileVo;
+import com.green.greenjobgo1.common.entity.*;
 import com.green.greenjobgo1.common.utils.MyFileUtils;
-import com.green.greenjobgo1.common.entity.FileCategoryEntity;
-import com.green.greenjobgo1.common.entity.FileEntity;
-import com.green.greenjobgo1.common.entity.StudentEntity;
-import com.green.greenjobgo1.repository.CertificateRepository;
-import com.green.greenjobgo1.repository.FileCategoryRepository;
-import com.green.greenjobgo1.repository.FileRepository;
-import com.green.greenjobgo1.repository.StudentRepository;
+import com.green.greenjobgo1.common.utils.PagingUtils;
+import com.green.greenjobgo1.repository.*;
 import com.green.greenjobgo1.student.model.*;
+import com.querydsl.core.types.Projections;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +36,7 @@ public class StudentService {
     private final FileRepository FILE_REP;
     private final FileCategoryRepository FILE_CATE_REP;
     private final CertificateRepository CERT_REP;
+    private final EmployeeProfileRepository EMPL_REP;
     private final StudentQdsl studentQdsl;
 
     @Value("${file.dir}")
@@ -191,18 +195,27 @@ public class StudentService {
         entity.setStudentEntity(stdId.get());
 
         StudentEntity studentEntity = new StudentEntity();
+        studentEntity.setIstudent(stdId.get().getIstudent());
         studentEntity.setIntroducedLine(dto.getIntroducedLine());
 
         StudentEntity studentSave = (dto.getIntroducedLine() != null) ? STU_REP.save(studentEntity) : studentEntity;
         String savedFileNm;
 
         Long iFileCategory = fileCateId.get().getIFileCategory();
+
         if (iFileCategory == 1 || iFileCategory == 2 || iFileCategory == 4) {
             savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
         } else if (iFileCategory == 3) {
             savedFileNm = (dto.getFileLink() != null) ? dto.getFileLink() : null;
         } else {
             return null;
+        }
+
+        Long fileCount = studentQdsl.countByFileCategoryEntityIFileCategoryInAndStudentEntityIstudent(
+                Arrays.asList(1L, 2L, 3L), studentSave.getIstudent());
+
+        if (fileCount >= 5) {
+            throw new RuntimeException("한 수강생당 파일은 5개까지만 올릴 수 있습니다.");
         }
 
 
@@ -252,11 +265,20 @@ public class StudentService {
 
         FileEntity entity = new FileEntity();
         StudentEntity studentEntity = new StudentEntity();
+        studentEntity.setIstudent(stdId.get().getIstudent());
         studentEntity.setIntroducedLine(dto.getIntroducedLine());
         StudentEntity studentSave = (dto.getIntroducedLine() != null) ? STU_REP.save(studentEntity) : studentEntity;
 
+
+
         for (FileEntity fileEntity : fileAll) {
             if (fileCateId.isPresent()) {
+                Long fileCount = studentQdsl.countByFileCategoryEntityIFileCategoryInAndStudentEntityIstudent(
+                        Arrays.asList(1L, 2L, 3L), studentEntity.getIstudent());
+
+                if (fileCount >= 5) {
+                    throw new RuntimeException("한 수강생당 파일은 5개까지만 올릴 수 있습니다.");
+                }
                 Long iFileCategory = fileCateId.get().getIFileCategory();
                 if (iFileCategory == 1 || iFileCategory == 2 || iFileCategory == 4) {
                     fileUpload(file, dto, entity, fileEntity, studentSave);
@@ -309,7 +331,6 @@ public class StudentService {
         } else {
             throw new RuntimeException("ID에 해당하는 파일이 존재하지 않습니다: " + dto.getIfile());
         }
-
     }
 
 
@@ -587,4 +608,28 @@ public class StudentService {
         }
     }
 
+
+    public StudentCompanyListVo companyList(String companyName, Pageable pageable) {
+        long count = studentQdsl.companyIdx(companyName);
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber() + 1, (int) count, pageable, 12);
+        utils.setIdx((int) count);
+
+        List<CompanyListEntity> companyList = studentQdsl.companyList(companyName, pageable);
+
+        List<CompanylistRes> list = companyList.stream().map(item ->
+                CompanylistRes.builder().companyCode(item.getCompanyCode())
+                        .companyName(item.getCompanyName())
+                        .area(item.getArea())
+                        .leaderName(item.getLeaderName())
+                        .homepage(item.getHomepage())
+                        .dateConslusion(item.getDateConslusion())
+                        .manager(item.getManager())
+                        .phoneNumber(item.getPhoneNumber()).build()).toList();
+
+        return StudentCompanyListVo.builder()
+                .list(list)
+                .page(utils)
+                .build();
+
+    }
 }

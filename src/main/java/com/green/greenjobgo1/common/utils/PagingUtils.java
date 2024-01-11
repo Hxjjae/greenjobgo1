@@ -21,7 +21,15 @@ public  class PagingUtils {
 
 
     public PagingUtils(int page, int maxPage, Pageable pageable) {
-        this.row =10;
+        this.row = 10;
+        this.page=page;
+        this.maxPage = (int) Math.ceil((double) maxPage / pageable.getPageSize());
+        isMore(this.maxPage,page);
+        startIdx(page);
+    }
+
+    public PagingUtils(int page, int maxPage, Pageable pageable, int row) {
+        this.row = row;
         this.page=page;
         this.maxPage = (int) Math.ceil((double) maxPage / pageable.getPageSize());
         isMore(this.maxPage,page);

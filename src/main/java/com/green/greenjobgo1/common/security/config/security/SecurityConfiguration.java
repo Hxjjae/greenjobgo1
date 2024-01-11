@@ -48,6 +48,8 @@ public class SecurityConfiguration {
                                     ).permitAll()
                                     .requestMatchers(HttpMethod.GET, "/sign-api/refresh-token").permitAll()
                                     .requestMatchers(HttpMethod.GET, "/api/admin/**").hasAnyRole( "ADMIN")
+                                    .requestMatchers(HttpMethod.PUT, "/api/admin/**").hasAnyRole("ADMIN")
+                                    .requestMatchers(HttpMethod.PATCH, "/api/admin/**").hasAnyRole("ADMIN")
                                     .requestMatchers("/api/company/**").hasAnyRole("COMPANY")
                                     .requestMatchers("/api/student/**").hasAnyRole("USER")
                                     .requestMatchers("**exception**").permitAll()

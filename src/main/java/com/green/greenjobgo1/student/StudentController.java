@@ -1,10 +1,17 @@
 package com.green.greenjobgo1.student;
 
+import com.green.greenjobgo1.admin.companylist.model.CompanylistVo;
+import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileVo;
 import com.green.greenjobgo1.student.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -75,5 +82,21 @@ public class StudentController {
         dto.setIfile(ifile);
         dto.setIstudent(istudent);
         return SERVICE.delFile(dto);
+    }
+
+    @GetMapping("/company")
+    @Operation(summary = "회사 리스트 조회",
+            description = "companyCode: DB 회사 pk값 <br>" +
+                    "area: 지역 <br>"+
+                    "leaderName: 대표 이름 <br>"+
+                    "companyName: 회사 명 <br>"+
+                    "leaderName: 대표 이름 <br>"+
+                    "homepage: 홈페이지링크 <br>"+
+                    "manager : 담당자 이름<br>"+
+                    "phonenumber : 전화번호 <br>"+
+                    "dateConslusion: 체결일자 <br>")
+    public ResponseEntity<StudentCompanyListVo> companyList(@ParameterObject @PageableDefault(direction = Sort.Direction.ASC, page = 1) Pageable pageable,
+                                                     @RequestParam(required = false) String companyName){
+        return ResponseEntity.ok(SERVICE.companyList(companyName, pageable));
     }
 }

@@ -101,6 +101,11 @@ public class AdminStudentController {
         return SERVICE.selStorage(dto, pageable);
     }
 
+    @GetMapping("/role-list")
+    @Operation(summary = "수강생 열람 가능기간 조회")
+    public AdminStudentRoleSelListRes getRoleList() {
+        return SERVICE.setRoleList();
+    }
 
     @PatchMapping("/storage")
     @Operation(summary = "보관 여부 결정")
@@ -138,13 +143,7 @@ public class AdminStudentController {
         return SERVICE.patchRole(dto);
     }
 
-    @DeleteMapping()
-    @Operation(summary = "학생 삭제")
-    public AdminStudentDelRes delStudent(@RequestParam Long istudent) {
-        AdminStudentDelDto dto = new AdminStudentDelDto();
-        dto.setIstudent(istudent);
-        return SERVICE.delStudent(dto);
-    }
+
 
     @PutMapping
     @Operation(summary = "학생 정보 수정")
@@ -181,5 +180,13 @@ public class AdminStudentController {
         dto.setIntroducedLine(introducedLine);
         return SERVICE.updFile(file, dto);
 
+    }
+
+    @DeleteMapping()
+    @Operation(summary = "학생 삭제")
+    public AdminStudentDelRes delStudent(@RequestParam Long istudent) {
+        AdminStudentDelDto dto = new AdminStudentDelDto();
+        dto.setIstudent(istudent);
+        return SERVICE.delStudent(dto);
     }
 }

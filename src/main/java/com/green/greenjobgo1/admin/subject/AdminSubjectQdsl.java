@@ -82,7 +82,8 @@ public class AdminSubjectQdsl {
                 .from(cos)
                 .join(cos.categorySubjectEntity, cas)
                 .where(eqIclassification(dto.getIclassification())
-                        , eqSubjectName(subjectDto.getSubjectName()));
+                        , eqSubjectName(subjectDto.getSubjectName()),
+                        cos.delYn.eq(0));
         return query.fetchOne();
     }
 

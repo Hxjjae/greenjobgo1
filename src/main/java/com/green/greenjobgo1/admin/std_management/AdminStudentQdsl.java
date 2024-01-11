@@ -132,6 +132,16 @@ public class AdminStudentQdsl {
         return query.fetch();
     }
 
+    public List<AdminStudentRoleSelRes> roleList() {
+        JPAQuery<AdminStudentRoleSelRes> query = jpaQueryFactory.selectDistinct
+                        (Projections.bean(AdminStudentRoleSelRes.class, cos.subjectName, stu.startedAt, stu.endedAt))
+                .from(stu)
+                .join(stu.scsList, scs)
+                .join(scs.courseSubjectEntity, cos)
+                .where(stu.editableYn.eq(1));
+        return query.fetch();
+    }
+
     public Long rowCount(Long iclassification) {
         JPAQuery<Long> query = jpaQueryFactory
                 .select(stu.istudent.count())
@@ -142,15 +152,13 @@ public class AdminStudentQdsl {
         return query.fetchOne();
     }
 
-    public List<AdminStudentRoleRes> RoleVos(AdminStudentRoleDto dto) {
-        JPAQuery<AdminStudentRoleRes> query = jpaQueryFactory.select(
-                        Projections.bean(AdminStudentRoleRes.class, stu.istudent,
-                                stu.startedAt, stu.endedAt, stu.editableYn))
-                .from(stu)
-                .join(stu.scsList, scs)
-                .join(scs.courseSubjectEntity, cos)
-                .where(cos.icourseSubject.eq(dto.getIcourseSubject()));
-        return query.fetch();
+    public Long countByFileCategoryEntityIFileCategoryInAndStudentEntityIstudent(List<Long> fileCategoryIds, Long studentId) {
+        JPAQuery<Long> query = jpaQueryFactory
+                .select(file.file.count())
+                .from(file)
+                .where(file.fileCategoryEntity.iFileCategory.in(fileCategoryIds)
+                        .and(file.studentEntity.istudent.eq(studentId).or(file.studentEntity.isNull())));
+        return query.fetchOne();
     }
 
     public Long stdIdx(AdminStudentDto dto) {
@@ -177,6 +185,7 @@ public class AdminStudentQdsl {
                         file.fileCategoryEntity.iFileCategory.eq(4L));
         return query.fetchOne();
     }
+
 
     public Long storageIdx(AdminStorageStudentDto dto) {
         JPAQuery<Long> query = jpaQueryFactory.selectDistinct(stu.istudent.count())

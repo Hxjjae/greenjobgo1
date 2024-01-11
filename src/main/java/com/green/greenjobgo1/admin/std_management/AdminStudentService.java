@@ -137,6 +137,14 @@ public class AdminStudentService {
                 .build();
         return ResponseEntity.ok(build);
     }
+    public AdminStudentRoleSelListRes setRoleList() {
+        List<AdminStudentRoleSelRes> list = adminStudentQdsl.roleList();
+
+        return AdminStudentRoleSelListRes.builder()
+                .res(list)
+                .build();
+    }
+
 
     public AdminStorageStudentPatchRes patchStorage(AdminStorageStudentPatchDto dto) {
         Optional<StudentEntity> byId = STU_REP.findById(dto.getIstudent());
@@ -285,23 +293,32 @@ public class AdminStudentService {
     public AdminStudentFileUpdTotalRes updFile(MultipartFile file, AdminStudentFileUpdDto dto) {
         Optional<FileCategoryEntity> fileCateId = FILE_CATE_REP.findById(dto.getIFileCategory());
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
-        List<FileEntity> fileAll = FILE_REP.findAllByStudentEntity(stdId.orElseThrow(EntityNotFoundException::new));
 
-        FileEntity entity = new FileEntity();
-        StudentEntity studentEntity = new StudentEntity();
+        StudentEntity studentEntity = stdId.orElseThrow(EntityNotFoundException::new);
+        studentEntity.setIstudent(stdId.get().getIstudent());
         studentEntity.setIntroducedLine(dto.getIntroducedLine());
-        StudentEntity studentSave = (dto.getIntroducedLine() != null) ? STU_REP.save(studentEntity) : studentEntity;
+
+        List<FileEntity> fileAll = FILE_REP.findAllByStudentEntity(studentEntity);
+        FileEntity entity = new FileEntity();
 
         for (FileEntity fileEntity : fileAll) {
             if (fileCateId.isPresent()) {
+
+                Long fileCount = adminStudentQdsl.countByFileCategoryEntityIFileCategoryInAndStudentEntityIstudent(
+                        Arrays.asList(1L, 2L, 3L), studentEntity.getIstudent());
+
+                if (fileCount >= 5) {
+                    throw new RuntimeException("한 수강생당 파일은 5개까지만 올릴 수 있습니다.");
+                }
                 Long iFileCategory = fileCateId.get().getIFileCategory();
                 if (iFileCategory == 1 || iFileCategory == 2 || iFileCategory == 4) {
-                    fileUpload(file, dto, entity, fileEntity, studentSave);
+                    fileUpload(file, dto, entity, fileEntity, studentEntity);
                 } else if (iFileCategory == 3) {
-                    fileLinkUpload(dto, entity, fileEntity, studentSave);
+                    fileLinkUpload(dto, entity, fileEntity, studentEntity);
                 }
             }
         }
+
         FileEntity save = FILE_REP.save(entity);
 
         AdminStudentFileUpdRes res = AdminStudentFileUpdRes.builder()
@@ -310,16 +327,46 @@ public class AdminStudentService {
                 .createdAt(save.getCreatedAt())
                 .istudent(save.getStudentEntity().getIstudent())
                 .build();
+
         AdminStudentIntroducedLineRes std = AdminStudentIntroducedLineRes.builder()
-                .introducedLine(studentSave.getIntroducedLine())
+                .introducedLine(studentEntity.getIntroducedLine())
                 .build();
 
         return AdminStudentFileUpdTotalRes.builder()
                 .res(res)
                 .std(std)
                 .build();
+    }
+
+    public AdminStudentFileDelRes delFile(StudentDelDto dto) {
+        Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
+
+        if (fileId.isPresent()) {
+            FileEntity fileEntity = fileId.get();
+
+            String targetDir = String.format("%s/student/%d", fileDir, fileEntity.getStudentEntity().getIstudent());
+            File fileToDelete = new File(String.format("%s/%s", targetDir, fileEntity.getFile()));
+
+            if (fileToDelete.exists()) {
+                if (!fileToDelete.delete()) {
+                    throw new RuntimeException("파일을 저장한 곳에서 삭제할 수 없습니다.");
+                }
+            }
+
+            try {
+                FILE_REP.delete(fileEntity);
+            } catch (Exception e) {
+                throw new RuntimeException("데이터베이스에서 파일 엔터티를 삭제할 수 없습니다.");
+            }
+            return AdminStudentFileDelRes.builder()
+                    .ifile(fileEntity.getIfile())
+                    .build();
+        } else {
+            throw new RuntimeException("ID에 해당하는 파일이 존재하지 않습니다: " + dto.getIfile());
+        }
 
     }
+
 
     private void fileUpload(MultipartFile file, AdminStudentFileUpdDto dto, FileEntity entity,
                             FileEntity fileEntity, StudentEntity studentSave) {
@@ -359,4 +406,6 @@ public class AdminStudentService {
 
         file.transferTo(fileTarget);
     }
+
+
 }
