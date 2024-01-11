@@ -132,14 +132,12 @@ public class AdminStudentController {
     @Operation(summary = "학생 권한 수정")
     public AdminStudentRoleRes patchRole(@RequestParam Long icourseSubject,
                                          @RequestParam LocalDate startedAt,
-                                         @RequestParam LocalDate endedAt,
-                                         @RequestParam Integer editableYn) {
+                                         @RequestParam LocalDate endedAt) {
 
         AdminStudentRoleDto dto = new AdminStudentRoleDto();
         dto.setIcourseSubject(icourseSubject);
         dto.setStartedAt(startedAt);
         dto.setEndedAt(endedAt);
-        dto.setEditableYn(editableYn);
         return SERVICE.patchRole(dto);
     }
 
@@ -152,6 +150,7 @@ public class AdminStudentController {
                                          @RequestParam String address,
                                          @RequestParam String email,
                                          @RequestParam String education,
+                                         @RequestParam String mobileNumber,
                                          @RequestParam List<String> certificateList) {
 
         AdminStudentUpdDto dto = new AdminStudentUpdDto();
@@ -161,6 +160,7 @@ public class AdminStudentController {
         dto.setAddress(address);
         dto.setEmail(email);
         dto.setEducation(education);
+        dto.setMobileNumber(mobileNumber);
         certiList = certificateList;
 
         return SERVICE.updStudent(dto, certiList);

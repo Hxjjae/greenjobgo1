@@ -14,4 +14,5 @@ public class AdminStudentUpdDto {
     private String email;
     private String education;
     private String certificate;
+    private String mobileNumber;
 }

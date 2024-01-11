@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -78,12 +79,13 @@ public class AdminStudentService {
         if (byId.isPresent()) {
             return AdminStudentDetailFindRes.builder()
                     .res(AdminStudentDetailRes.builder()
+                            .age(byId.get().getAge())
+                            .gender(byId.get().getGender())
                             .name(byId.get().getName())
                             .startedAt(byId.get().getStartedAt())
                             .endedAt(byId.get().getEndedAt())
                             .birthday(byId.get().getBirthday())
                             .address(byId.get().getAddress())
-                            .addressDetail(byId.get().getAddressDetail())
                             .education(byId.get().getEducation())
                             .email(byId.get().getId())
                             .mobileNumber(byId.get().getMobileNumber())
@@ -139,6 +141,7 @@ public class AdminStudentService {
                 .build();
         return ResponseEntity.ok(build);
     }
+
     public AdminStudentRoleSelListRes setRoleList() {
         List<AdminStudentRoleSelRes> list = adminStudentQdsl.roleList();
 
@@ -222,29 +225,42 @@ public class AdminStudentService {
     }
 
     public AdminStudentRoleRes patchRole(AdminStudentRoleDto dto) {
-        List<StudentEntity> all = STU_REP.findAll();
-        StudentEntity stdEntity = new StudentEntity();
-        StudentEntity tempEntity = new StudentEntity();
-        for (StudentEntity entity : all) {
-            stdEntity = entity;
-            stdEntity.setStartedAt(dto.getStartedAt());
-            stdEntity.setEndedAt(dto.getEndedAt());
-            stdEntity.setEditableYn(dto.getEditableYn());
-            tempEntity = stdEntity;
+        Optional<CourseSubjectEntity> subjectId = COS_REP.findById(dto.getIcourseSubject());
+
+        List<StudentCourseSubjectEntity> scsList = subjectId.get().getScsList();
+
+        List<StudentEntity> resultList = new ArrayList<>();
+
+        for (StudentCourseSubjectEntity scs : scsList) {
+            StudentEntity studentEntity = scs.getStudentEntity();
+            studentEntity.setStartedAt(dto.getStartedAt());
+            studentEntity.setEndedAt(dto.getEndedAt());
+
+            LocalDate currentDate = LocalDate.now();
+            if (currentDate.isAfter(studentEntity.getStartedAt()) && currentDate.isBefore(studentEntity.getEndedAt())) {
+                studentEntity.setEditableYn(1);
+            } else {
+                studentEntity.setEditableYn(0);
+            }
+
+            resultList.add(studentEntity);
         }
 
-        StudentEntity save = STU_REP.save(tempEntity);
+        List<StudentEntity> savedStudents = STU_REP.saveAll(resultList);
 
+        StudentEntity selectedStudent = savedStudents.isEmpty() ? new StudentEntity() : savedStudents.get(0);
 
         return AdminStudentRoleRes.builder()
+                .startedAt(selectedStudent.getStartedAt())
+                .endedAt(selectedStudent.getEndedAt())
+                .editableYn(selectedStudent.getEditableYn())
                 .icourseSubject(dto.getIcourseSubject())
-                .editableYn(save.getEditableYn())
-                .startedAt(save.getStartedAt())
-                .editableYn(save.getEditableYn())
-                .endedAt(save.getEndedAt())
                 .build();
-
     }
+
+
+
+
 
     public AdminStudentUpdRes updStudent(AdminStudentUpdDto dto, List<String> certificateValue) {
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
@@ -259,7 +275,7 @@ public class AdminStudentService {
             student.setId(dto.getEmail());
             student.setAddress(dto.getAddress());
             student.setEducation(dto.getEducation());
-
+            student.setMobileNumber(dto.getMobileNumber());
 
             for (int i = 0; i < certificates.size(); i++) {
                 CertificateEntity certificate = certificates.get(i);
@@ -282,8 +298,9 @@ public class AdminStudentService {
                     .istudent(stdSave.getIstudent())
                     .studentName(stdSave.getName())
                     .email(stdSave.getId())
-                    .address(stdSave.getAddress() + stdSave.getAddressDetail())
+                    .address(stdSave.getAddress())
                     .education(stdSave.getEducation())
+                    .mobileNumber(stdSave.getMobileNumber())
                     .certificate(resultList)
                     .build();
         } else {

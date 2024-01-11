@@ -60,7 +60,7 @@ public class AdminStudentQdsl {
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()))
-                .orderBy(file.mainYn.desc());
+                .orderBy(file.fileCategoryEntity.iFileCategory.desc());
         return query.fetch();
     }
 
@@ -143,7 +143,7 @@ public class AdminStudentQdsl {
     }
 
     public List<AdminStudentRoleSelRes> roleList() {
-        JPAQuery<AdminStudentRoleSelRes> query = jpaQueryFactory.select
+        JPAQuery<AdminStudentRoleSelRes> query = jpaQueryFactory.selectDistinct
                         (Projections.bean(AdminStudentRoleSelRes.class, cos.subjectName, cos.round, stu.startedAt, stu.endedAt))
                 .from(cos)
                 .join(cos.scsList, scs)

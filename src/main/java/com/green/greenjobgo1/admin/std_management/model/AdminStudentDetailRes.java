@@ -14,15 +14,17 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminStudentDetailRes {
+    private int age;
+    private String gender;
     private String name;
     private LocalDate birthday;
     private String address;
-    private String addressDetail;
     private String email;
     private LocalDate startedAt;
     private LocalDate endedAt;
     private String mobileNumber;
     private String education;
+    private String introducedLine;
     private List<AdminStudentCertificateRes> Certificates;
     private List<AdminStudentDetailSubjectRes> subject;
 }
