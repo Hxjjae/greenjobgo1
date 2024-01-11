@@ -73,6 +73,7 @@ public class AdminStudentService {
         List<FileEntity> fileList = FILE_REP.findAllByStudentEntity(byId.get());
         List<AdminStudentFile> files = adminStudentQdsl.fileVos(dto);
         List<AdminStudentCertificateRes> certiRes = adminStudentQdsl.certificateRes(dto.getIstudent());
+        List<AdminStudentDetailSubjectRes> subjectList = adminStudentQdsl.subjectList(dto.getIstudent());
 
         if (byId.isPresent()) {
             return AdminStudentDetailFindRes.builder()
@@ -87,6 +88,7 @@ public class AdminStudentService {
                             .email(byId.get().getId())
                             .mobileNumber(byId.get().getMobileNumber())
                             .Certificates(certiRes)
+                            .subject(subjectList)
                             .build())
                     .file(files)
                     .build();
@@ -236,6 +238,7 @@ public class AdminStudentService {
 
 
         return AdminStudentRoleRes.builder()
+                .icourseSubject(dto.getIcourseSubject())
                 .editableYn(save.getEditableYn())
                 .startedAt(save.getStartedAt())
                 .endedAt(save.getEndedAt())
