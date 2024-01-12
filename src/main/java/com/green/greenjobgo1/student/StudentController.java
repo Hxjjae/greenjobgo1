@@ -80,6 +80,23 @@ public class StudentController {
         }
     }
 
+    @PatchMapping("/huntjob-yn")
+    @Operation(summary = "취업 여부")
+    @PreAuthorize("hasAnyRole('USER')")
+    public StudentHuntJobRes patchHuntJob(@RequestParam Long istudent,
+                                          @RequestParam int huntJobYn) {
+        Optional<StudentEntity> stdId = STU_REP.findById(istudent);
+        if (stdId.get().getEditableYn() == 1) {
+            StudentHuntJobDto dto = new StudentHuntJobDto();
+            dto.setIstudent(istudent);
+            dto.setHuntJobYn(huntJobYn);
+            return SERVICE.patchHuntJob(dto);
+        } else {
+            throw new RuntimeException("editableYn이 비활성화 되어있습니다.");
+        }
+    }
+
+
     @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, path = "/file")
     @Operation(summary = "수강생 파일 수정")
     @PreAuthorize("hasAnyRole('USER')")

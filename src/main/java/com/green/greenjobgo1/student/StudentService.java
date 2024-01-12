@@ -640,4 +640,21 @@ public class StudentService {
                 .build();
 
     }
+
+    public StudentHuntJobRes patchHuntJob(StudentHuntJobDto dto) {
+        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+
+        if (stdId.isPresent()) {
+            StudentEntity entity = stdId.get();
+            entity.setHuntJobYn(dto.getHuntJobYn());
+
+            StudentEntity save = STU_REP.save(entity);
+
+            return StudentHuntJobRes.builder()
+                    .huntJobYn(save.getHuntJobYn())
+                    .build();
+        } else {
+            throw new EntityNotFoundException("찾을 수 없는 Pk 입니다.");
+        }
+    }
 }
