@@ -26,6 +26,7 @@ import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
 @Slf4j
 @Service
@@ -43,15 +44,6 @@ public class CompanyService {
     QCertificateEntity certificate = QCertificateEntity.certificateEntity;
 
     public CompanyStdRes getstudent(Pageable pageable,Long icategory,String subjectName,String studentName){
-
-        String sort = "istudent,DESC";
-        //page 값이 1이상인 경우 -1
-        //int page2 = (page > 0) ? (page - 1) : 0;
-        //String[] parts = sort.split(",");
-        //Pageable pageable = PageRequest.of(page2, size, Sort.Direction.fromString(parts[1]), parts[0]);
-
-        //Pageable pageable = PageRequest.of(page2, size, Sort.Direction.valueOf(sort));
-
 
         log.info("pageable:{}",pageable.getSort());
         List<CompanyStdVo> StudentEntity  = jpaQueryFactory.select(
@@ -73,10 +65,10 @@ public class CompanyService {
                 .where(eqcategory(icategory))
                 .where(eqsubjectName(subjectName))
                 .where(eqstudentName(studentName))
+                .orderBy(getorder(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-
 
 
         long count = jpaQueryFactory.select(
@@ -114,6 +106,23 @@ public class CompanyService {
 
         return CompanyStdRes.builder().page(utils).maxpage(maxpage).totalcount(totalcount).vo(list).build();
 
+    }
+
+    private OrderSpecifier[] getorder(Pageable pageable) {
+        List<OrderSpecifier> orders = new LinkedList();
+        if(!pageable.getSort().isEmpty()) {
+            for(Sort.Order order : pageable.getSort()) {
+                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+
+                switch(order.getProperty().toLowerCase()) {
+                    case "istudent": orders.add(new OrderSpecifier(direction,qstudent.istudent)); break;
+                    case "subjectName": orders.add(new OrderSpecifier(direction,qCourseSubject.subjectName)); break;
+                    case "name": orders.add(new OrderSpecifier(direction,qstudent.name)); break;
+
+                }
+            }
+        }
+        return orders.stream().toArray(OrderSpecifier[]::new);
     }
 
     private BooleanExpression eqcategory(Long icategory) {
@@ -226,11 +235,19 @@ public class CompanyService {
                 .on(qstudentCourseSubject.studentEntity.istudent.eq(qstudent.istudent))
                 .innerJoin(qCourseSubject)
                 .on(qCourseSubject.icourseSubject.eq(qstudentCourseSubject.courseSubjectEntity.icourseSubject))
+                .innerJoin(qCategorySubjectEntity)
+                .on(qCategorySubjectEntity.iclassification.eq(qCourseSubject.categorySubjectEntity.iclassification))
                 .where(eqcategory(icategory))
                 .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(4L))
                 //.where(qfileEntity.file.eq())
                 .fetch();
-        return list;
+
+        return list.stream().map(item-> CompanyMainVo.builder()
+                .file("/img/student/" + item.getIstudent()+"/"+item.getFile())
+                .istudent(item.getIstudent())
+                .name(item.getName())
+                .subjectName(item.getSubjectName()).build()).toList();
+
     }
 
     public List<EmployeeProfileVo> getProfile(){
