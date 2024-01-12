@@ -651,6 +651,7 @@ public class StudentService {
             StudentEntity save = STU_REP.save(entity);
 
             return StudentHuntJobRes.builder()
+                    .istudent(save.getIstudent())
                     .huntJobYn(save.getHuntJobYn())
                     .build();
         } else {
