@@ -1,7 +1,5 @@
 package com.green.greenjobgo1.student;
 
-import com.green.greenjobgo1.admin.companylist.model.CompanylistVo;
-import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileVo;
 import com.green.greenjobgo1.student.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,10 +25,10 @@ public class StudentController {
 
     @GetMapping
     @Operation(summary = "수강생 기본정보 보기")
-    public StudentSelRes getStudent(@RequestParam Long istudent) {
+    public ResponseEntity<StudentSelTotalRes> getStudent(@RequestParam Long istudent) {
         StudentSelDto dto = new StudentSelDto();
         dto.setIstudent(istudent);
-        return SERVICE.selStudent(dto);
+        return ResponseEntity.ok(SERVICE.selStudent(dto));
     }
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, path = "/file")

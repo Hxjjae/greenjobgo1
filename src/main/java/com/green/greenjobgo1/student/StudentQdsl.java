@@ -1,8 +1,11 @@
 package com.green.greenjobgo1.student;
 
-import com.green.greenjobgo1.admin.std_management.model.AdminStudentDto;
+import com.green.greenjobgo1.admin.std_management.model.AdminStudentCertificateRes;
 import com.green.greenjobgo1.common.entity.*;
-import com.green.greenjobgo1.student.model.StudentSelRes;
+import com.green.greenjobgo1.student.model.StudentCertificateRes;
+import com.green.greenjobgo1.student.model.StudentCertificateSelRes;
+import com.green.greenjobgo1.student.model.StudentSelStudentRes;
+import com.green.greenjobgo1.student.model.StudentSelSubjectRes;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -26,16 +29,35 @@ public class StudentQdsl {
     QStudentCourseSubjectEntity scs = QStudentCourseSubjectEntity.studentCourseSubjectEntity;
     QFileEntity file = QFileEntity.fileEntity;
     QCompanyListEntity qCompanyList = QCompanyListEntity.companyListEntity;
+    QCertificateEntity certificate = QCertificateEntity.certificateEntity;
 
-    public StudentSelRes studentVo(Long istudent) {
-        JPAQuery<StudentSelRes> query = jpaQueryFactory
-                .select(Projections.bean(StudentSelRes.class, stu.istudent, stu.name, cos.subjectName
-                        , cos.startedAt, cos.endedAt, stu.address, stu.mobileNumber, stu.id, stu.education, stu.certificates))
-                .from(stu)
-                .join(stu.scsList, scs)
-                .join(scs.courseSubjectEntity, cos)
+    public StudentSelStudentRes studentVo(Long istudent) {
+        JPAQuery<StudentSelStudentRes> query = jpaQueryFactory
+                .select(Projections.bean(StudentSelStudentRes.class, stu.istudent, stu.name, stu.startedAt, stu.endedAt,
+                        stu.address, stu.mobileNumber, stu.id, stu.education, stu.certificates))
+                .from(scs)
+                .join(scs.studentEntity, stu)
                 .where(stu.istudent.eq(istudent));
         return query.fetchOne();
+    }
+
+    public List<StudentCertificateSelRes> certificateRes(Long istudent) {
+        JPAQuery<StudentCertificateSelRes> query = jpaQueryFactory.select(
+                        Projections.bean(StudentCertificateSelRes.class, certificate.icertificate, certificate.certificate))
+                .from(certificate)
+                .join(certificate.studentEntity, stu)
+                .where(stu.istudent.eq(istudent));
+        return query.fetch();
+    }
+
+    public List<StudentSelSubjectRes> subjectVo(Long istudent) {
+        JPAQuery<StudentSelSubjectRes> query = jpaQueryFactory
+                .select(Projections.bean(StudentSelSubjectRes.class, cos.subjectName, cos.startedAt, cos.endedAt))
+                .from(scs)
+                .join(scs.studentEntity, stu)
+                .join(scs.courseSubjectEntity, cos)
+                .where(stu.istudent.eq(istudent));
+        return query.fetch();
     }
 
     public Long countByFileCategoryEntityIFileCategoryInAndStudentEntityIstudent(List<Long> fileCategoryIds, Long studentId) {

@@ -12,15 +12,15 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentSelRes {
+public class StudentSelStudentRes {
     private Long istudent;
     private String name;
-    private String subjectName;
     private LocalDate startedAt;
     private LocalDate endedAt;
     private String address;
     private String mobileNumber;
     private String id;
     private String education;
-    private List<String> certificates;
+    private List<StudentCertificateSelRes> certificates;
+    private List<StudentSelSubjectRes> subject;
 }

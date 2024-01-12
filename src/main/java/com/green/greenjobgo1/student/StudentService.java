@@ -1,21 +1,17 @@
 package com.green.greenjobgo1.student;
 
 import com.green.greenjobgo1.admin.companylist.model.CompanylistRes;
-import com.green.greenjobgo1.admin.companylist.model.CompanylistVo;
-import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileVo;
+import com.green.greenjobgo1.admin.std_management.model.AdminStudentCertificateRes;
 import com.green.greenjobgo1.common.entity.*;
 import com.green.greenjobgo1.common.utils.MyFileUtils;
 import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.repository.*;
 import com.green.greenjobgo1.student.model.*;
-import com.querydsl.core.types.Projections;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -268,7 +264,6 @@ public class StudentService {
         studentEntity.setIstudent(stdId.get().getIstudent());
         studentEntity.setIntroducedLine(dto.getIntroducedLine());
         StudentEntity studentSave = (dto.getIntroducedLine() != null) ? STU_REP.save(studentEntity) : studentEntity;
-
 
 
         for (FileEntity fileEntity : fileAll) {
@@ -551,24 +546,30 @@ public class StudentService {
 //    }
 
 
-    public StudentSelRes selStudent(StudentSelDto dto) {
-        StudentSelRes studentSelRes = studentQdsl.studentVo(dto.getIstudent());
+    public StudentSelTotalRes selStudent(StudentSelDto dto) {
+        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+        List<StudentSelSubjectRes> subjectRes = studentQdsl.subjectVo(dto.getIstudent());
+        List<StudentCertificateSelRes> certificateRes = studentQdsl.certificateRes(dto.getIstudent());
 
-        if (studentSelRes != null) {
-            return StudentSelRes.builder()
-                    .istudent(studentSelRes.getIstudent())
-                    .name(studentSelRes.getName())
-                    .subjectName(studentSelRes.getSubjectName())
-                    .startedAt(studentSelRes.getStartedAt())
-                    .endedAt(studentSelRes.getEndedAt())
-                    .address(studentSelRes.getAddress())
-                    .mobileNumber(studentSelRes.getMobileNumber())
-                    .id(studentSelRes.getId())
-                    .education(studentSelRes.getEducation())
-                    .certificates(studentSelRes.getCertificates())
+        if (stdId != null) {
+            StudentSelTotalRes build = StudentSelTotalRes.builder()
+                    .std(StudentSelStudentRes.builder()
+                            .istudent(stdId.get().getIstudent())
+                            .name(stdId.get().getName())
+                            .address(stdId.get().getAddress())
+                            .mobileNumber(stdId.get().getMobileNumber())
+                            .id(stdId.get().getId())
+                            .education(stdId.get().getEducation())
+                            .startedAt(stdId.orElseThrow().getStartedAt())
+                            .endedAt(stdId.orElseThrow().getEndedAt())
+                            .subject(subjectRes)
+                            .certificates(certificateRes)
+                            .build())
                     .build();
+            return build;
         } else {
-            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
+            log.info("studentSelRes : " + stdId);
+            throw new RuntimeException("pk를 찾을 수 없음");
         }
     }
 
