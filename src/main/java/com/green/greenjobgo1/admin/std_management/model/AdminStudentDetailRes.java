@@ -25,6 +25,7 @@ public class AdminStudentDetailRes {
     private String mobileNumber;
     private String education;
     private String introducedLine;
+    private int huntJobYn;
     private List<AdminStudentCertificateRes> Certificates;
-    private List<AdminStudentDetailSubjectRes> subject;
+    private AdminStudentDetailSubjectRes subject;
 }

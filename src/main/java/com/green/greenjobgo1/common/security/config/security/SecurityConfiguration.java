@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -50,6 +51,8 @@ public class SecurityConfiguration {
                                     .requestMatchers(HttpMethod.GET, "/api/admin/**").hasAnyRole( "ADMIN")
                                     .requestMatchers(HttpMethod.PUT, "/api/admin/**").hasAnyRole("ADMIN")
                                     .requestMatchers(HttpMethod.PATCH, "/api/admin/**").hasAnyRole("ADMIN")
+                                    .requestMatchers("/api/student/file").hasAnyRole("USER")
+                                    .requestMatchers("/api/student/certificate").hasAnyRole("USER")
                                     .requestMatchers("/api/company/**").hasAnyRole("COMPANY")
                                     .requestMatchers("/api/student/**").hasAnyRole("USER")
                                     .requestMatchers("**exception**").permitAll()

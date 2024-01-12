@@ -21,6 +21,6 @@ public class StudentSelStudentRes {
     private String mobileNumber;
     private String id;
     private String education;
+    private StudentSelSubjectRes subject;
     private List<StudentCertificateSelRes> certificates;
-    private List<StudentSelSubjectRes> subject;
 }

@@ -222,9 +222,14 @@ public class StudentService {
             String targetDir = String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent());
             File fileTargetDir = new File(targetDir);
 
-            if (!fileTargetDir.exists() && !fileTargetDir.mkdirs()) {
-                throw new RuntimeException("디렉토리를 생성할 수 없습니다.");
+            if (!fileTargetDir.exists()) {
+                if (!fileTargetDir.mkdirs()) {
+                    String errorMessage = "디렉토리를 생성할 수 없습니다. 경로: " + fileTargetDir.getAbsolutePath();
+                    log.error(errorMessage);
+                    throw new RuntimeException(errorMessage);
+                }
             }
+
 
             File fileTarget = new File(String.format("%s/%s", targetDir, savedFileNm));
             try {
@@ -265,7 +270,9 @@ public class StudentService {
         studentEntity.setIntroducedLine(dto.getIntroducedLine());
         StudentEntity studentSave = (dto.getIntroducedLine() != null) ? STU_REP.save(studentEntity) : studentEntity;
 
+        FILE_REP.deleteById(dto.getIfile());
 
+        FileEntity newEntity = new FileEntity();
         for (FileEntity fileEntity : fileAll) {
             if (fileCateId.isPresent()) {
                 Long fileCount = studentQdsl.countByFileCategoryEntityIFileCategoryInAndStudentEntityIstudent(
@@ -276,13 +283,13 @@ public class StudentService {
                 }
                 Long iFileCategory = fileCateId.get().getIFileCategory();
                 if (iFileCategory == 1 || iFileCategory == 2 || iFileCategory == 4) {
-                    fileUpload(file, dto, entity, fileEntity, studentSave);
+                    fileUpload(file, dto, newEntity, fileEntity, studentSave);
                 } else if (iFileCategory == 3) {
-                    fileLinkUpload(dto, entity, fileEntity, studentSave);
+                    fileLinkUpload(dto, newEntity, fileEntity, studentSave);
                 }
             }
         }
-        FileEntity save = FILE_REP.save(entity);
+        FileEntity save = FILE_REP.save(newEntity);
 
         StudentPatchRes res = StudentPatchRes.builder()
                 .file(save.getFile())
@@ -548,7 +555,7 @@ public class StudentService {
 
     public StudentSelTotalRes selStudent(StudentSelDto dto) {
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
-        List<StudentSelSubjectRes> subjectRes = studentQdsl.subjectVo(dto.getIstudent());
+        StudentSelSubjectRes subjectRes = studentQdsl.subjectVo(dto.getIstudent());
         List<StudentCertificateSelRes> certificateRes = studentQdsl.certificateRes(dto.getIstudent());
 
         if (stdId != null) {

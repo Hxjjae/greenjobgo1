@@ -91,14 +91,14 @@ public class AdminStudentQdsl {
         return query.fetch();
     }
 
-    public List<AdminStudentDetailSubjectRes> subjectList(Long istudent) {
+    public AdminStudentDetailSubjectRes subjectList(Long istudent) {
         JPAQuery<AdminStudentDetailSubjectRes> query = jpaQueryFactory.select(
                 Projections.bean(AdminStudentDetailSubjectRes.class, cos.icourseSubject, cos.subjectName))
                 .from(cos)
                 .join(cos.scsList, scs)
                 .join(scs.studentEntity, stu)
                 .where(stu.istudent.eq(istudent));
-        return query.fetch();
+        return query.fetchOne();
     }
 
     public List<AdminPortfolioRes> portfolioVos(AdminPortfolioDto dto, Pageable pageable) {
@@ -157,7 +157,7 @@ public class AdminStudentQdsl {
                 .select(stu.istudent.count())
                 .from(scs)
                 .join(scs.studentEntity, stu)
-                .where(stu.categorySubjectEntity.iclassification.eq(iclassification),
+                .where(scs.iclassification.eq(iclassification),
                         stu.companyMainYn.eq(1));
         return query.fetchOne();
     }

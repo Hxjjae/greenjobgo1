@@ -74,7 +74,7 @@ public class AdminStudentService {
         List<FileEntity> fileList = FILE_REP.findAllByStudentEntity(byId.get());
         List<AdminStudentFile> files = adminStudentQdsl.fileVos(dto);
         List<AdminStudentCertificateRes> certiRes = adminStudentQdsl.certificateRes(dto.getIstudent());
-        List<AdminStudentDetailSubjectRes> subjectList = adminStudentQdsl.subjectList(dto.getIstudent());
+        AdminStudentDetailSubjectRes subjectList = adminStudentQdsl.subjectList(dto.getIstudent());
 
         if (byId.isPresent()) {
             return AdminStudentDetailFindRes.builder()
@@ -89,6 +89,7 @@ public class AdminStudentService {
                             .education(byId.get().getEducation())
                             .email(byId.get().getId())
                             .mobileNumber(byId.get().getMobileNumber())
+                            .huntJobYn(byId.get().getHuntJobYn())
                             .Certificates(certiRes)
                             .subject(subjectList)
                             .build())
@@ -181,11 +182,11 @@ public class AdminStudentService {
                     Long rowCount = adminStudentQdsl.rowCount(studentEntity.getCategorySubjectEntity().getIclassification());
 
                     if (dto.getCompanyMainYn() == 1) {
-                        try {
-                            if (rowCount < 10) {
+
+                        if (rowCount < 10) {
                                 studentEntity.setCompanyMainYn(1);
-                            }
-                        } catch (RuntimeException e) {
+
+                        } else {
                             throw new RuntimeException("특정 카테고리의 row 값은 이미 10개입니다.");
                         }
                     } else {
@@ -313,6 +314,7 @@ public class AdminStudentService {
     public AdminStudentFileUpdTotalRes updFile(MultipartFile file, AdminStudentFileUpdDto dto) {
         Optional<FileCategoryEntity> fileCateId = FILE_CATE_REP.findById(dto.getIFileCategory());
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+        Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
 
         StudentEntity studentEntity = stdId.orElseThrow(EntityNotFoundException::new);
         studentEntity.setIstudent(stdId.get().getIstudent());
@@ -320,6 +322,10 @@ public class AdminStudentService {
 
         List<FileEntity> fileAll = FILE_REP.findAllByStudentEntity(studentEntity);
         FileEntity entity = new FileEntity();
+
+        FILE_REP.deleteById(fileId.get().getIfile());
+
+        FileEntity newEntity = new FileEntity();
 
         for (FileEntity fileEntity : fileAll) {
             if (fileCateId.isPresent()) {
@@ -332,14 +338,14 @@ public class AdminStudentService {
                 }
                 Long iFileCategory = fileCateId.get().getIFileCategory();
                 if (iFileCategory == 1 || iFileCategory == 2 || iFileCategory == 4) {
-                    fileUpload(file, dto, entity, fileEntity, studentEntity);
+                    fileUpload(file, dto, newEntity, fileEntity, studentEntity);
                 } else if (iFileCategory == 3) {
-                    fileLinkUpload(dto, entity, fileEntity, studentEntity);
+                    fileLinkUpload(dto, newEntity, fileEntity, studentEntity);
                 }
             }
         }
 
-        FileEntity save = FILE_REP.save(entity);
+        FileEntity save = FILE_REP.save(newEntity);
 
         AdminStudentFileUpdRes res = AdminStudentFileUpdRes.builder()
                 .file(save.getFile())

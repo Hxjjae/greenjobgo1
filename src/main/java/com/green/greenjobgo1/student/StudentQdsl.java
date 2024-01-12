@@ -50,14 +50,14 @@ public class StudentQdsl {
         return query.fetch();
     }
 
-    public List<StudentSelSubjectRes> subjectVo(Long istudent) {
+    public StudentSelSubjectRes subjectVo(Long istudent) {
         JPAQuery<StudentSelSubjectRes> query = jpaQueryFactory
                 .select(Projections.bean(StudentSelSubjectRes.class, cos.subjectName, cos.startedAt, cos.endedAt))
                 .from(scs)
                 .join(scs.studentEntity, stu)
                 .join(scs.courseSubjectEntity, cos)
                 .where(stu.istudent.eq(istudent));
-        return query.fetch();
+        return query.fetchOne();
     }
 
     public Long countByFileCategoryEntityIFileCategoryInAndStudentEntityIstudent(List<Long> fileCategoryIds, Long studentId) {

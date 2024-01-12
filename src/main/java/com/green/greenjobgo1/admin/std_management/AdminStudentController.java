@@ -171,11 +171,13 @@ public class AdminStudentController {
     public AdminStudentFileUpdTotalRes putFile(@RequestPart(required = false) MultipartFile file,
                                           @RequestParam Long istudent,
                                           @RequestParam Long iFileCategory,
+                                          @RequestParam Long ifile,
                                           @RequestParam (required = false) String introducedLine,
                                           @RequestParam (required = false) String fileLink) {
         AdminStudentFileUpdDto dto = new AdminStudentFileUpdDto();
         dto.setIstudent(istudent);
         dto.setIFileCategory(iFileCategory);
+        dto.setIfile(ifile);
         dto.setFileLink(fileLink);
         dto.setIntroducedLine(introducedLine);
         return SERVICE.updFile(file, dto);
