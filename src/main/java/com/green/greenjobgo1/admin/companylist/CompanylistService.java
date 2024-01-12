@@ -38,7 +38,7 @@ public class CompanylistService {
 
     QCompanyListEntity qCompanyList = QCompanyListEntity.companyListEntity;
 
-    public CompanyListEntity companyName(CompanyNameDto dto) {
+    public CompanyInsVo companyName(CompanyNameDto dto) {
 
         CompanyListEntity companyListEntity = CompanyListEntity.builder()
                 .area(dto.getArea())
@@ -50,8 +50,16 @@ public class CompanylistService {
                 .dateConslusion(dto.getDateConslusion()).build();
 
         companylistRep.save(companyListEntity);
-
-        return companyListEntity;
+        return CompanyInsVo.builder().status("success")
+                .message("성공적으로 입력 되었습니다.")
+                .companyCode(companyListEntity.getCompanyCode())
+                .area(companyListEntity.getArea())
+                .companyName(companyListEntity.getCompanyName())
+                .leaderName(companyListEntity.getLeaderName())
+                .homepage(companyListEntity.getHomepage())
+                .manager(companyListEntity.getManager())
+                .phoneNumber(companyListEntity.getPhoneNumber())
+                .dateConslusion(companyListEntity.getDateConslusion()).build();
     }
 
     public CompanylistVo companyList(int page,int size,String companyName) {

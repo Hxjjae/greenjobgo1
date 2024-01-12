@@ -69,7 +69,6 @@ public class CompanyController {
             "counselingNumber : 상담 전화 <br>"+
             "phone : 휴대폰 번호 <br>"+
             "email : 이메일 <br>")
-
     public ResponseEntity<List<EmployeeProfileVo>> getProfile(){
         return ResponseEntity.ok(service.getProfile());
     }

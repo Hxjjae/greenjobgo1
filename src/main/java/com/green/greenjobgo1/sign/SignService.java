@@ -83,6 +83,7 @@ public class SignService {
                 .id(p.getEmail())
                 .build();
 
+
         log.info("[getSignInResult] SignInResultDto 객체 값 주입");
         ResultUtils.setSuccessResult(dto);
         return dto;

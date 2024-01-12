@@ -1,5 +1,6 @@
 package com.green.greenjobgo1.admin.companylist;
 
+import com.green.greenjobgo1.admin.companylist.model.CompanyInsVo;
 import com.green.greenjobgo1.admin.companylist.model.CompanyNameDto;
 import com.green.greenjobgo1.admin.companylist.model.CompanylistVo;
 import com.green.greenjobgo1.common.entity.CompanyListEntity;
@@ -35,9 +36,9 @@ public class CompanylistController {
             "manager : 담당자 이름 <br>"+
             "phonenumber : 전화번호 <br>"+
             "dateConslusion: 체결일자 <br>")
-    public ResponseEntity<CompanyListEntity> companyName(@RequestBody CompanyNameDto dto){
-        CompanyListEntity entity = service.companyName(dto);
-        return ResponseEntity.ok(entity);
+    public ResponseEntity<CompanyInsVo> companyName(@RequestBody CompanyNameDto dto){
+        CompanyInsVo companyInsVo = service.companyName(dto);
+        return ResponseEntity.ok(companyInsVo);
     }
     @PostMapping(value = "/excel",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "엑셀로 추가",description = "엑셀파일을 넣어주세요 <br> 리턴값이 1이면 정상 추가 됨")
