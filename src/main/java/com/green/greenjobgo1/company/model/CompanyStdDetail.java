@@ -19,6 +19,7 @@ public class CompanyStdDetail {
     private String email;
     private LocalDate startedAt;
     private LocalDate endedAt;
+    private String subjectName;
     private String mobileNumber;
     private String education;
 }

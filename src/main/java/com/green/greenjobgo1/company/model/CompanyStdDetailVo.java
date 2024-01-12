@@ -21,6 +21,6 @@ public class CompanyStdDetailVo {
     private String mobileNumber;
     private String education;
     private List<CompanyStudentCertificateRes> certificates;
-    private List<CompanyDetailSubjectRes> subject;
+    private String subject;
 
 }
