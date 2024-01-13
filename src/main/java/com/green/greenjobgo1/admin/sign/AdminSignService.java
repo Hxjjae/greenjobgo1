@@ -159,30 +159,29 @@ public class AdminSignService {
                     return 0;
                 }
 
-            }else {
-
+            }
 
                 // 한개의 아이디에 두개이상 과목추가
-                CourseSubjectEntity courseSubjectEntity = subjectRep.findBySubjectNameAndRound(user.getSubjectName(), Integer.parseInt(user.getRound()));
-                List<StudentCourseSubjectEntity> StudentEntity = studentCourseSubjectRep.findByStudentEntity(studententity);
-                StudentCourseSubjectEntity CourseSubjectEntity = studentCourseSubjectRep.findByCourseSubjectEntityAndStudentEntity(courseSubjectEntity, studententity);
+//                CourseSubjectEntity courseSubjectEntity = subjectRep.findBySubjectNameAndRound(user.getSubjectName(), Integer.parseInt(user.getRound()));
+//                List<StudentCourseSubjectEntity> StudentEntity = studentCourseSubjectRep.findByStudentEntity(studententity);
+//                StudentCourseSubjectEntity CourseSubjectEntity = studentCourseSubjectRep.findByCourseSubjectEntityAndStudentEntity(courseSubjectEntity, studententity);
+//
+//
+//                if (CourseSubjectEntity == null) {
+//                    log.info("수강과목:{}",courseSubjectEntity.getSubjectName());
+//
+//                    CategorySubjectEntity categorySubjectEntity = courseSubjectEntity.getCategorySubjectEntity();
+//
+//                    Long iclassification = (categorySubjectEntity != null) ? categorySubjectEntity.getIclassification() : null;
+//
+//                    StudentCourseSubjectEntity entity = StudentCourseSubjectEntity.builder()
+//                            .studentEntity(studententity)
+//                            .courseSubjectEntity(courseSubjectEntity)
+//                            .iclassification(iclassification)
+//                            .build();
+//                    studentCourseSubjectRep.save(entity);
+//                }
 
-
-                if (CourseSubjectEntity == null) {
-                    log.info("수강과목:{}",courseSubjectEntity.getSubjectName());
-
-                    CategorySubjectEntity categorySubjectEntity = courseSubjectEntity.getCategorySubjectEntity();
-
-                    Long iclassification = (categorySubjectEntity != null) ? categorySubjectEntity.getIclassification() : null;
-
-                    StudentCourseSubjectEntity entity = StudentCourseSubjectEntity.builder()
-                            .studentEntity(studententity)
-                            .courseSubjectEntity(courseSubjectEntity)
-                            .iclassification(iclassification)
-                            .build();
-                    studentCourseSubjectRep.save(entity);
-                }
-            }
 
         }
         return 1;

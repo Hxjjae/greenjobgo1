@@ -13,8 +13,12 @@ import com.green.greenjobgo1.repository.StudentRepository;
 import com.green.greenjobgo1.common.security.config.RedisService;
 import com.green.greenjobgo1.common.security.config.security.AuthenticationFacade;
 import com.green.greenjobgo1.common.security.config.security.JwtTokenProvider;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +26,7 @@ import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
 @Slf4j
 @Service
@@ -40,15 +45,7 @@ public class CompanyService {
 
     public CompanyStdRes getstudent(Pageable pageable,Long icategory,String subjectName,String studentName){
 
-        String sort = "istudent,DESC";
-        //page 값이 1이상인 경우 -1
-        //int page2 = (page > 0) ? (page - 1) : 0;
-        //String[] parts = sort.split(",");
-        //Pageable pageable = PageRequest.of(page2, size, Sort.Direction.fromString(parts[1]), parts[0]);
-
-        //Pageable pageable = PageRequest.of(page2, size, Sort.Direction.valueOf(sort));
-
-
+        log.info("pageable:{}",pageable.getSort());
         List<CompanyStdVo> StudentEntity  = jpaQueryFactory.select(
                 Projections.bean(CompanyStdVo.class,
                         qCourseSubject.subjectName,
@@ -68,9 +65,12 @@ public class CompanyService {
                 .where(eqcategory(icategory))
                 .where(eqsubjectName(subjectName))
                 .where(eqstudentName(studentName))
+                .orderBy(getorder(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
+
         long count = jpaQueryFactory.select(
                         qstudent.istudent.count()
                 ).from(qstudent)
@@ -108,6 +108,23 @@ public class CompanyService {
 
     }
 
+    private OrderSpecifier[] getorder(Pageable pageable) {
+        List<OrderSpecifier> orders = new LinkedList();
+        if(!pageable.getSort().isEmpty()) {
+            for(Sort.Order order : pageable.getSort()) {
+                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+
+                switch(order.getProperty().toLowerCase()) {
+                    case "istudent": orders.add(new OrderSpecifier(direction,qstudent.istudent)); break;
+                    case "subjectName": orders.add(new OrderSpecifier(direction,qCourseSubject.subjectName)); break;
+                    case "name": orders.add(new OrderSpecifier(direction,qstudent.name)); break;
+
+                }
+            }
+        }
+        return orders.stream().toArray(OrderSpecifier[]::new);
+    }
+
     private BooleanExpression eqcategory(Long icategory) {
         if(icategory == null || icategory == 0) {
             return null;
@@ -137,24 +154,25 @@ public class CompanyService {
     public CompanystdDetailRes detailStd(Long istudent){
         StudentEntity student = studentRep.findById(istudent).get();
 
-//        CompanyStdDetail v2 = jpaQueryFactory.select(Projections.constructor(CompanyStdDetail.class,
-//                        qstudent.name,
-//                        qstudent.gender,
-//                        qstudent.age,
-//                        qstudent.birthday,
-//                        qstudent.address,
-//                        qstudent.id.as("email"),
-//                        qCourseSubject.startedAt,
-//                        qCourseSubject.endedAt,
-//                        qstudent.mobileNumber,
-//                        qstudent.education
-//                )).from(qstudent)
-//                .innerJoin(qstudentCourseSubject)
-//                .on(qstudentCourseSubject.studentEntity.istudent.eq(qstudent.istudent))
-//                .innerJoin(qCourseSubject)
-//                .on(qCourseSubject.icourseSubject.eq(qstudentCourseSubject.courseSubjectEntity.icourseSubject))
-//                .where(eqistudent(istudent))
-//                .fetchOne();
+        CompanyStdDetail vo = jpaQueryFactory.select(Projections.constructor(CompanyStdDetail.class,
+                        qstudent.name,
+                        qstudent.gender,
+                        qstudent.age,
+                        qstudent.birthday,
+                        qstudent.address,
+                        qstudent.id.as("email"),
+                        qCourseSubject.startedAt,
+                        qCourseSubject.endedAt,
+                        qCourseSubject.subjectName,
+                        qstudent.mobileNumber,
+                        qstudent.education
+                )).from(qstudent)
+                .innerJoin(qstudentCourseSubject)
+                .on(qstudentCourseSubject.studentEntity.istudent.eq(qstudent.istudent))
+                .innerJoin(qCourseSubject)
+                .on(qCourseSubject.icourseSubject.eq(qstudentCourseSubject.courseSubjectEntity.icourseSubject))
+                .where(eqistudent(istudent))
+                .fetchOne();
 
         List<CompanyStudentCertificateRes> res = jpaQueryFactory.select(
                         Projections.bean(CompanyStudentCertificateRes.class, certificate.icertificate, certificate.certificate))
@@ -163,39 +181,45 @@ public class CompanyService {
                 .where(qstudent.istudent.eq(istudent)).fetch();
 
         List<CompanyStdfileVo> file = jpaQueryFactory.select(Projections.bean(CompanyStdfileVo.class,
-                        qfileEntity.file
-                )).from(qstudent)
+                        qfileEntity.file,
+                        qfileEntity.fileCategoryEntity.iFileCategory,
+                        qfileEntity.fileCategoryEntity.file.as("file_category")
+                )).from(qfileEntity)
                 .innerJoin(qfileEntity)
                 .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
                 .where(qstudent.istudent.eq(istudent))
                 .fetch();
+        log.info("file:{}",file.get(0).getIFileCategory());
 
-        List<CompanyDetailSubjectRes> studentsubject = jpaQueryFactory.select(Projections.bean(CompanyDetailSubjectRes.class,
-                        qCourseSubject.icourseSubject,
-                        qCourseSubject.subjectName,
-                        qCourseSubject.startedAt,
-                        qCourseSubject.endedAt
-                ))
-                .from(qCourseSubject)
-                .join(qCourseSubject.scsList, qstudentCourseSubject)
-                .join(qstudentCourseSubject.studentEntity, qstudent)
-                .where(qstudent.istudent.eq(istudent)).fetch();
+//        List<CompanyDetailSubjectRes> studentsubject = jpaQueryFactory.select(Projections.bean(CompanyDetailSubjectRes.class,
+//                        qCourseSubject.subjectName
+//                ))
+//                .from(qCourseSubject)
+//                .join(qCourseSubject.scsList, qstudentCourseSubject)
+//                .join(qstudentCourseSubject.studentEntity, qstudent)
+//                .where(qstudent.istudent.eq(istudent)).fetch();
 
         CompanyStdDetailVo build = CompanyStdDetailVo.builder()
-                .name(student.getName())
-                .gender(student.getGender())
-                .age(student.getAge())
-                .birthday(student.getBirthday())
-                .address(student.getAddress())
-                .email(student.getId())
-                .startedAt(student.getStartedAt())
-                .endedAt(student.getEndedAt())
-                .mobileNumber(student.getMobileNumber())
-                .education(student.getEducation())
+                .name(vo.getName())
+                .gender(vo.getGender())
+                .age(vo.getAge())
+                .birthday(vo.getBirthday())
+                .address(vo.getAddress())
+                .email(vo.getEmail())
+                .startedAt(vo.getStartedAt())
+                .endedAt(vo.getEndedAt())
+                .mobileNumber(vo.getMobileNumber())
+                .education(vo.getEducation())
                 .certificates(res)
-                .subject(studentsubject).build();
+                .subject(vo.getSubjectName()).build();
 
-        return CompanystdDetailRes.builder().vo(build).file(file).build();
+        //url 붙여주기
+        List<CompanyStdfileVo> list = file.stream().map(item -> CompanyStdfileVo.builder()
+                .iFileCategory(item.getIFileCategory())
+                .file("/img/student/" + student.getIstudent() + "/" + item.getFile())
+                .file_category(item.getFile_category()).build()).toList();
+
+        return CompanystdDetailRes.builder().vo(build).file(list).build();
     }
 
     public List<CompanyMainVo> mainselstd(Long icategory){
@@ -211,11 +235,19 @@ public class CompanyService {
                 .on(qstudentCourseSubject.studentEntity.istudent.eq(qstudent.istudent))
                 .innerJoin(qCourseSubject)
                 .on(qCourseSubject.icourseSubject.eq(qstudentCourseSubject.courseSubjectEntity.icourseSubject))
+                .innerJoin(qCategorySubjectEntity)
+                .on(qCategorySubjectEntity.iclassification.eq(qCourseSubject.categorySubjectEntity.iclassification))
                 .where(eqcategory(icategory))
                 .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(4L))
                 //.where(qfileEntity.file.eq())
                 .fetch();
-        return list;
+
+        return list.stream().map(item-> CompanyMainVo.builder()
+                .file("/img/student/" + item.getIstudent()+"/"+item.getFile())
+                .istudent(item.getIstudent())
+                .name(item.getName())
+                .subjectName(item.getSubjectName()).build()).toList();
+
     }
 
     public List<EmployeeProfileVo> getProfile(){

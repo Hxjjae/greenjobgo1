@@ -20,7 +20,8 @@ public class CompanyStdDetailVo {
     private LocalDate endedAt;
     private String mobileNumber;
     private String education;
+    private String subject;
     private List<CompanyStudentCertificateRes> certificates;
-    private List<CompanyDetailSubjectRes> subject;
+
 
 }
