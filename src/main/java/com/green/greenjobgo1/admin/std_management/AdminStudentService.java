@@ -160,8 +160,11 @@ public class AdminStudentService {
 
     public AdminStudentDetailFindRes selStudentDetail(AdminStudentDetailDto dto) {
         Optional<StudentEntity> byId = STU_REP.findById(dto.getIstudent());
-        List<FileEntity> fileList = FILE_REP.findAllByStudentEntity(byId.get());
-        List<AdminStudentFile> files = adminStudentQdsl.fileVos(dto);
+
+        String img = adminStudentQdsl.img(dto);
+        String resume = adminStudentQdsl.resume(dto);
+        List<AdminStudentFileRes> files = adminStudentQdsl.fileVos(dto);
+        List<AdminStudentFileLink> fileLinks = adminStudentQdsl.fileLinks(dto);
         List<AdminStudentCertificateRes> certiRes = adminStudentQdsl.certificateRes(dto.getIstudent());
         AdminStudentDetailSubjectRes subjectList = adminStudentQdsl.subjectList(dto.getIstudent());
 
@@ -183,7 +186,12 @@ public class AdminStudentService {
                             .Certificates(certiRes)
                             .subject(subjectList)
                             .build())
-                    .file(files)
+                    .file(AdminStudentFile.builder()
+                            .img(img)
+                            .resume(resume)
+                            .portfolio(files)
+                            .fileLinks(fileLinks)
+                            .build())
                     .build();
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
