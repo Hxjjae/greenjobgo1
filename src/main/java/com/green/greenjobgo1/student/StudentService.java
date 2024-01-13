@@ -207,11 +207,22 @@ public class StudentService {
             return null;
         }
 
-        Long fileCount = studentQdsl.countByFileCategoryEntityIFileCategoryInAndStudentEntityIstudent(
-                Arrays.asList(1L, 2L, 3L), studentSave.getIstudent());
+        Long resumeCount = studentQdsl.countByResume(1L, studentSave.getIstudent());
+
+        if (resumeCount >= 1) {
+            throw new RuntimeException("한 수강생당 이력서는 1개까지만 올릴 수 있습니다.");
+        }
+
+        Long fileCount = studentQdsl.countByFile(2L, studentSave.getIstudent());
 
         if (fileCount >= 5) {
             throw new RuntimeException("한 수강생당 파일은 5개까지만 올릴 수 있습니다.");
+        }
+
+        Long fileLinkCount = studentQdsl.countByFileLink(3L, studentSave.getIstudent());
+
+        if (fileLinkCount >= 5) {
+            throw new RuntimeException("한 수강생당 파일링크는 5개까지만 올릴 수 있습니다.");
         }
 
 
@@ -275,11 +286,22 @@ public class StudentService {
         FileEntity newEntity = new FileEntity();
         for (FileEntity fileEntity : fileAll) {
             if (fileCateId.isPresent()) {
-                Long fileCount = studentQdsl.countByFileCategoryEntityIFileCategoryInAndStudentEntityIstudent(
-                        Arrays.asList(1L, 2L, 3L), studentEntity.getIstudent());
+                Long resumeCount = studentQdsl.countByResume(1L, studentSave.getIstudent());
+
+                if (resumeCount >= 1) {
+                    throw new RuntimeException("한 수강생당 이력서는 1개까지만 올릴 수 있습니다.");
+                }
+
+                Long fileCount = studentQdsl.countByFile(2L, studentSave.getIstudent());
 
                 if (fileCount >= 5) {
                     throw new RuntimeException("한 수강생당 파일은 5개까지만 올릴 수 있습니다.");
+                }
+
+                Long fileLinkCount = studentQdsl.countByFileLink(3L, studentSave.getIstudent());
+
+                if (fileLinkCount >= 5) {
+                    throw new RuntimeException("한 수강생당 파일링크는 5개까지만 올릴 수 있습니다.");
                 }
                 Long iFileCategory = fileCateId.get().getIFileCategory();
                 if (iFileCategory == 1 || iFileCategory == 2 || iFileCategory == 4) {

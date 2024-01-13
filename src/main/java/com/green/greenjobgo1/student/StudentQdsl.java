@@ -60,12 +60,30 @@ public class StudentQdsl {
         return query.fetchOne();
     }
 
-    public Long countByFileCategoryEntityIFileCategoryInAndStudentEntityIstudent(List<Long> fileCategoryIds, Long studentId) {
+    public Long countByFile(Long fileCategoryIds, Long studentId) {
         JPAQuery<Long> query = jpaQueryFactory
                 .select(file.file.count())
                 .from(file)
-                .where(file.fileCategoryEntity.iFileCategory.in(fileCategoryIds)
+                .where(file.fileCategoryEntity.iFileCategory.eq(fileCategoryIds)
                         .and(file.studentEntity.istudent.eq(studentId)));
+        return query.fetchOne();
+    }
+
+    public Long countByFileLink(Long fileCategory, Long studentId) {
+        JPAQuery<Long> query = jpaQueryFactory
+                .select(file.file.count())
+                .from(file)
+                .where(file.fileCategoryEntity.iFileCategory.eq(fileCategory)
+                        .and(file.studentEntity.istudent.eq(studentId)));
+        return query.fetchOne();
+    }
+
+    public Long countByResume(Long fileCategory, Long istudent) {
+        JPAQuery<Long> query = jpaQueryFactory
+                .select(file.file.count())
+                .from(file)
+                .where(file.fileCategoryEntity.iFileCategory.eq(fileCategory)
+                        .and(file.studentEntity.istudent.eq(istudent)));
         return query.fetchOne();
     }
 
@@ -103,4 +121,6 @@ public class StudentQdsl {
         return qCompanyList.companyName.like("%"+companyName+"%");
 
     }
+
+
 }
