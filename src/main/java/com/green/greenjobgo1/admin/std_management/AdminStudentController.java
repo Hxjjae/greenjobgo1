@@ -36,10 +36,10 @@ public class AdminStudentController {
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, path = "/file")
     @Operation(summary = "관리자 수강생 파일 및 링크 업로드")
     public AdminStudentInsTotalRes postFile(@RequestPart(required = false) MultipartFile file,
-                                       @RequestParam Long istudent,
-                                       @RequestParam Long iFileCategory,
-                                       @RequestParam(required = false) String introducedLine,
-                                       @RequestParam(required = false) String fileLink) {
+                                            @RequestParam Long istudent,
+                                            @RequestParam Long iFileCategory,
+                                            @RequestParam(required = false) String introducedLine,
+                                            @RequestParam(required = false) String fileLink) {
         Optional<StudentEntity> stdId = STU_REP.findById(istudent);
         if (stdId.get().getEditableYn() == 1) {
             AdminStudentInsDto dto = new AdminStudentInsDto();
@@ -149,15 +149,20 @@ public class AdminStudentController {
 
     @PutMapping("/certificate")
     @Operation(summary = "자격증 수정")
-    public AdminStudentCertificateRes putCertificate(@RequestParam Long icertificate,
+    public AdminStudentCertificateRes putCertificate(@RequestParam Long istudent,
+                                                     @RequestParam Long icertificate,
                                                      @RequestParam String certificate) {
-            return null;
+        AdminStudentCertificateDto dto = new AdminStudentCertificateDto();
+        dto.setIstudent(istudent);
+        dto.setCertificate(certificate);
+        dto.setIcertificate(icertificate);
+        return SERVICE.updCertificate(dto);
     }
 
     @PatchMapping("/portfolio-main")
     @Operation(summary = "대표 포트폴리오 설정")
     public AdminStudentPortfolioMainRes patchPortfolioMain(@RequestParam Long istudent,
-                                                        @RequestParam Long ifile,
+                                                           @RequestParam Long ifile,
                                                            @RequestParam Integer mainYn) {
         AdminStudentPortfolioMainDto dto = new AdminStudentPortfolioMainDto();
         dto.setIfile(ifile);
@@ -165,7 +170,6 @@ public class AdminStudentController {
         dto.setMainYn(mainYn);
         return SERVICE.patchPortfolioMain(dto);
     }
-
 
 
     @PatchMapping("/main")
@@ -192,7 +196,6 @@ public class AdminStudentController {
     }
 
 
-
     @PutMapping
     @Operation(summary = "학생 정보 수정")
     public AdminStudentUpdRes putStudent(@RequestParam Long istudent,
@@ -200,30 +203,27 @@ public class AdminStudentController {
                                          @RequestParam(required = false) String address,
                                          @RequestParam(required = false) String email,
                                          @RequestParam(required = false) String education,
-                                         @RequestParam(required = false) String mobileNumber,
-                                         @RequestParam(required = false) List<String> certificateList) {
+                                         @RequestParam(required = false) String mobileNumber) {
 
         AdminStudentUpdDto dto = new AdminStudentUpdDto();
-        List<String> certiList = new ArrayList<>();
         dto.setIstudent(istudent);
         dto.setStudentName(studentName);
         dto.setAddress(address);
         dto.setEmail(email);
         dto.setEducation(education);
         dto.setMobileNumber(mobileNumber);
-        certiList = certificateList;
 
-        return SERVICE.updStudent(dto, certiList);
+        return SERVICE.updStudent(dto);
     }
 
     @PutMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, path = "/file")
     @Operation(summary = "학생 업로드 파일 수정")
     public AdminStudentFileUpdTotalRes putFile(@RequestPart(required = false) MultipartFile file,
-                                          @RequestParam Long istudent,
-                                          @RequestParam Long iFileCategory,
-                                          @RequestParam Long ifile,
-                                          @RequestParam (required = false) String introducedLine,
-                                          @RequestParam (required = false) String fileLink) {
+                                               @RequestParam Long istudent,
+                                               @RequestParam Long iFileCategory,
+                                               @RequestParam Long ifile,
+                                               @RequestParam(required = false) String introducedLine,
+                                               @RequestParam(required = false) String fileLink) {
         AdminStudentFileUpdDto dto = new AdminStudentFileUpdDto();
         dto.setIstudent(istudent);
         dto.setIFileCategory(iFileCategory);
@@ -234,11 +234,21 @@ public class AdminStudentController {
 
     }
 
-    @DeleteMapping()
+    @DeleteMapping
     @Operation(summary = "학생 삭제")
     public AdminStudentDelRes delStudent(@RequestParam Long istudent) {
         AdminStudentDelDto dto = new AdminStudentDelDto();
         dto.setIstudent(istudent);
         return SERVICE.delStudent(dto);
+    }
+
+    @DeleteMapping("/certificate")
+    @Operation(summary = "자격증 삭제")
+    public AdminStudentCertificateRes delCertificatee(@RequestParam Long istudent,
+                                                      @RequestParam Long icertificate) {
+        AdminStudentCertificateDto dto = new AdminStudentCertificateDto();
+        dto.setIstudent(istudent);
+        dto.setIcertificate(icertificate);
+        return SERVICE.delCertificate(dto);
     }
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminStudentCertificateDto {
+    private Long istudent;
     private Long icertificate;
     private String certificate;
 }

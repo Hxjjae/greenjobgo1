@@ -18,6 +18,4 @@ public class AdminStudentUpdRes {
     private String email;
     private String education;
     private String mobileNumber;
-    private List<AdminStudentCertificateRes> certificate;
-
 }

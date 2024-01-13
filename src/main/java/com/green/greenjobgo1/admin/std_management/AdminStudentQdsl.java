@@ -87,7 +87,6 @@ public class AdminStudentQdsl {
                 .orderBy(file.ifile.asc());
         return query.fetchOne();
     }
-
     public AdminStudentResume resume(AdminStudentDetailDto dto) {
         JPAQuery<AdminStudentResume> query = jpaQueryFactory
                 .select(Projections.bean(AdminStudentResume.class, file.file, file.oneWord))
@@ -99,6 +98,15 @@ public class AdminStudentQdsl {
         return query.fetchOne();
     }
 
+    public AdminStudentCertificateRes certificate(AdminStudentCertificateDto dto) {
+        JPAQuery<AdminStudentCertificateRes> query = jpaQueryFactory
+                .select(Projections.bean(AdminStudentCertificateRes.class, certificate.icertificate, certificate.certificate))
+                .from(certificate)
+                .join(certificate.studentEntity, stu)
+                .where(stu.istudent.eq(dto.getIstudent()),
+                        certificate.icertificate.eq(dto.getIcertificate()));
+        return query.fetchOne();
+    }
     public Long fileCount(Long istudent) {
         JPAQuery<Long> query = jpaQueryFactory
                 .select(file.file.count())

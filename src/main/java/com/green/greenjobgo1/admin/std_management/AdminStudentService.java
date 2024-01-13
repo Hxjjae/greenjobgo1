@@ -359,13 +359,10 @@ public class AdminStudentService {
     }
 
     @Transactional
-    public AdminStudentUpdRes updStudent(AdminStudentUpdDto dto, List<String> certificateValue) {
+    public AdminStudentUpdRes updStudent(AdminStudentUpdDto dto) {
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
 
         if (stdId.isPresent()) {
-            List<CertificateEntity> certificates = stdId.get().getCertificates();
-            List<AdminStudentCertificateRes> resultList = new ArrayList<>();
-
             StudentEntity student = stdId.get();
 
             student.setName(dto.getStudentName());
@@ -373,55 +370,6 @@ public class AdminStudentService {
             student.setAddress(dto.getAddress());
             student.setEducation(dto.getEducation());
             student.setMobileNumber(dto.getMobileNumber());
-
-            if (certificates.size() > certificateValue.size() || certificates.size() == certificateValue.size()) {
-                for (int i = 0; i < certificates.size(); i++) {
-                    CertificateEntity certificate = certificates.get(i);
-                    if (i < certificateValue.size()) {
-                        certificate.setCertificate(certificateValue.get(i));
-                        CertificateEntity save = CERT_REP.save(certificate);
-                        AdminStudentCertificateRes build = AdminStudentCertificateRes.builder()
-                                .icertificate(save.getIcertificate())
-                                .certificate(save.getCertificate())
-                                .build();
-                        resultList.add(build);
-                    }
-                }
-            } else {
-                List<CertificateEntity> toRemove = certificates.subList(certificateValue.size(), certificates.size());
-
-                // certificates 리스트에서도 불필요한 데이터 제거
-                certificates.removeAll(toRemove);
-
-                // DB에서 불필요한 데이터 삭제
-                CERT_REP.deleteAll(certificates);
-
-
-                for (int i = 0; i < certificateValue.size(); i++) {
-                    CertificateEntity certificate;
-                    if (i < certificates.size()) {
-                        certificate = certificates.get(i);
-                        certificate.setCertificate(certificateValue.get(i));
-                    } else {
-                        // certificateValue의 크기보다 큰 경우에는 새로운 CertificateEntity 생성
-                        certificate = new CertificateEntity();
-                        certificate.setCertificate(certificateValue.get(i));
-                        certificate.setStudentEntity(student);
-                    }
-
-                    CertificateEntity save = CERT_REP.save(certificate);
-
-
-                    AdminStudentCertificateRes build = AdminStudentCertificateRes.builder()
-                            .icertificate(save.getIcertificate())
-                            .certificate(save.getCertificate())
-                            .build();
-                    resultList.add(build);
-                }
-            }
-
-
-            student.setCertificates(certificates);
 
             StudentEntity stdSave = STU_REP.save(student);
 
@@ -432,7 +380,6 @@ public class AdminStudentService {
                     .address(stdSave.getAddress())
                     .education(stdSave.getEducation())
                     .mobileNumber(stdSave.getMobileNumber())
-                    .certificate(resultList)
                     .build();
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
@@ -491,6 +438,50 @@ public class AdminStudentService {
                 .res(res)
                 .std(std)
                 .build();
+    }
+
+    public AdminStudentCertificateRes updCertificate(AdminStudentCertificateDto dto) {
+        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+
+        if (stdId.get() != null) {
+            AdminStudentCertificateRes certificateRes = adminStudentQdsl.certificate(dto);
+
+            certificateRes.setIcertificate(dto.getIcertificate());
+            certificateRes.setCertificate(dto.getCertificate());
+
+            CertificateEntity entity = new CertificateEntity(certificateRes.getIcertificate(), stdId.get(), certificateRes.getCertificate());
+
+            CertificateEntity save = CERT_REP.save(entity);
+            return AdminStudentCertificateRes.builder()
+                    .icertificate(save.getIcertificate())
+                    .certificate(save.getCertificate())
+                    .build();
+
+        } else {
+            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
+        }
+    }
+
+    public AdminStudentCertificateRes delCertificate(AdminStudentCertificateDto dto) {
+        AdminStudentCertificateRes certificate = adminStudentQdsl.certificate(dto);
+        Optional<CertificateEntity> certId = CERT_REP.findById(certificate.getIcertificate());
+
+        if (certId.isPresent()) {
+            CertificateEntity entity = certId.get();
+
+            try {
+                CERT_REP.delete(entity);
+            } catch (Exception e) {
+                throw new RuntimeException("데이터베이스에서 데이터를 지울 수 없습니다.");
+            }
+
+            return AdminStudentCertificateRes.builder()
+                    .icertificate(entity.getIcertificate())
+                    .certificate(entity.getCertificate())
+                    .build();
+        } else {
+            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
+        }
     }
 
     public AdminStudentFileDelRes delFile(StudentDelDto dto) {
