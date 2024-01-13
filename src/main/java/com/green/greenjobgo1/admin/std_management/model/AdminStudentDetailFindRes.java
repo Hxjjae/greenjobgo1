@@ -12,5 +12,5 @@ import java.util.List;
 @AllArgsConstructor
 public class AdminStudentDetailFindRes {
     private AdminStudentDetailRes res;
-    private List<AdminStudentFile> file;
+    private AdminStudentFile file;
 }

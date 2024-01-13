@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Type;
 import org.springframework.core.annotation.Order;
 
 import java.time.LocalDate;
@@ -33,7 +34,7 @@ public class StudentEntity {
     @OneToMany(mappedBy = "studentEntity")
     private List<FileEntity> files = new ArrayList<>();
 
-    @OneToMany(mappedBy = "studentEntity")
+    @OneToMany(mappedBy = "studentEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CertificateEntity> certificates;
 
     @ToString.Exclude

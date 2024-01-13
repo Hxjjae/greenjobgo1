@@ -54,14 +54,48 @@ public class AdminStudentQdsl {
         return query.fetch();
     }
 
-    public List<AdminStudentFile> fileVos(AdminStudentDetailDto dto) {
-        JPAQuery<AdminStudentFile> query = jpaQueryFactory
-                .select(Projections.bean(AdminStudentFile.class, file.file))
+    public List<AdminStudentFileRes> fileVos(AdminStudentDetailDto dto) {
+        JPAQuery<AdminStudentFileRes> query = jpaQueryFactory
+                .select(Projections.bean(AdminStudentFileRes.class, file.file))
                 .from(file)
                 .join(file.studentEntity, stu)
-                .where(stu.istudent.eq(dto.getIstudent()))
-                .orderBy(file.fileCategoryEntity.iFileCategory.desc());
+                .where(stu.istudent.eq(dto.getIstudent()),
+                        file.fileCategoryEntity.iFileCategory.eq(2L))
+                .orderBy(file.mainYn.desc(),file.ifile.asc());
         return query.fetch();
+    }
+
+    public List<AdminStudentFileLink> fileLinks(AdminStudentDetailDto dto) {
+        JPAQuery<AdminStudentFileLink> query = jpaQueryFactory
+                .select(Projections.bean(AdminStudentFileLink.class, file.file))
+                .from(file)
+                .join(file.studentEntity, stu)
+                .where(stu.istudent.eq(dto.getIstudent()),
+                        file.fileCategoryEntity.iFileCategory.eq(3L))
+                .orderBy(file.ifile.asc());
+        return query.fetch();
+    }
+
+    public String img(AdminStudentDetailDto dto) {
+        JPAQuery<String> query = jpaQueryFactory
+                .select(file.file)
+                .from(file)
+                .join(file.studentEntity, stu)
+                .where(stu.istudent.eq(dto.getIstudent()),
+                        file.fileCategoryEntity.iFileCategory.eq(4L))
+                .orderBy(file.ifile.asc());
+        return query.fetchOne();
+    }
+
+    public String resume(AdminStudentDetailDto dto) {
+        JPAQuery<String> query = jpaQueryFactory
+                .select(file.file)
+                .from(file)
+                .join(file.studentEntity, stu)
+                .where(stu.istudent.eq(dto.getIstudent()),
+                        file.fileCategoryEntity.iFileCategory.eq(1L))
+                .orderBy(file.ifile.asc());
+        return query.fetchOne();
     }
 
     public Long fileCount(Long istudent) {

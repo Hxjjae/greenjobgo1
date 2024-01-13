@@ -7,20 +7,27 @@ import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.repository.*;
 import com.green.greenjobgo1.common.security.config.security.MyUserDetailsServiceImpl;
 import com.green.greenjobgo1.student.model.*;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -39,6 +46,88 @@ public class AdminStudentService {
 
     @Value("${file.dir}")
     private String fileDir;
+
+    public AdminStudentInsTotalRes insFile(MultipartFile file, AdminStudentInsDto dto) {
+        Optional<FileCategoryEntity> fileCateId = FILE_CATE_REP.findById(dto.getIFileCategory());
+        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+
+
+        if (!fileCateId.isPresent() || !stdId.isPresent()) {
+            return null;
+        }
+
+        FileEntity entity = new FileEntity();
+        entity.setFileCategoryEntity(fileCateId.get());
+        entity.setCreatedAt(LocalDate.now());
+        entity.setStudentEntity(stdId.get());
+
+        StudentEntity studentEntity = new StudentEntity();
+        studentEntity.setIstudent(stdId.get().getIstudent());
+        studentEntity.setIntroducedLine(dto.getIntroducedLine());
+
+        StudentEntity studentSave = (dto.getIntroducedLine() != null) ? STU_REP.save(studentEntity) : studentEntity;
+        String savedFileNm;
+
+        Long iFileCategory = fileCateId.get().getIFileCategory();
+
+        if (iFileCategory == 1 || iFileCategory == 2 || iFileCategory == 4) {
+            savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
+        } else if (iFileCategory == 3) {
+            savedFileNm = (dto.getFileLink() != null) ? dto.getFileLink() : null;
+        } else {
+            return null;
+        }
+
+        Long fileCount = adminStudentQdsl.countByFileCategoryEntityIFileCategoryInAndStudentEntityIstudent(
+                Arrays.asList(1L, 2L, 3L), studentSave.getIstudent());
+
+        if (fileCount >= 5) {
+            throw new RuntimeException("한 수강생당 파일은 5개까지만 올릴 수 있습니다.");
+        }
+
+
+        if (savedFileNm != null) {
+            entity.setFile(savedFileNm);
+            FileEntity result = FILE_REP.save(entity);
+
+            String targetDir = String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent());
+            File fileTargetDir = new File(targetDir);
+
+            if (!fileTargetDir.exists()) {
+                if (!fileTargetDir.mkdirs()) {
+                    String errorMessage = "디렉토리를 생성할 수 없습니다. 경로: " + fileTargetDir.getAbsolutePath();
+                    log.error(errorMessage);
+                    throw new RuntimeException(errorMessage);
+                }
+            }
+
+
+            File fileTarget = new File(String.format("%s/%s", targetDir, savedFileNm));
+            try {
+                file.transferTo(fileTarget);
+            } catch (IOException e) {
+                throw new RuntimeException("파일을 업로드 할 수 없습니다.");
+            }
+
+            AdminStudentInsRes res = AdminStudentInsRes.builder()
+                    .file(result.getFile())
+                    .ifile(result.getIfile())
+                    .createdAt(result.getCreatedAt())
+                    .istudent(result.getStudentEntity().getIstudent())
+                    .build();
+
+            AdminStudentIntroducedLineRes std = AdminStudentIntroducedLineRes.builder()
+                    .introducedLine(studentSave.getIntroducedLine())
+                    .build();
+
+            return AdminStudentInsTotalRes.builder()
+                    .res(res)
+                    .std(std)
+                    .build();
+        }
+
+        return null;
+    }
 
 
     public ResponseEntity<AdminStudentFindRes> selStudentList(AdminStudentDto dto, Pageable pageable) {
@@ -71,8 +160,11 @@ public class AdminStudentService {
 
     public AdminStudentDetailFindRes selStudentDetail(AdminStudentDetailDto dto) {
         Optional<StudentEntity> byId = STU_REP.findById(dto.getIstudent());
-        List<FileEntity> fileList = FILE_REP.findAllByStudentEntity(byId.get());
-        List<AdminStudentFile> files = adminStudentQdsl.fileVos(dto);
+
+        String img = adminStudentQdsl.img(dto);
+        String resume = adminStudentQdsl.resume(dto);
+        List<AdminStudentFileRes> files = adminStudentQdsl.fileVos(dto);
+        List<AdminStudentFileLink> fileLinks = adminStudentQdsl.fileLinks(dto);
         List<AdminStudentCertificateRes> certiRes = adminStudentQdsl.certificateRes(dto.getIstudent());
         AdminStudentDetailSubjectRes subjectList = adminStudentQdsl.subjectList(dto.getIstudent());
 
@@ -90,10 +182,16 @@ public class AdminStudentService {
                             .email(byId.get().getId())
                             .mobileNumber(byId.get().getMobileNumber())
                             .huntJobYn(byId.get().getHuntJobYn())
+                            .introducedLine(byId.get().getIntroducedLine())
                             .Certificates(certiRes)
                             .subject(subjectList)
                             .build())
-                    .file(files)
+                    .file(AdminStudentFile.builder()
+                            .img(img)
+                            .resume(resume)
+                            .portfolio(files)
+                            .fileLinks(fileLinks)
+                            .build())
                     .build();
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
@@ -184,7 +282,7 @@ public class AdminStudentService {
                     if (dto.getCompanyMainYn() == 1) {
 
                         if (rowCount < 10) {
-                                studentEntity.setCompanyMainYn(1);
+                            studentEntity.setCompanyMainYn(1);
 
                         } else {
                             throw new RuntimeException("특정 카테고리의 row 값은 이미 10개입니다.");
@@ -259,10 +357,7 @@ public class AdminStudentService {
                 .build();
     }
 
-
-
-
-
+    @Transactional
     public AdminStudentUpdRes updStudent(AdminStudentUpdDto dto, List<String> certificateValue) {
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
 
@@ -278,11 +373,44 @@ public class AdminStudentService {
             student.setEducation(dto.getEducation());
             student.setMobileNumber(dto.getMobileNumber());
 
-            for (int i = 0; i < certificates.size(); i++) {
-                CertificateEntity certificate = certificates.get(i);
-                if (i < certificateValue.size()) {
-                    certificate.setCertificate(certificateValue.get(i));
+            if (certificates.size() > certificateValue.size() || certificates.size() == certificateValue.size()) {
+                for (int i = 0; i < certificates.size(); i++) {
+                    CertificateEntity certificate = certificates.get(i);
+                    if (i < certificateValue.size()) {
+                        certificate.setCertificate(certificateValue.get(i));
+                        CertificateEntity save = CERT_REP.save(certificate);
+                        AdminStudentCertificateRes build = AdminStudentCertificateRes.builder()
+                                .icertificate(save.getIcertificate())
+                                .certificate(save.getCertificate())
+                                .build();
+                        resultList.add(build);
+                    }
+                }
+            } else {
+                List<CertificateEntity> toRemove = certificates.subList(certificateValue.size(), certificates.size());
+
+                // certificates 리스트에서도 불필요한 데이터 제거
+                certificates.removeAll(toRemove);
+
+                // DB에서 불필요한 데이터 삭제
+                CERT_REP.deleteAll(certificates);
+
+
+                for (int i = 0; i < certificateValue.size(); i++) {
+                    CertificateEntity certificate;
+                    if (i < certificates.size()) {
+                        certificate = certificates.get(i);
+                        certificate.setCertificate(certificateValue.get(i));
+                    } else {
+                        // certificateValue의 크기보다 큰 경우에는 새로운 CertificateEntity 생성
+                        certificate = new CertificateEntity();
+                        certificate.setCertificate(certificateValue.get(i));
+                        certificate.setStudentEntity(student);
+                    }
+
                     CertificateEntity save = CERT_REP.save(certificate);
+
+
                     AdminStudentCertificateRes build = AdminStudentCertificateRes.builder()
                             .icertificate(save.getIcertificate())
                             .certificate(save.getCertificate())
@@ -290,10 +418,11 @@ public class AdminStudentService {
                     resultList.add(build);
                 }
             }
+
+
             student.setCertificates(certificates);
 
             StudentEntity stdSave = STU_REP.save(student);
-
 
             return AdminStudentUpdRes.builder()
                     .istudent(stdSave.getIstudent())
@@ -307,7 +436,6 @@ public class AdminStudentService {
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
         }
-
     }
 
 
@@ -433,5 +561,27 @@ public class AdminStudentService {
         file.transferTo(fileTarget);
     }
 
+    public AdminStudentPortfolioMainRes patchPortfolioMain(AdminStudentPortfolioMainDto dto) {
+        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
 
+        if (stdId.isPresent()) {
+            Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
+            FileEntity fileEntity = new FileEntity();
+
+            if (dto.getMainYn() != null) {
+                fileEntity = fileId.get();
+                fileEntity.setMainYn(dto.getMainYn());
+            }
+            FileEntity save = FILE_REP.save(fileEntity);
+
+            return AdminStudentPortfolioMainRes.builder()
+                    .mainYn(save.getMainYn())
+                    .ifile(save.getIfile())
+                    .istudent(stdId.get().getIstudent())
+                    .build();
+
+        } else {
+            throw new EntityNotFoundException("찾을 수 없는 Pk 입니다.");
+        }
+    }
 }

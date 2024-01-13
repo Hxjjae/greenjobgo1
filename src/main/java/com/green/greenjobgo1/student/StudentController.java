@@ -53,7 +53,6 @@ public class StudentController {
         Optional<StudentEntity> stdId = STU_REP.findById(istudent);
         if (stdId.get().getEditableYn() == 1) {
             StudentInsDto dto = new StudentInsDto();
-            StudentCertificateDto certDto = new StudentCertificateDto();
             dto.setIstudent(istudent);
             dto.setIFileCategory(iFileCategory);
             dto.setFileLink(fileLink);

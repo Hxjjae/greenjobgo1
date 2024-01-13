@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdminStudentIntroducedLineRes {
-    private String introducedLine;
+public class AdminStudentFileLink {
+    private String fileLink;
+    private String oneWord;
 }

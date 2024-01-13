@@ -1,6 +1,11 @@
 package com.green.greenjobgo1.admin.std_management;
 
 import com.green.greenjobgo1.admin.std_management.model.*;
+import com.green.greenjobgo1.common.entity.StudentEntity;
+import com.green.greenjobgo1.repository.StudentRepository;
+import com.green.greenjobgo1.student.model.StudentCertificateDto;
+import com.green.greenjobgo1.student.model.StudentInsDto;
+import com.green.greenjobgo1.student.model.StudentInsTotalRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +31,29 @@ import java.util.List;
 public class AdminStudentController {
 
     private final AdminStudentService SERVICE;
+    private final StudentRepository STU_REP;
+
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, path = "/file")
+    @Operation(summary = "관리자 수강생 파일 및 링크 업로드")
+    public AdminStudentInsTotalRes postFile(@RequestPart(required = false) MultipartFile file,
+                                       @RequestParam Long istudent,
+                                       @RequestParam Long iFileCategory,
+                                       @RequestParam(required = false) String introducedLine,
+                                       @RequestParam(required = false) String fileLink) {
+        Optional<StudentEntity> stdId = STU_REP.findById(istudent);
+        if (stdId.get().getEditableYn() == 1) {
+            AdminStudentInsDto dto = new AdminStudentInsDto();
+            StudentCertificateDto certDto = new StudentCertificateDto();
+            dto.setIstudent(istudent);
+            dto.setIFileCategory(iFileCategory);
+            dto.setFileLink(fileLink);
+            dto.setIntroducedLine(introducedLine);
+            return SERVICE.insFile(file, dto);
+        } else {
+            throw new RuntimeException("editableYn이 비활성화 되어있습니다.");
+        }
+    }
+
 
     @GetMapping
     @Operation(summary = "학생 조회", description = "istudnet : 수강생 PK \n" +
@@ -117,6 +146,27 @@ public class AdminStudentController {
         dto.setStorageYn(storageYn);
         return SERVICE.patchStorage(dto);
     }
+
+    @PutMapping("/certificate")
+    @Operation(summary = "자격증 수정")
+    public AdminStudentCertificateRes putCertificate(@RequestParam Long icertificate,
+                                                     @RequestParam String certificate) {
+            return null;
+    }
+
+    @PatchMapping("/portfolio-main")
+    @Operation(summary = "대표 포트폴리오 설정")
+    public AdminStudentPortfolioMainRes patchPortfolioMain(@RequestParam Long istudent,
+                                                        @RequestParam Long ifile,
+                                                           @RequestParam Integer mainYn) {
+        AdminStudentPortfolioMainDto dto = new AdminStudentPortfolioMainDto();
+        dto.setIfile(ifile);
+        dto.setIstudent(istudent);
+        dto.setMainYn(mainYn);
+        return SERVICE.patchPortfolioMain(dto);
+    }
+
+
 
     @PatchMapping("/main")
     @Operation(summary = "메인 여부 결정 (대분류당 10개) 상한")
