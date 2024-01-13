@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdminStudentIntroducedLineRes {
-    private String introducedLine;
+public class AdminStudentPortfolioMainRes {
+    private Long ifile;
+    private Long istudent;
+    private Integer mainYn;
 }
