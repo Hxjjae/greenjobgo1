@@ -50,6 +50,7 @@ public class CompanyController {
             "endedAt: 수강과정 종료 날짜 <br>"+
             "huntJobYn: 취업유무 0이면 구직중 <br>"+
             "education: 학력 <br>"+
+            "introducedLine: 수강생 한줄 소개 <br>"+
             "certificates: 자격증 <br>"+
             "thumbnail : 썸네일 이미지 <br>"+
             "aboutMe : 자기소개서, 이력서pdf파일 <br>"+

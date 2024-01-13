@@ -14,7 +14,7 @@ import java.util.List;
 public class CompanyStdfileRes {
     private List<CompanyStdfileImgVo> thumbnail;
     private List<CompanyStdfileImgVo> aboutMe;
-    private List<CompanyStdfileImgVo> portfolio;
+    private List<CompanystdportfolioVo> portfolio;
     private List<CompanyStdfileImgVo> fileLink;
 
 }

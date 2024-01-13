@@ -23,4 +23,5 @@ public class CompanyStdDetail {
     private String subjectName;
     private String mobileNumber;
     private String education;
+    private String introducedLine;
 }

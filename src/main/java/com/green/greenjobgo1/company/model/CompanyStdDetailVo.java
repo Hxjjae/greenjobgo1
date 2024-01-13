@@ -22,6 +22,7 @@ public class CompanyStdDetailVo {
     private String mobileNumber;
     private String education;
     private String subject;
+    private String introducedLine;
     private List<CompanyStudentCertificateRes> certificates;
 
 
