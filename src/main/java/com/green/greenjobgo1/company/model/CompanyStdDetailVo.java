@@ -16,6 +16,7 @@ public class CompanyStdDetailVo {
     private LocalDate birthday;
     private String address;
     private String email;
+    private int huntJobYn;
     private LocalDate startedAt;
     private LocalDate endedAt;
     private String mobileNumber;

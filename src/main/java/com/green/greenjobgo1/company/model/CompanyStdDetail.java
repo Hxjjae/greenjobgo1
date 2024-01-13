@@ -15,6 +15,7 @@ public class CompanyStdDetail {
     private String gender;
     private int age;
     private LocalDate birthday;
+    private int huntJobYn;
     private String address;
     private String email;
     private LocalDate startedAt;

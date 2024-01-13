@@ -48,9 +48,14 @@ public class CompanyController {
     @Operation(summary = "수강생을 상세 조회 합니다.", description = "<br>"+
             "startedAt: 수강과정 시작날짜 <br>"+
             "endedAt: 수강과정 종료 날짜 <br>"+
+            "huntJobYn: 취업유무 0이면 구직중 <br>"+
             "education: 학력 <br>"+
             "certificates: 자격증 <br>"+
-            "file : <br>"+
+            "thumbnail : 썸네일 이미지 <br>"+
+            "aboutMe : 자기소개서, 이력서pdf파일 <br>"+
+            "portfolio : 포트폴리오 pdf파일 <br>"+
+            "mainYn : 포트폴리오 대표이미지 1이면 대표이미지처리 <br>"+
+            "fileLink : url링크 <br>"+
             "<br>")
     public CompanystdDetailRes studentdetail(@PathVariable Long istudent){
          return service.detailStd(istudent);
