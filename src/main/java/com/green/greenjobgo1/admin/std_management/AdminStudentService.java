@@ -7,6 +7,7 @@ import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.repository.*;
 import com.green.greenjobgo1.common.security.config.security.MyUserDetailsServiceImpl;
 import com.green.greenjobgo1.student.model.*;
+import com.querydsl.core.Tuple;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -162,7 +163,7 @@ public class AdminStudentService {
         Optional<StudentEntity> byId = STU_REP.findById(dto.getIstudent());
 
         String img = adminStudentQdsl.img(dto);
-        String resume = adminStudentQdsl.resume(dto);
+        AdminStudentResume resume = adminStudentQdsl.resume(dto);
         List<AdminStudentFileRes> files = adminStudentQdsl.fileVos(dto);
         List<AdminStudentFileLink> fileLinks = adminStudentQdsl.fileLinks(dto);
         List<AdminStudentCertificateRes> certiRes = adminStudentQdsl.certificateRes(dto.getIstudent());

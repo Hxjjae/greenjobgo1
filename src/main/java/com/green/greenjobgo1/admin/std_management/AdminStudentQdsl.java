@@ -2,6 +2,7 @@ package com.green.greenjobgo1.admin.std_management;
 
 import com.green.greenjobgo1.admin.std_management.model.*;
 import com.green.greenjobgo1.common.entity.*;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -56,7 +57,7 @@ public class AdminStudentQdsl {
 
     public List<AdminStudentFileRes> fileVos(AdminStudentDetailDto dto) {
         JPAQuery<AdminStudentFileRes> query = jpaQueryFactory
-                .select(Projections.bean(AdminStudentFileRes.class, file.file))
+                .select(Projections.bean(AdminStudentFileRes.class, file.file, file.oneWord, file.mainYn))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),
@@ -67,7 +68,7 @@ public class AdminStudentQdsl {
 
     public List<AdminStudentFileLink> fileLinks(AdminStudentDetailDto dto) {
         JPAQuery<AdminStudentFileLink> query = jpaQueryFactory
-                .select(Projections.bean(AdminStudentFileLink.class, file.file))
+                .select(Projections.bean(AdminStudentFileLink.class, file.file.as("fileLink"), file.oneWord))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),
@@ -87,9 +88,9 @@ public class AdminStudentQdsl {
         return query.fetchOne();
     }
 
-    public String resume(AdminStudentDetailDto dto) {
-        JPAQuery<String> query = jpaQueryFactory
-                .select(file.file)
+    public AdminStudentResume resume(AdminStudentDetailDto dto) {
+        JPAQuery<AdminStudentResume> query = jpaQueryFactory
+                .select(Projections.bean(AdminStudentResume.class, file.file, file.oneWord))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),

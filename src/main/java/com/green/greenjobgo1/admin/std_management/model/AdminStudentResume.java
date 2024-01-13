@@ -5,12 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdminStudentFileRes {
-    private String file;
+public class AdminStudentResume {
+    private String resume;
     private String oneWord;
-    private Integer mainYn;
 }
