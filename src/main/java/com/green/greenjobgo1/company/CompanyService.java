@@ -150,6 +150,7 @@ public class CompanyService {
                         qstudent.gender,
                         qstudent.age,
                         qstudent.birthday,
+                        qstudent.huntJobYn,
                         qstudent.address,
                         qstudent.id.as("email"),
                         qCourseSubject.startedAt,
@@ -172,7 +173,7 @@ public class CompanyService {
                 .where(qstudent.istudent.eq(istudent)).fetch();
 
         List<CompanyStdfileImgVo> thumbnail = jpaQueryFactory.select(Projections.bean(CompanyStdfileImgVo.class,
-                        qfileEntity.file,qfileEntity.oneWord
+                        qfileEntity.file,qfileEntity.oneWord,qfileEntity.mainYn
                 )).from(qfileEntity)
                 .innerJoin(qfileEntity)
                 .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
@@ -181,7 +182,7 @@ public class CompanyService {
                 .fetch();
 
         List<CompanyStdfileImgVo> aboutMe = jpaQueryFactory.select(Projections.bean(CompanyStdfileImgVo.class,
-                        qfileEntity.file,qfileEntity.oneWord
+                        qfileEntity.file,qfileEntity.oneWord,qfileEntity.mainYn
                 )).from(qfileEntity)
                 .innerJoin(qfileEntity)
                 .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
@@ -189,8 +190,8 @@ public class CompanyService {
                 .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(1L))
                 .fetch();
 
-        List<CompanyStdfileImgVo> portfolio = jpaQueryFactory.select(Projections.bean(CompanyStdfileImgVo.class,
-                        qfileEntity.file,qfileEntity.oneWord
+        List<CompanyStdfileImgVo> fileLink = jpaQueryFactory.select(Projections.bean(CompanyStdfileImgVo.class,
+                        qfileEntity.file,qfileEntity.oneWord,qfileEntity.mainYn
                 )).from(qfileEntity)
                 .innerJoin(qfileEntity)
                 .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
@@ -199,8 +200,8 @@ public class CompanyService {
                 .fetch();
 
 
-        List<CompanyStdfileImgVo> fileLink= jpaQueryFactory.select(Projections.bean(CompanyStdfileImgVo.class,
-                        qfileEntity.file,qfileEntity.oneWord
+        List<CompanyStdfileImgVo> portfolio= jpaQueryFactory.select(Projections.bean(CompanyStdfileImgVo.class,
+                        qfileEntity.file,qfileEntity.oneWord,qfileEntity.mainYn
                 )).from(qfileEntity)
                 .innerJoin(qfileEntity)
                 .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
@@ -213,6 +214,7 @@ public class CompanyService {
                 .gender(vo.getGender())
                 .age(vo.getAge())
                 .birthday(vo.getBirthday())
+                .huntJobYn(vo.getHuntJobYn())
                 .address(vo.getAddress())
                 .email(vo.getEmail())
                 .startedAt(vo.getStartedAt())
@@ -224,16 +226,18 @@ public class CompanyService {
 
         //url 붙여주기
         CompanyStdfileRes build1 = CompanyStdfileRes.builder()
-                .thumbnail(CompanyStdfileImgVo.builder().file(
-                        "/img/student/" + student.getIstudent() + "/" +thumbnail.get(0).getFile())
-                        .oneWord(thumbnail.get(0).getOneWord()).build())
-                .aboutMe((CompanyStdfileImgVo.builder().file("/img/student/" + student.getIstudent() + "/" +aboutMe.get(0).getFile())
-                        .oneWord(aboutMe.get(0).getOneWord()).build()))
+                .thumbnail((thumbnail.stream().map(item-> CompanyStdfileImgVo.builder()
+                        .file("/img/student/" + student.getIstudent() + "/"+item.getFile())
+                        .oneWord(item.getOneWord()).mainYn(item.getMainYn()).build()).toList()))
+                .aboutMe((aboutMe.stream().map(item-> CompanyStdfileImgVo.builder()
+                        .file("/img/student/" + student.getIstudent() + "/"+item.getFile())
+                        .oneWord(item.getOneWord()).mainYn(item.getMainYn()).build()).toList()))
                 .portfolio((portfolio.stream().map(item-> CompanyStdfileImgVo.builder()
                                 .file("/img/student/" + student.getIstudent() + "/"+item.getFile())
-                                .oneWord(item.getOneWord()).build()).toList()))
+                                .oneWord(item.getOneWord()).mainYn(item.getMainYn()).build()).toList()))
                 .fileLink(fileLink.stream().map(item-> CompanyStdfileImgVo.builder()
-                                .file("/img/student/" + student.getIstudent() + "/"+item.getFile()).oneWord(item.getOneWord()).build()).toList()).build();
+                                .file(item.getFile())
+                        .oneWord(item.getOneWord()).mainYn(item.getMainYn()).build()).toList()).build();
         return CompanystdDetailRes.builder().vo(build).file(build1).build();
     }
 
