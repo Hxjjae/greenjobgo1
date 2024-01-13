@@ -38,6 +38,9 @@ public class FileEntity {
     @Column(nullable = false, length = 100)
     private String file;
 
+    @Column(nullable = false, length = 30)
+    private String oneWord;
+
     @CreationTimestamp
     @Column(updatable = false)
     LocalDate createdAt;
