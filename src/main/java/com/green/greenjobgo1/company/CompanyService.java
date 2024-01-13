@@ -2,28 +2,19 @@ package com.green.greenjobgo1.company;
 
 
 import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileVo;
-import com.green.greenjobgo1.admin.std_management.model.AdminStudentCertificateRes;
-import com.green.greenjobgo1.admin.std_management.model.AdminStudentDetailSubjectRes;
 import com.green.greenjobgo1.common.entity.*;
 import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.company.model.*;
-import com.green.greenjobgo1.repository.CompanyRepository;
 import com.green.greenjobgo1.repository.EmployeeProfileRepository;
 import com.green.greenjobgo1.repository.StudentRepository;
-import com.green.greenjobgo1.common.security.config.RedisService;
-import com.green.greenjobgo1.common.security.config.security.AuthenticationFacade;
-import com.green.greenjobgo1.common.security.config.security.JwtTokenProvider;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -180,24 +171,32 @@ public class CompanyService {
                 .join(certificate.studentEntity, qstudent)
                 .where(qstudent.istudent.eq(istudent)).fetch();
 
-        List<CompanyStdfileVo> file = jpaQueryFactory.select(Projections.bean(CompanyStdfileVo.class,
-                        qfileEntity.file,
-                        qfileEntity.fileCategoryEntity.iFileCategory,
-                        qfileEntity.fileCategoryEntity.file.as("file_category")
+        List<CompanyStdfileImgVo> file4 = jpaQueryFactory.select(Projections.bean(CompanyStdfileImgVo.class,
+                        qfileEntity.file
                 )).from(qfileEntity)
                 .innerJoin(qfileEntity)
                 .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
                 .where(qstudent.istudent.eq(istudent))
+                .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(4L))
                 .fetch();
-        log.info("file:{}",file.get(0).getIFileCategory());
 
-//        List<CompanyDetailSubjectRes> studentsubject = jpaQueryFactory.select(Projections.bean(CompanyDetailSubjectRes.class,
-//                        qCourseSubject.subjectName
-//                ))
-//                .from(qCourseSubject)
-//                .join(qCourseSubject.scsList, qstudentCourseSubject)
-//                .join(qstudentCourseSubject.studentEntity, qstudent)
-//                .where(qstudent.istudent.eq(istudent)).fetch();
+        List<CompanyStdfileImgVo> file3 = jpaQueryFactory.select(Projections.bean(CompanyStdfileImgVo.class,
+                        qfileEntity.file
+                )).from(qfileEntity)
+                .innerJoin(qfileEntity)
+                .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
+                .where(qstudent.istudent.eq(istudent))
+                .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(3L))
+                .fetch();
+
+        List<CompanyStdfileImgVo> file2= jpaQueryFactory.select(Projections.bean(CompanyStdfileImgVo.class,
+                        qfileEntity.file
+                )).from(qfileEntity)
+                .innerJoin(qfileEntity)
+                .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
+                .where(qstudent.istudent.eq(istudent))
+                .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(2L))
+                .fetch();
 
         CompanyStdDetailVo build = CompanyStdDetailVo.builder()
                 .name(vo.getName())
@@ -214,12 +213,13 @@ public class CompanyService {
                 .subject(vo.getSubjectName()).build();
 
         //url 붙여주기
-        List<CompanyStdfileVo> list = file.stream().map(item -> CompanyStdfileVo.builder()
-                .iFileCategory(item.getIFileCategory())
-                .file("/img/student/" + student.getIstudent() + "/" + item.getFile())
-                .file_category(item.getFile_category()).build()).toList();
-
-        return CompanystdDetailRes.builder().vo(build).file(list).build();
+        CompanyStdfileRes build1 = CompanyStdfileRes.builder()
+                .img("/img/student/" + student.getIstudent() + "/" +file4.get(0).getFile())
+                .portfolio((List<CompanyStdfileImgVo>) file4.stream().map(item-> CompanyStdfileImgVo.builder()
+                                .file("/img/student/" + student.getIstudent() + "/"+item.getFile()).oneWord(item.getOneWord())))
+                .fileLink((List<CompanyStdfileImgVo>) file2.stream().map(item-> CompanyStdfileImgVo.builder()
+                                .file("/img/student/" + student.getIstudent() + "/"+item.getFile()).oneWord(item.getOneWord()))).build();
+        return CompanystdDetailRes.builder().vo(build).file(build1).build();
     }
 
     public List<CompanyMainVo> mainselstd(Long icategory){

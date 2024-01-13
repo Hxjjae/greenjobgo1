@@ -146,12 +146,12 @@ public class AdminStudentController {
     @PutMapping
     @Operation(summary = "학생 정보 수정")
     public AdminStudentUpdRes putStudent(@RequestParam Long istudent,
-                                         @RequestParam String studentName,
-                                         @RequestParam String address,
-                                         @RequestParam String email,
-                                         @RequestParam String education,
-                                         @RequestParam String mobileNumber,
-                                         @RequestParam List<String> certificateList) {
+                                         @RequestParam(required = false) String studentName,
+                                         @RequestParam(required = false) String address,
+                                         @RequestParam(required = false) String email,
+                                         @RequestParam(required = false) String education,
+                                         @RequestParam(required = false) String mobileNumber,
+                                         @RequestParam(required = false) List<String> certificateList) {
 
         AdminStudentUpdDto dto = new AdminStudentUpdDto();
         List<String> certiList = new ArrayList<>();

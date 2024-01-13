@@ -5,12 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanyStdfileVo {
-    private Long iFileCategory;
-    private String file_category;
-    private String file;
+public class CompanyStdfileRes {
+    private String img;
+    private List<CompanyStdfileImgVo> portfolio;
+    private List<CompanyStdfileImgVo> fileLink;
+
 }
