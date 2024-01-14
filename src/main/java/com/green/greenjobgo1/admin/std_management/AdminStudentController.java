@@ -162,6 +162,16 @@ public class AdminStudentController {
         return SERVICE.updCertificate(dto);
     }
 
+    @PutMapping("/certificate-list")
+    @Operation(summary = "자격증 수정-리스트")
+    public AdminStudentCertificateTotalRes putCertificateList(@RequestParam List<String> certificate,
+                                                             @RequestParam Long istudent) {
+        AdminStudentCertificateListDto dto = new AdminStudentCertificateListDto();
+        dto.setCertificate(certificate);
+        dto.setIstudent(istudent);
+        return SERVICE.updCertificateList(dto);
+    }
+
     @PatchMapping("/portfolio-main")
     @Operation(summary = "대표 포트폴리오 설정")
     public AdminStudentPortfolioMainRes patchPortfolioMain(@RequestParam Long istudent,

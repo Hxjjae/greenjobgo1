@@ -600,4 +600,63 @@ public class AdminStudentService {
             throw new EntityNotFoundException("찾을 수 없는 Pk 입니다.");
         }
     }
+
+    public AdminStudentCertificateTotalRes updCertificateList(AdminStudentCertificateListDto dto) {
+        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+        List<String> dtoList = dto.getCertificate();
+
+        if (stdId.isPresent()) {
+            // 만약에 자격증 n개가 들어가 있고
+            List<CertificateEntity> certificates = stdId.get().getCertificates();
+
+            // dto가 기존 엔티티보다 사이즈가 크다면? 새로 수정한다
+            if (certificates.size() <= dtoList.size()) {
+                for (int i = 0; i < dtoList.size(); i++) {
+                    if (i < certificates.size()) {
+                        certificates.get(i).setCertificate(dtoList.get(i));
+                    } else {
+                        CertificateEntity entity = new CertificateEntity();
+                        entity.setCertificate(dtoList.get(i));
+                        entity.setStudentEntity(stdId.get());
+
+                        certificates.add(entity);
+                    }
+
+                }
+                List<CertificateEntity> save = CERT_REP.saveAll(certificates);
+
+                return AdminStudentCertificateTotalRes.builder()
+                        .res(save.stream().map(item -> AdminStudentCertificateRes.builder()
+                                .certificate(item.getCertificate())
+                                .icertificate(item.getIcertificate())
+                                .build()).toList())
+                        .istudent(stdId.get().getIstudent())
+                        .build();
+            } else {
+                List<CertificateEntity> toRemove = certificates.subList(dtoList.size(), certificates.size());
+                certificates.removeAll(toRemove);
+
+                for (int i = 0; i < certificates.size(); i++) {
+                    if (i < dtoList.size()) {
+                        certificates.get(i).setCertificate(dtoList.get(i));
+                    } else {
+                        // dtoList 크기보다 certificates가 더 큰 경우 해당 항목 제거
+                        certificates.remove(i);
+                        i--; // 리스트 크기가 줄었으므로 인덱스 감소
+                    }
+                }
+                List<CertificateEntity> save = CERT_REP.saveAll(certificates);
+
+                return AdminStudentCertificateTotalRes.builder()
+                        .res(save.stream().map(item -> AdminStudentCertificateRes.builder()
+                                .certificate(item.getCertificate())
+                                .icertificate(item.getIcertificate())
+                                .build()).toList())
+                        .istudent(stdId.get().getIstudent())
+                        .build();
+            }
+        } else {
+            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
+        }
+    }
 }

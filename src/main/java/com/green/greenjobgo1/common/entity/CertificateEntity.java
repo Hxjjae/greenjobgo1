@@ -27,4 +27,5 @@ public class CertificateEntity {
 
     @Column(length = 30)
     private String certificate;
+
 }

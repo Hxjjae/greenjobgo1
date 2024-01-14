@@ -4,6 +4,8 @@ import com.green.greenjobgo1.common.entity.CertificateEntity;
 import com.green.greenjobgo1.common.entity.StudentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface CertificateRepository extends JpaRepository<CertificateEntity, Long> {
-    CertificateEntity findByStudentEntity(StudentEntity studentEntity);
+    List<CertificateEntity> findByStudentEntity(StudentEntity studentEntity);
 }
