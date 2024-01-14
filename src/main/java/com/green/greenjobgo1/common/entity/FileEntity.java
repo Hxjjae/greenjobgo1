@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.core.annotation.Order;
@@ -38,7 +39,7 @@ public class FileEntity {
     @Column(nullable = false, length = 100)
     private String file;
 
-    @Column(nullable = false, length = 30)
+    @Column(length = 30)
     private String oneWord;
 
     @CreationTimestamp
@@ -49,5 +50,6 @@ public class FileEntity {
     LocalDate updatedAt;
 
     @Column
+    @ColumnDefault("0")
     private Integer mainYn;
 }

@@ -57,7 +57,7 @@ public class AdminStudentQdsl {
 
     public List<AdminStudentFileRes> fileVos(AdminStudentDetailDto dto) {
         JPAQuery<AdminStudentFileRes> query = jpaQueryFactory
-                .select(Projections.bean(AdminStudentFileRes.class, file.file, file.oneWord, file.mainYn))
+                .select(Projections.bean(AdminStudentFileRes.class,file.ifile, file.file, file.oneWord, file.mainYn))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),
@@ -68,7 +68,7 @@ public class AdminStudentQdsl {
 
     public List<AdminStudentFileLink> fileLinks(AdminStudentDetailDto dto) {
         JPAQuery<AdminStudentFileLink> query = jpaQueryFactory
-                .select(Projections.bean(AdminStudentFileLink.class, file.file.as("fileLink"), file.oneWord))
+                .select(Projections.bean(AdminStudentFileLink.class,file.ifile, file.file.as("fileLink"), file.oneWord))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),
@@ -77,9 +77,9 @@ public class AdminStudentQdsl {
         return query.fetch();
     }
 
-    public String img(AdminStudentDetailDto dto) {
-        JPAQuery<String> query = jpaQueryFactory
-                .select(file.file)
+    public AdminStudentImg img(AdminStudentDetailDto dto) {
+        JPAQuery<AdminStudentImg> query = jpaQueryFactory
+                .select(Projections.bean(AdminStudentImg.class,file.file.as("img"), file.ifile))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),
@@ -89,7 +89,7 @@ public class AdminStudentQdsl {
     }
     public AdminStudentResume resume(AdminStudentDetailDto dto) {
         JPAQuery<AdminStudentResume> query = jpaQueryFactory
-                .select(Projections.bean(AdminStudentResume.class, file.file, file.oneWord))
+                .select(Projections.bean(AdminStudentResume.class,file.ifile, file.file.as("resume"), file.oneWord))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),
@@ -205,29 +205,29 @@ public class AdminStudentQdsl {
         return query.fetchOne();
     }
 
-    public Long countByFile(Long fileCategoryIds, Long studentId) {
+    public Long countByFile(Long studentId) {
         JPAQuery<Long> query = jpaQueryFactory
                 .select(file.file.count())
                 .from(file)
-                .where(file.fileCategoryEntity.iFileCategory.eq(fileCategoryIds)
+                .where(file.fileCategoryEntity.iFileCategory.eq(2L)
                         .and(file.studentEntity.istudent.eq(studentId)));
         return query.fetchOne();
     }
 
-    public Long countByFileLink(Long fileCategory, Long studentId) {
+    public Long countByFileLink(Long studentId) {
         JPAQuery<Long> query = jpaQueryFactory
                 .select(file.file.count())
                 .from(file)
-                .where(file.fileCategoryEntity.iFileCategory.eq(fileCategory)
+                .where(file.fileCategoryEntity.iFileCategory.eq(3L)
                         .and(file.studentEntity.istudent.eq(studentId)));
         return query.fetchOne();
     }
 
-    public Long countByResume(Long fileCategory, Long istudent) {
+    public Long countByResume(Long istudent) {
         JPAQuery<Long> query = jpaQueryFactory
                 .select(file.file.count())
                 .from(file)
-                .where(file.fileCategoryEntity.iFileCategory.eq(fileCategory)
+                .where(file.fileCategoryEntity.iFileCategory.eq(1L)
                         .and(file.studentEntity.istudent.eq(istudent)));
         return query.fetchOne();
     }

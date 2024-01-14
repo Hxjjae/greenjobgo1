@@ -17,5 +17,4 @@ import java.util.List;
 public class AdminStudentFileUpdTotalRes {
     private AdminStudentFileUpdRes res;
     private AdminStudentIntroducedLineRes std;
-    private List<CertificateRes> certRes;
 }

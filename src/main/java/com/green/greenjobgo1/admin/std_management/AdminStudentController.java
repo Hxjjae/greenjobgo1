@@ -31,30 +31,26 @@ import java.util.Optional;
 public class AdminStudentController {
 
     private final AdminStudentService SERVICE;
-    private final StudentRepository STU_REP;
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, path = "/file")
-    @Operation(summary = "관리자 수강생 파일 및 링크 업로드" ,description = "istudent = 학생pk \n" +
+    @Operation(summary = "관리자 수강생 파일 및 링크 업로드", description = "istudent = 학생pk \n" +
             "\niFileCategory = 파일카테고리 pk 1번 이력서, 2번 포트폴리오 파일, 3번 포트폴리오 링크, 4번 포트폴리오 대표 이미지\n" +
-            "\nintroducedLine = 한줄 소개 \n"+
+            "\nintroducedLine = 한줄 소개 \n" +
             "\nfileLink = 파일 링크 ! 3번을 택했을경우에는 이부분만 작성하시고 파일은 안올려도됩니다.")
     public AdminStudentInsTotalRes postFile(@RequestPart(required = false) MultipartFile file,
                                             @RequestParam Long istudent,
                                             @RequestParam Long iFileCategory,
                                             @RequestParam(required = false) String introducedLine,
+                                            @RequestParam(required = false) String oneWord,
                                             @RequestParam(required = false) String fileLink) {
-        Optional<StudentEntity> stdId = STU_REP.findById(istudent);
-        if (stdId.get().getEditableYn() == 1) {
-            AdminStudentInsDto dto = new AdminStudentInsDto();
-            StudentCertificateDto certDto = new StudentCertificateDto();
-            dto.setIstudent(istudent);
-            dto.setIFileCategory(iFileCategory);
-            dto.setFileLink(fileLink);
-            dto.setIntroducedLine(introducedLine);
-            return SERVICE.insFile(file, dto);
-        } else {
-            throw new RuntimeException("editableYn이 비활성화 되어있습니다.");
-        }
+
+        AdminStudentInsDto dto = new AdminStudentInsDto();
+        dto.setIstudent(istudent);
+        dto.setIFileCategory(iFileCategory);
+        dto.setFileLink(fileLink);
+        dto.setIntroducedLine(introducedLine);
+        dto.setOneWord(oneWord);
+        return SERVICE.insFile(file, dto);
     }
 
 
@@ -165,7 +161,7 @@ public class AdminStudentController {
     @PutMapping("/certificate-list")
     @Operation(summary = "자격증 수정-리스트")
     public AdminStudentCertificateTotalRes putCertificateList(@RequestParam List<String> certificate,
-                                                             @RequestParam Long istudent) {
+                                                              @RequestParam Long istudent) {
         AdminStudentCertificateListDto dto = new AdminStudentCertificateListDto();
         dto.setCertificate(certificate);
         dto.setIstudent(istudent);
@@ -230,28 +226,6 @@ public class AdminStudentController {
         return SERVICE.updStudent(dto);
     }
 
-    @PutMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, path = "/file")
-    @Operation(summary = "학생 업로드 파일 수정" , description = "istudent = 학생pk \n" +
-            "\niFileCategory = 파일카테고리 pk 1번 이력서, 2번 포트폴리오 파일, 3번 포트폴리오 링크, 4번 포트폴리오 대표 이미지\n" +
-            "\nifile = 파일 pk" +
-            "\nintroducedLine = 한줄 소개 \n" +
-            "\nfileLink = 파일 링크 ! 3번을 택했을경우에는 이부분만 작성하시고 파일은 안올려도됩니다.")
-    public AdminStudentFileUpdTotalRes putFile(@RequestPart(required = false) MultipartFile file,
-                                               @RequestParam Long istudent,
-                                               @RequestParam Long iFileCategory,
-                                               @RequestParam Long ifile,
-                                               @RequestParam(required = false) String introducedLine,
-                                               @RequestParam(required = false) String fileLink) {
-        AdminStudentFileUpdDto dto = new AdminStudentFileUpdDto();
-        dto.setIstudent(istudent);
-        dto.setIFileCategory(iFileCategory);
-        dto.setIfile(ifile);
-        dto.setFileLink(fileLink);
-        dto.setIntroducedLine(introducedLine);
-        return SERVICE.updFile(file, dto);
-
-    }
-
     @DeleteMapping
     @Operation(summary = "학생 삭제")
     public AdminStudentDelRes delStudent(@RequestParam Long istudent) {
@@ -268,5 +242,13 @@ public class AdminStudentController {
         dto.setIstudent(istudent);
         dto.setIcertificate(icertificate);
         return SERVICE.delCertificate(dto);
+    }
+
+    @DeleteMapping("/file")
+    @Operation(summary = "학생 파일 삭제")
+    public AdminStudentFileDelRes delFile(@RequestParam Long ifile) {
+        AdminStudentFileDelDto dto = new AdminStudentFileDelDto();
+        dto.setIfile(ifile);
+        return SERVICE.delFile(dto);
     }
 }

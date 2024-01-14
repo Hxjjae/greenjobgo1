@@ -43,12 +43,18 @@ public class StudentController {
     }
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, path = "/file")
-    @Operation(summary = "수강생 파일 및 링크 업로드")
+    @Operation(summary = "수강생 파일 및 링크 업로드", description = "istudent = 수강생 pk \n" +
+            "\n iFileCategory = 1 이력서 , 2 포트폴리오 파일, 3 포트폴리오 링크, 4 포트폴리오 대표이미지\n" +
+            "\n introducedLine = 이력서 한줄소개 \n" +
+            "\n oneWord = 파일별 한줄소개" +
+            "\n fileLink = 포트폴리오 링크 주소 \n" +
+            "\n file = 파일 업로드")
     @PreAuthorize("hasAnyRole('USER')")
     public StudentInsTotalRes postFile(@RequestPart(required = false) MultipartFile file,
                                        @RequestParam Long istudent,
                                        @RequestParam Long iFileCategory,
                                        @RequestParam(required = false) String introducedLine,
+                                       @RequestParam(required = false) String oneWord,
                                        @RequestParam(required = false) String fileLink) {
         Optional<StudentEntity> stdId = STU_REP.findById(istudent);
         if (stdId.get().getEditableYn() == 1) {
@@ -57,6 +63,7 @@ public class StudentController {
             dto.setIFileCategory(iFileCategory);
             dto.setFileLink(fileLink);
             dto.setIntroducedLine(introducedLine);
+            dto.setOneWord(oneWord);
             return SERVICE.insFile(file, dto);
         } else {
             throw new RuntimeException("editableYn이 비활성화 되어있습니다.");
@@ -64,7 +71,8 @@ public class StudentController {
     }
 
     @PostMapping("/certificate")
-    @Operation(summary = "수강생 자격증 추가")
+    @Operation(summary = "수강생 자격증 추가", description = "istudent = 수강생 pk \n" +
+            "\n certificates = 자격증 list 로 입력")
     @PreAuthorize("hasAnyRole('USER')")
     public StudentCertificateRes postCertificate(@RequestParam Long istudent,
                                           @RequestParam List<String> certificates) {
@@ -80,7 +88,8 @@ public class StudentController {
     }
 
     @PatchMapping("/huntjob-yn")
-    @Operation(summary = "취업 여부")
+    @Operation(summary = "취업 여부", description = "istudent = 학생 pk,\n" +
+            "\n huntJobYn = 취업 여부 0 1 둘중에 뭘로 취업인지 구직중인지 정해야함")
     @PreAuthorize("hasAnyRole('USER')")
     public StudentHuntJobRes patchHuntJob(@RequestParam Long istudent,
                                           @RequestParam int huntJobYn) {
@@ -90,30 +99,6 @@ public class StudentController {
             dto.setIstudent(istudent);
             dto.setHuntJobYn(huntJobYn);
             return SERVICE.patchHuntJob(dto);
-        } else {
-            throw new RuntimeException("editableYn이 비활성화 되어있습니다.");
-        }
-    }
-
-
-    @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, path = "/file")
-    @Operation(summary = "수강생 파일 수정")
-    @PreAuthorize("hasAnyRole('USER')")
-    public StudentPatchTotalRes patchFile(@RequestPart(required = false) MultipartFile file,
-                                          @RequestParam Long istudent,
-                                          @RequestParam Long iFileCategory,
-                                          @RequestParam Long ifile,
-                                          @RequestParam(required = false) String introducedLine,
-                                          @RequestParam(required = false) String fileLink) {
-        Optional<StudentEntity> stdId = STU_REP.findById(istudent);
-        if (stdId.get().getEditableYn() == 1) {
-            StudentPatchDto dto = new StudentPatchDto();
-            dto.setIstudent(istudent);
-            dto.setIFileCategory(iFileCategory);
-            dto.setIfile(ifile);
-            dto.setFileLink(fileLink);
-            dto.setIntroducedLine(introducedLine);
-            return SERVICE.patchFile(file, dto);
         } else {
             throw new RuntimeException("editableYn이 비활성화 되어있습니다.");
         }

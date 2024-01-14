@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminStudentFile {
-    private String img;
+    private AdminStudentImg img;
     private AdminStudentResume resume;
     private List<AdminStudentFileRes> portfolio;
     private List<AdminStudentFileLink> fileLinks;
