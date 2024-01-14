@@ -381,6 +381,7 @@ public class AdminStudentService {
             student.setAddress(dto.getAddress());
             student.setEducation(dto.getEducation());
             student.setMobileNumber(dto.getMobileNumber());
+            student.setHuntJobYn(dto.getHuntJobYn());
 
             StudentEntity stdSave = STU_REP.save(student);
 
@@ -391,6 +392,7 @@ public class AdminStudentService {
                     .address(stdSave.getAddress())
                     .education(stdSave.getEducation())
                     .mobileNumber(stdSave.getMobileNumber())
+                    .huntJobYn(stdSave.getHuntJobYn())
                     .build();
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");

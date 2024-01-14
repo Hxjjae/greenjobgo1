@@ -34,7 +34,10 @@ public class AdminStudentController {
     private final StudentRepository STU_REP;
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, path = "/file")
-    @Operation(summary = "관리자 수강생 파일 및 링크 업로드")
+    @Operation(summary = "관리자 수강생 파일 및 링크 업로드" ,description = "istudent = 학생pk \n" +
+            "\niFileCategory = 파일카테고리 pk 1번 이력서, 2번 포트폴리오 파일, 3번 포트폴리오 링크, 4번 포트폴리오 대표 이미지\n" +
+            "\nintroducedLine = 한줄 소개 \n"+
+            "\nfileLink = 파일 링크 ! 3번을 택했을경우에는 이부분만 작성하시고 파일은 안올려도됩니다.")
     public AdminStudentInsTotalRes postFile(@RequestPart(required = false) MultipartFile file,
                                             @RequestParam Long istudent,
                                             @RequestParam Long iFileCategory,
@@ -203,7 +206,8 @@ public class AdminStudentController {
                                          @RequestParam(required = false) String address,
                                          @RequestParam(required = false) String email,
                                          @RequestParam(required = false) String education,
-                                         @RequestParam(required = false) String mobileNumber) {
+                                         @RequestParam(required = false) String mobileNumber,
+                                         @RequestParam(required = false) Integer huntJobYn) {
 
         AdminStudentUpdDto dto = new AdminStudentUpdDto();
         dto.setIstudent(istudent);
@@ -212,12 +216,16 @@ public class AdminStudentController {
         dto.setEmail(email);
         dto.setEducation(education);
         dto.setMobileNumber(mobileNumber);
-
+        dto.setHuntJobYn(huntJobYn);
         return SERVICE.updStudent(dto);
     }
 
     @PutMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, path = "/file")
-    @Operation(summary = "학생 업로드 파일 수정")
+    @Operation(summary = "학생 업로드 파일 수정" , description = "istudent = 학생pk \n" +
+            "\niFileCategory = 파일카테고리 pk 1번 이력서, 2번 포트폴리오 파일, 3번 포트폴리오 링크, 4번 포트폴리오 대표 이미지\n" +
+            "\nifile = 파일 pk" +
+            "\nintroducedLine = 한줄 소개 \n" +
+            "\nfileLink = 파일 링크 ! 3번을 택했을경우에는 이부분만 작성하시고 파일은 안올려도됩니다.")
     public AdminStudentFileUpdTotalRes putFile(@RequestPart(required = false) MultipartFile file,
                                                @RequestParam Long istudent,
                                                @RequestParam Long iFileCategory,

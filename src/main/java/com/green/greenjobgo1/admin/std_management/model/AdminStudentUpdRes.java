@@ -18,4 +18,5 @@ public class AdminStudentUpdRes {
     private String email;
     private String education;
     private String mobileNumber;
+    private Integer huntJobYn;
 }
