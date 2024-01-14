@@ -16,5 +16,6 @@ public class StudentInsDto {
     private String file;
     private String fileLink;
     private String introducedLine;
+    private String oneWord;
     private List<String> certificates;
 }

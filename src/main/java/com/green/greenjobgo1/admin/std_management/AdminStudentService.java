@@ -6,32 +6,22 @@ import com.green.greenjobgo1.common.utils.MyFileUtils;
 import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.repository.*;
 import com.green.greenjobgo1.common.security.config.security.MyUserDetailsServiceImpl;
-import com.green.greenjobgo1.student.model.*;
-import com.querydsl.core.Tuple;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 @Service
 @Slf4j
@@ -413,57 +403,6 @@ public class AdminStudentService {
         }
     }
 
-
-    @Transactional
-    public AdminStudentFileUpdTotalRes updFile(MultipartFile file, AdminStudentFileUpdDto dto) {
-        Optional<FileCategoryEntity> fileCateId = FILE_CATE_REP.findById(dto.getIFileCategory());
-        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
-        Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
-
-        if (!fileCateId.isPresent() || !stdId.isPresent() || !fileId.isPresent()) {
-            return null;  // 또는 원하는 에러 처리를 수행하세요.
-        }
-
-        StudentEntity studentEntity = stdId.get();
-        studentEntity.setIstudent(stdId.get().getIstudent());
-        studentEntity.setIntroducedLine(dto.getIntroducedLine());
-
-        List<FileEntity> fileAll = FILE_REP.findAllByStudentEntity(studentEntity);
-
-        FileEntity newEntity = fileId.get();
-        newEntity.setOneWord(dto.getOneWord());
-
-        for (FileEntity fileEntity : fileAll) {
-            if (fileCateId.isPresent()) {
-                Long iFileCategory = fileCateId.get().getIFileCategory();
-                if (iFileCategory == 1 || iFileCategory == 2 || iFileCategory == 4) {
-                    fileUpload(file, dto, newEntity, fileEntity, studentEntity);
-                } else if (iFileCategory == 3) {
-                    fileLinkUpload(dto, newEntity, fileEntity, studentEntity);
-                }
-            }
-        }
-
-        FileEntity save = FILE_REP.save(newEntity);
-
-        AdminStudentFileUpdRes res = AdminStudentFileUpdRes.builder()
-                .file(save.getFile())
-                .ifile(save.getIfile())
-                .createdAt(save.getCreatedAt())
-                .istudent(save.getStudentEntity().getIstudent())
-                .oneWord(save.getOneWord())
-                .build();
-
-        AdminStudentIntroducedLineRes std = AdminStudentIntroducedLineRes.builder()
-                .introducedLine(studentEntity.getIntroducedLine())
-                .build();
-
-        return AdminStudentFileUpdTotalRes.builder()
-                .res(res)
-                .std(std)
-                .build();
-    }
-
     public AdminStudentCertificateRes updCertificate(AdminStudentCertificateDto dto) {
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
 
@@ -537,40 +476,6 @@ public class AdminStudentService {
 
     }
 
-
-    private void fileUpload(MultipartFile file, AdminStudentFileUpdDto dto, FileEntity entity,
-                            FileEntity fileEntity, StudentEntity studentSave) {
-        String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
-        entity.setFile(savedFileNm);
-
-        try {
-            handleFileOperations(file, entity, fileEntity, savedFileNm);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("파일 업로드 또는 삭제 중 오류 발생", e);
-        }
-    }
-
-    private void fileLinkUpload(AdminStudentFileUpdDto dto, FileEntity entity,
-                                FileEntity fileEntity, StudentEntity studentSave) {
-        String savedFileNm = dto.getFileLink();
-        entity.setFile(savedFileNm);
-
-        try {
-            FILE_REP.save(fileEntity);
-        } catch (Exception e) {
-            throw new RuntimeException("파일 링크 업로드 중 오류 발생", e);
-        }
-    }
-
-    private void handleFileOperations(MultipartFile file, FileEntity entity, FileEntity fileEntity, String savedFileNm) throws IOException {
-        File targetDir = new File(String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent()));
-        File fileTarget = new File(targetDir, savedFileNm);
-
-        FILE_REP.save(fileEntity);
-
-        file.transferTo(fileTarget);
-    }
 
 
     public AdminStudentPortfolioMainRes patchPortfolioMain(AdminStudentPortfolioMainDto dto) {

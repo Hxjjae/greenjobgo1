@@ -191,6 +191,7 @@ public class StudentService {
         entity.setFileCategoryEntity(fileCateId.get());
         entity.setCreatedAt(LocalDate.now());
         entity.setStudentEntity(stdId.get());
+        entity.setOneWord(dto.getOneWord());
 
         StudentEntity studentEntity = stdId.get();
         studentEntity.setIstudent(dto.getIstudent());
@@ -271,49 +272,6 @@ public class StudentService {
         return null;
     }
 
-
-    public StudentPatchTotalRes patchFile(MultipartFile file, StudentPatchDto dto) {
-        Optional<FileCategoryEntity> fileCateId = FILE_CATE_REP.findById(dto.getIFileCategory());
-        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
-        List<FileEntity> fileAll = FILE_REP.findAllByStudentEntity(stdId.orElseThrow(EntityNotFoundException::new));
-
-        FileEntity entity = new FileEntity();
-        StudentEntity studentEntity = new StudentEntity();
-        studentEntity.setIstudent(stdId.get().getIstudent());
-        studentEntity.setIntroducedLine(dto.getIntroducedLine());
-        StudentEntity studentSave = (dto.getIntroducedLine() != null) ? STU_REP.save(studentEntity) : studentEntity;
-
-
-        FileEntity newEntity = new FileEntity();
-        for (FileEntity fileEntity : fileAll) {
-            if (fileCateId.isPresent()) {
-
-                Long iFileCategory = fileCateId.get().getIFileCategory();
-                if (iFileCategory == 1 || iFileCategory == 2 || iFileCategory == 4) {
-                    fileUpload(file, dto, newEntity, fileEntity, studentSave);
-                } else if (iFileCategory == 3) {
-                    fileLinkUpload(dto, newEntity, fileEntity, studentSave);
-                }
-            }
-        }
-        FileEntity save = FILE_REP.save(newEntity);
-
-        StudentPatchRes res = StudentPatchRes.builder()
-                .file(save.getFile())
-                .ifile(save.getIfile())
-                .createdAt(save.getCreatedAt())
-                .istudent(save.getStudentEntity().getIstudent())
-                .build();
-        StudentIntroducedLineRes std = StudentIntroducedLineRes.builder()
-                .introducedLine(studentSave.getIntroducedLine())
-                .build();
-
-        return StudentPatchTotalRes.builder()
-                .res(res)
-                .std(std)
-                .build();
-    }
-
     public StudentDelRes delFile(StudentDelDto dto) {
         Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
 
@@ -343,44 +301,7 @@ public class StudentService {
     }
 
 
-    private void fileUpload(MultipartFile file, StudentPatchDto dto, FileEntity entity,
-                            FileEntity fileEntity, StudentEntity studentSave) {
-        String savedFileNm = MyFileUtils.makeRandomFileNm(file.getOriginalFilename());
-        entity.setFile(savedFileNm);
 
-        try {
-            handleFileOperations(file, entity, fileEntity, savedFileNm);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("파일 업로드 또는 삭제 중 오류 발생", e);
-        }
-    }
-
-    private void fileLinkUpload(StudentPatchDto dto, FileEntity entity,
-                                FileEntity fileEntity, StudentEntity studentSave) {
-        String savedFileNm = dto.getFileLink();
-        entity.setFile(savedFileNm);
-
-        try {
-            FILE_REP.save(fileEntity);
-        } catch (Exception e) {
-            throw new RuntimeException("파일 링크 업로드 중 오류 발생", e);
-        }
-    }
-
-    private void handleFileOperations(MultipartFile file, FileEntity entity, FileEntity fileEntity, String savedFileNm) throws IOException {
-        File targetDir = new File(String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent()));
-        File fileTarget = new File(targetDir, savedFileNm);
-
-        if (targetDir.exists()) {
-            targetDir.delete();
-        }
-
-        fileEntity.setFile(null);
-        FILE_REP.save(fileEntity);
-
-        file.transferTo(fileTarget);
-    }
 
 
 //    public StudentPatchTotalRes patchFile(MultipartFile file, StudentPatchDto dto) {

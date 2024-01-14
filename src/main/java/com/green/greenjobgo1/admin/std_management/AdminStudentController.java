@@ -226,30 +226,6 @@ public class AdminStudentController {
         return SERVICE.updStudent(dto);
     }
 
-    @PutMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, path = "/file")
-    @Operation(summary = "학생 업로드 파일 수정", description = "istudent = 학생pk \n" +
-            "\niFileCategory = 파일카테고리 pk 1번 이력서, 2번 포트폴리오 파일, 3번 포트폴리오 링크, 4번 포트폴리오 대표 이미지\n" +
-            "\nifile = 파일 pk" +
-            "\nintroducedLine = 한줄 소개 \n" +
-            "\nfileLink = 파일 링크 ! 3번을 택했을경우에는 이부분만 작성하시고 파일은 안올려도됩니다.")
-    public AdminStudentFileUpdTotalRes putFile(@RequestPart(required = false) MultipartFile file,
-                                               @RequestParam Long istudent,
-                                               @RequestParam Long iFileCategory,
-                                               @RequestParam Long ifile,
-                                               @RequestParam(required = false) String introducedLine,
-                                               @RequestParam(required = false) String oneWord,
-                                               @RequestParam(required = false) String fileLink) {
-        AdminStudentFileUpdDto dto = new AdminStudentFileUpdDto();
-        dto.setIstudent(istudent);
-        dto.setIFileCategory(iFileCategory);
-        dto.setIfile(ifile);
-        dto.setFileLink(fileLink);
-        dto.setIntroducedLine(introducedLine);
-        dto.setOneWord(oneWord);
-        return SERVICE.updFile(file, dto);
-
-    }
-
     @DeleteMapping
     @Operation(summary = "학생 삭제")
     public AdminStudentDelRes delStudent(@RequestParam Long istudent) {
