@@ -274,7 +274,7 @@ public class CompanyService {
                 .on(qCategorySubjectEntity.iclassification.eq(qCourseSubject.categorySubjectEntity.iclassification))
                 .where(eqcategory(icategory))
                 .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(4L))
-                //.where(qfileEntity.file.eq())
+                .where(qstudent.companyMainYn.eq(1))
                 .fetch();
 
         return list.stream().map(item-> CompanyMainVo.builder()
