@@ -16,4 +16,5 @@ public class AdminStudentFileUpdRes {
     private Long istudent;
     private String file;
     private LocalDate createdAt;
+    private String oneWord;
 }

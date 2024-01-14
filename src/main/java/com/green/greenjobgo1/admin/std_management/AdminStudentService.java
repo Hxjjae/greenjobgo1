@@ -26,6 +26,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -48,6 +51,8 @@ public class AdminStudentService {
     @Value("${file.dir}")
     private String fileDir;
 
+
+    @Transactional
     public AdminStudentInsTotalRes insFile(MultipartFile file, AdminStudentInsDto dto) {
         Optional<FileCategoryEntity> fileCateId = FILE_CATE_REP.findById(dto.getIFileCategory());
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
@@ -61,10 +66,13 @@ public class AdminStudentService {
         entity.setFileCategoryEntity(fileCateId.get());
         entity.setCreatedAt(LocalDate.now());
         entity.setStudentEntity(stdId.get());
+        entity.setOneWord(dto.getOneWord());
 
-        StudentEntity studentEntity = new StudentEntity();
-        studentEntity.setIstudent(stdId.get().getIstudent());
-        studentEntity.setIntroducedLine(dto.getIntroducedLine());
+        StudentEntity studentEntity = stdId.get();
+        if (dto.getIFileCategory() == 1) {
+            studentEntity.setIstudent(dto.getIstudent());
+            studentEntity.setIntroducedLine(dto.getIntroducedLine());
+        }
 
         StudentEntity studentSave = (dto.getIntroducedLine() != null) ? STU_REP.save(studentEntity) : studentEntity;
         String savedFileNm;
@@ -78,25 +86,6 @@ public class AdminStudentService {
         } else {
             return null;
         }
-
-        Long resumeCount = adminStudentQdsl.countByResume(1L, studentSave.getIstudent());
-
-        if (resumeCount >= 1) {
-            throw new RuntimeException("한 수강생당 이력서는 1개까지만 올릴 수 있습니다.");
-        }
-
-        Long fileCount = adminStudentQdsl.countByFile(2L, studentSave.getIstudent());
-
-        if (fileCount >= 5) {
-            throw new RuntimeException("한 수강생당 파일은 5개까지만 올릴 수 있습니다.");
-        }
-
-        Long fileLinkCount = adminStudentQdsl.countByFileLink(3L, studentSave.getIstudent());
-
-        if (fileLinkCount >= 5) {
-            throw new RuntimeException("한 수강생당 파일링크는 5개까지만 올릴 수 있습니다.");
-        }
-
 
         if (savedFileNm != null) {
             entity.setFile(savedFileNm);
@@ -113,19 +102,45 @@ public class AdminStudentService {
                 }
             }
 
-
-            File fileTarget = new File(String.format("%s/%s", targetDir, savedFileNm));
-            try {
-                file.transferTo(fileTarget);
-            } catch (IOException e) {
-                throw new RuntimeException("파일을 업로드 할 수 없습니다.");
+            if (iFileCategory == 1 || iFileCategory == 2 || iFileCategory == 4) {
+                File fileTarget = new File(String.format("%s/%s", targetDir, savedFileNm));
+                try {
+                    file.transferTo(fileTarget);
+                } catch (IOException e) {
+                    throw new RuntimeException("파일을 업로드 할 수 없습니다.");
+                }
             }
+            if (iFileCategory == 1) {
+                Long resumeCount = adminStudentQdsl.countByResume(studentSave.getIstudent());
+
+                if (resumeCount > 1) {
+                    throw new RuntimeException("한 수강생당 이력서는 1개까지만 올릴 수 있습니다.");
+                }
+            }
+
+            if (iFileCategory == 2) {
+                Long fileCount = adminStudentQdsl.countByFile(studentSave.getIstudent());
+
+                if (fileCount > 5) {
+                    throw new RuntimeException("한 수강생당 파일은 5개까지만 올릴 수 있습니다.");
+                }
+            }
+
+            if (iFileCategory == 3) {
+                Long fileLinkCount = adminStudentQdsl.countByFileLink(studentSave.getIstudent());
+                if (fileLinkCount > 5) {
+                    throw new RuntimeException("한 수강생당 파일링크는 5개까지만 올릴 수 있습니다.");
+                }
+
+            }
+
 
             AdminStudentInsRes res = AdminStudentInsRes.builder()
                     .file(result.getFile())
                     .ifile(result.getIfile())
                     .createdAt(result.getCreatedAt())
                     .istudent(result.getStudentEntity().getIstudent())
+                    .oneWord(result.getOneWord())
                     .build();
 
             AdminStudentIntroducedLineRes std = AdminStudentIntroducedLineRes.builder()
@@ -137,7 +152,6 @@ public class AdminStudentService {
                     .std(std)
                     .build();
         }
-
         return null;
     }
 
@@ -173,7 +187,7 @@ public class AdminStudentService {
     public AdminStudentDetailFindRes selStudentDetail(AdminStudentDetailDto dto) {
         Optional<StudentEntity> byId = STU_REP.findById(dto.getIstudent());
 
-        String img = adminStudentQdsl.img(dto);
+        AdminStudentImg img = adminStudentQdsl.img(dto);
         AdminStudentResume resume = adminStudentQdsl.resume(dto);
         List<AdminStudentFileRes> files = adminStudentQdsl.fileVos(dto);
         List<AdminStudentFileLink> fileLinks = adminStudentQdsl.fileLinks(dto);
@@ -400,42 +414,27 @@ public class AdminStudentService {
     }
 
 
+    @Transactional
     public AdminStudentFileUpdTotalRes updFile(MultipartFile file, AdminStudentFileUpdDto dto) {
         Optional<FileCategoryEntity> fileCateId = FILE_CATE_REP.findById(dto.getIFileCategory());
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
         Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
 
-        StudentEntity studentEntity = stdId.orElseThrow(EntityNotFoundException::new);
+        if (!fileCateId.isPresent() || !stdId.isPresent() || !fileId.isPresent()) {
+            return null;  // 또는 원하는 에러 처리를 수행하세요.
+        }
+
+        StudentEntity studentEntity = stdId.get();
         studentEntity.setIstudent(stdId.get().getIstudent());
         studentEntity.setIntroducedLine(dto.getIntroducedLine());
 
         List<FileEntity> fileAll = FILE_REP.findAllByStudentEntity(studentEntity);
-        FileEntity entity = new FileEntity();
 
-        FILE_REP.deleteById(fileId.get().getIfile());
-
-        FileEntity newEntity = new FileEntity();
+        FileEntity newEntity = fileId.get();
+        newEntity.setOneWord(dto.getOneWord());
 
         for (FileEntity fileEntity : fileAll) {
             if (fileCateId.isPresent()) {
-
-                Long resumeCount = adminStudentQdsl.countByResume(1L, studentEntity.getIstudent());
-
-                if (resumeCount >= 1) {
-                    throw new RuntimeException("한 수강생당 이력서는 1개까지만 올릴 수 있습니다.");
-                }
-
-                Long fileCount = adminStudentQdsl.countByFile(2L, studentEntity.getIstudent());
-
-                if (fileCount >= 5) {
-                    throw new RuntimeException("한 수강생당 파일은 5개까지만 올릴 수 있습니다.");
-                }
-
-                Long fileLinkCount = adminStudentQdsl.countByFileLink(3L, studentEntity.getIstudent());
-
-                if (fileLinkCount >= 5) {
-                    throw new RuntimeException("한 수강생당 파일링크는 5개까지만 올릴 수 있습니다.");
-                }
                 Long iFileCategory = fileCateId.get().getIFileCategory();
                 if (iFileCategory == 1 || iFileCategory == 2 || iFileCategory == 4) {
                     fileUpload(file, dto, newEntity, fileEntity, studentEntity);
@@ -452,6 +451,7 @@ public class AdminStudentService {
                 .ifile(save.getIfile())
                 .createdAt(save.getCreatedAt())
                 .istudent(save.getStudentEntity().getIstudent())
+                .oneWord(save.getOneWord())
                 .build();
 
         AdminStudentIntroducedLineRes std = AdminStudentIntroducedLineRes.builder()
@@ -508,7 +508,7 @@ public class AdminStudentService {
         }
     }
 
-    public AdminStudentFileDelRes delFile(StudentDelDto dto) {
+    public AdminStudentFileDelRes delFile(AdminStudentFileDelDto dto) {
         Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
 
         if (fileId.isPresent()) {
@@ -567,15 +567,11 @@ public class AdminStudentService {
         File targetDir = new File(String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent()));
         File fileTarget = new File(targetDir, savedFileNm);
 
-        if (targetDir.exists()) {
-            targetDir.delete();
-        }
-
-        fileEntity.setFile(null);
         FILE_REP.save(fileEntity);
 
         file.transferTo(fileTarget);
     }
+
 
     public AdminStudentPortfolioMainRes patchPortfolioMain(AdminStudentPortfolioMainDto dto) {
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());

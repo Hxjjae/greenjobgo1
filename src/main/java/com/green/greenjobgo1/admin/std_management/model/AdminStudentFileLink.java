@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminStudentFileLink {
+    private Long ifile;
     private String fileLink;
     private String oneWord;
 }

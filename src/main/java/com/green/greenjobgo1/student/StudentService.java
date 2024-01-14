@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -176,6 +177,7 @@ public class StudentService {
 //        }
 //        return null;
 //    }
+
     public StudentInsTotalRes insFile(MultipartFile file, StudentInsDto dto) {
         Optional<FileCategoryEntity> fileCateId = FILE_CATE_REP.findById(dto.getIFileCategory());
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
@@ -190,8 +192,8 @@ public class StudentService {
         entity.setCreatedAt(LocalDate.now());
         entity.setStudentEntity(stdId.get());
 
-        StudentEntity studentEntity = new StudentEntity();
-        studentEntity.setIstudent(stdId.get().getIstudent());
+        StudentEntity studentEntity = stdId.get();
+        studentEntity.setIstudent(dto.getIstudent());
         studentEntity.setIntroducedLine(dto.getIntroducedLine());
 
         StudentEntity studentSave = (dto.getIntroducedLine() != null) ? STU_REP.save(studentEntity) : studentEntity;
@@ -205,24 +207,6 @@ public class StudentService {
             savedFileNm = (dto.getFileLink() != null) ? dto.getFileLink() : null;
         } else {
             return null;
-        }
-
-        Long resumeCount = studentQdsl.countByResume(1L, studentSave.getIstudent());
-
-        if (resumeCount >= 1) {
-            throw new RuntimeException("한 수강생당 이력서는 1개까지만 올릴 수 있습니다.");
-        }
-
-        Long fileCount = studentQdsl.countByFile(2L, studentSave.getIstudent());
-
-        if (fileCount >= 5) {
-            throw new RuntimeException("한 수강생당 파일은 5개까지만 올릴 수 있습니다.");
-        }
-
-        Long fileLinkCount = studentQdsl.countByFileLink(3L, studentSave.getIstudent());
-
-        if (fileLinkCount >= 5) {
-            throw new RuntimeException("한 수강생당 파일링크는 5개까지만 올릴 수 있습니다.");
         }
 
 
@@ -247,6 +231,24 @@ public class StudentService {
                 file.transferTo(fileTarget);
             } catch (IOException e) {
                 throw new RuntimeException("파일을 업로드 할 수 없습니다.");
+            }
+
+            Long resumeCount = studentQdsl.countByResume(1L, studentSave.getIstudent());
+
+            if (resumeCount > 1) {
+                throw new RuntimeException("한 수강생당 이력서는 1개까지만 올릴 수 있습니다.");
+            }
+
+            Long fileCount = studentQdsl.countByFile(2L, studentSave.getIstudent());
+
+            if (fileCount > 5) {
+                throw new RuntimeException("한 수강생당 파일은 5개까지만 올릴 수 있습니다.");
+            }
+
+            Long fileLinkCount = studentQdsl.countByFileLink(3L, studentSave.getIstudent());
+
+            if (fileLinkCount > 5) {
+                throw new RuntimeException("한 수강생당 파일링크는 5개까지만 올릴 수 있습니다.");
             }
 
             StudentInsRes res = StudentInsRes.builder()
@@ -281,28 +283,11 @@ public class StudentService {
         studentEntity.setIntroducedLine(dto.getIntroducedLine());
         StudentEntity studentSave = (dto.getIntroducedLine() != null) ? STU_REP.save(studentEntity) : studentEntity;
 
-        FILE_REP.deleteById(dto.getIfile());
 
         FileEntity newEntity = new FileEntity();
         for (FileEntity fileEntity : fileAll) {
             if (fileCateId.isPresent()) {
-                Long resumeCount = studentQdsl.countByResume(1L, studentSave.getIstudent());
 
-                if (resumeCount >= 1) {
-                    throw new RuntimeException("한 수강생당 이력서는 1개까지만 올릴 수 있습니다.");
-                }
-
-                Long fileCount = studentQdsl.countByFile(2L, studentSave.getIstudent());
-
-                if (fileCount >= 5) {
-                    throw new RuntimeException("한 수강생당 파일은 5개까지만 올릴 수 있습니다.");
-                }
-
-                Long fileLinkCount = studentQdsl.countByFileLink(3L, studentSave.getIstudent());
-
-                if (fileLinkCount >= 5) {
-                    throw new RuntimeException("한 수강생당 파일링크는 5개까지만 올릴 수 있습니다.");
-                }
                 Long iFileCategory = fileCateId.get().getIFileCategory();
                 if (iFileCategory == 1 || iFileCategory == 2 || iFileCategory == 4) {
                     fileUpload(file, dto, newEntity, fileEntity, studentSave);

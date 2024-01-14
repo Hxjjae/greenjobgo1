@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminStudentResume {
+    private Long ifile;
     private String resume;
     private String oneWord;
 }

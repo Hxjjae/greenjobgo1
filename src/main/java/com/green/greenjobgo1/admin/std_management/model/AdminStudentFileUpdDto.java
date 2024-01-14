@@ -10,4 +10,5 @@ public class AdminStudentFileUpdDto {
     private String file;
     private String fileLink;
     private String introducedLine;
+    private String oneWord;
 }
