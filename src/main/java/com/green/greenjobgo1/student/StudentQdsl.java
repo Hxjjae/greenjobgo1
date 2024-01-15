@@ -60,29 +60,29 @@ public class StudentQdsl {
         return query.fetchOne();
     }
 
-    public Long countByFile(Long fileCategoryIds, Long studentId) {
+    public Long countByFile(Long studentId) {
         JPAQuery<Long> query = jpaQueryFactory
                 .select(file.file.count())
                 .from(file)
-                .where(file.fileCategoryEntity.iFileCategory.eq(fileCategoryIds)
+                .where(file.fileCategoryEntity.iFileCategory.eq(2L)
                         .and(file.studentEntity.istudent.eq(studentId)));
         return query.fetchOne();
     }
 
-    public Long countByFileLink(Long fileCategory, Long studentId) {
+    public Long countByFileLink(Long studentId) {
         JPAQuery<Long> query = jpaQueryFactory
                 .select(file.file.count())
                 .from(file)
-                .where(file.fileCategoryEntity.iFileCategory.eq(fileCategory)
+                .where(file.fileCategoryEntity.iFileCategory.eq(3L)
                         .and(file.studentEntity.istudent.eq(studentId)));
         return query.fetchOne();
     }
 
-    public Long countByResume(Long fileCategory, Long istudent) {
+    public Long countByResume(Long istudent) {
         JPAQuery<Long> query = jpaQueryFactory
                 .select(file.file.count())
                 .from(file)
-                .where(file.fileCategoryEntity.iFileCategory.eq(fileCategory)
+                .where(file.fileCategoryEntity.iFileCategory.eq(1L)
                         .and(file.studentEntity.istudent.eq(istudent)));
         return query.fetchOne();
     }
