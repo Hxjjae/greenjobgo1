@@ -104,14 +104,16 @@ public class AdminSignService {
             CourseSubjectEntity subjectentity = subjectRep.findBySubjectNameAndRound(user.getSubjectName(), Integer.parseInt(user.getRound()));
 
             if (subjectentity == null) {
-                log.info("에러코드 확인중");
-                throw new RestApiException(CommonErrorCode.SUBJECT_NULL,"없는과목입니다.");
+                log.info("에러코드 확인: 존재하지 않는 과목입니다");
+                throw new RestApiException(CommonErrorCode.SUBJECT_NULL,"존재하지 않는 과목입니다");
                 //throw new RuntimeException("존재하지 않는 과목입니다");
             }
 
             EmployeeProfileEntity employeeEntity = employeeprofileRep.findByName(user.getEmployee());
             if (employeeEntity == null){
-                throw new RuntimeException("존재하지 않는 직원입니다.");
+                log.info("에러코드 확인: 존재하지 않는 직원입니다.");
+                throw new RestApiException(CommonErrorCode.EMPLOYEE_NULL,"존재하지 않는 직원입니다.");
+                //throw new RuntimeException("존재하지 않는 직원입니다.");
             }
 
 

@@ -48,6 +48,7 @@ public class SecurityConfiguration {
                                             , "/err"
                                     ).permitAll()
                                     .requestMatchers(HttpMethod.GET, "/sign-api/refresh-token").permitAll()
+                                    .requestMatchers(HttpMethod.GET,"/api/admin/category/**").hasAnyRole("ADMIN","COMPANY")
                                     .requestMatchers(HttpMethod.GET, "/api/admin/**").hasAnyRole( "ADMIN")
                                     .requestMatchers(HttpMethod.PUT, "/api/admin/**").hasAnyRole("ADMIN")
                                     .requestMatchers(HttpMethod.PATCH, "/api/admin/**").hasAnyRole("ADMIN")
