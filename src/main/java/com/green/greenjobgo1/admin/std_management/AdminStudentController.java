@@ -6,6 +6,7 @@ import com.green.greenjobgo1.repository.StudentRepository;
 import com.green.greenjobgo1.student.model.StudentCertificateDto;
 import com.green.greenjobgo1.student.model.StudentInsDto;
 import com.green.greenjobgo1.student.model.StudentInsTotalRes;
+import com.itextpdf.text.DocumentException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

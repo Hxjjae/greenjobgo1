@@ -2,11 +2,18 @@ package com.green.greenjobgo1.student;
 
 import com.green.greenjobgo1.admin.companylist.model.CompanylistRes;
 import com.green.greenjobgo1.admin.std_management.model.AdminStudentCertificateRes;
+import com.green.greenjobgo1.admin.std_management.model.AdminStudentInsRes;
+import com.green.greenjobgo1.admin.std_management.model.AdminStudentInsTotalRes;
+import com.green.greenjobgo1.admin.std_management.model.AdminStudentIntroducedLineRes;
 import com.green.greenjobgo1.common.entity.*;
 import com.green.greenjobgo1.common.utils.MyFileUtils;
 import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.repository.*;
 import com.green.greenjobgo1.student.model.*;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
+import com.itextpdf.text.pdf.PdfWriter;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +43,7 @@ public class StudentService {
     private final StudentQdsl studentQdsl;
 
     @Value("${file.dir}")
-    private String fileDir;
+    private String FILE_DIR;
 
 
     //    public StudentInsTotalRes insFile(MultipartFile file, StudentInsDto dto) {
@@ -194,8 +200,10 @@ public class StudentService {
         entity.setOneWord(dto.getOneWord());
 
         StudentEntity studentEntity = stdId.get();
-        studentEntity.setIstudent(dto.getIstudent());
-        studentEntity.setIntroducedLine(dto.getIntroducedLine());
+        if (dto.getIFileCategory() == 1) {
+            studentEntity.setIstudent(dto.getIstudent());
+            studentEntity.setIntroducedLine(dto.getIntroducedLine());
+        }
 
         StudentEntity studentSave = (dto.getIntroducedLine() != null) ? STU_REP.save(studentEntity) : studentEntity;
         String savedFileNm;
@@ -210,12 +218,11 @@ public class StudentService {
             return null;
         }
 
-
         if (savedFileNm != null) {
             entity.setFile(savedFileNm);
             FileEntity result = FILE_REP.save(entity);
 
-            String targetDir = String.format("%s/student/%d", fileDir, entity.getStudentEntity().getIstudent());
+            String targetDir = String.format("%s/student/%d", FILE_DIR, entity.getStudentEntity().getIstudent());
             File fileTargetDir = new File(targetDir);
 
             if (!fileTargetDir.exists()) {
@@ -226,37 +233,83 @@ public class StudentService {
                 }
             }
 
+            if (iFileCategory == 1 || iFileCategory == 4) {
+                File fileTarget = new File(String.format("%s/%s", targetDir, savedFileNm));
+                try {
+                    file.transferTo(fileTarget);
+                } catch (IOException e) {
+                    throw new RuntimeException("파일을 업로드 할 수 없습니다.");
+                }
+            } else if (iFileCategory == 2) {
+                try {
+                    String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
+                    String centerPath = String.format("%s/student/%d", MyFileUtils.getAbsolutePath(fileDir), entity.getStudentEntity().getIstudent() );
+                    String originFileName = file.getOriginalFilename();
+                    String savedFileName = MyFileUtils.makeRandomFileNm(originFileName);
+                    String savedFilePath = String.format("%s/%s",centerPath, savedFileName);
 
-            File fileTarget = new File(String.format("%s/%s", targetDir, savedFileNm));
-            try {
-                file.transferTo(fileTarget);
-            } catch (IOException e) {
-                throw new RuntimeException("파일을 업로드 할 수 없습니다.");
+                    //MultipartFile 타입의 pic을 -> pdf 파일로 변환 해서 -> pdf파일에 대한 권한을 제한한다.
+                    // MultipartFile pic 을 PDF를 읽어오기
+                    InputStream inputStream = file.getInputStream();
+                    PdfReader pdfReader = new PdfReader(inputStream);
+
+                    // 읽기 전용으로 만들기 위한 객체 생성
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+                    PdfStamper pdfStamper = new PdfStamper(pdfReader, outputStream);
+                    // 모든 권한 제거하기 null은 사용자한테 비밀번호를 받지 않겠다는 뜻, 여기서 0은 모든 권한을 비활성화(제한)하겠다는 뜻
+                    pdfStamper.setEncryption(null, null, 0, PdfWriter.ENCRYPTION_AES_128);
+                    //인쇄만 가능하도록 제한하기 PdfWriter.ALLOW_PRINTING을 주면 인쇄만 가능
+//        pdfStamper.setEncryption(null, "read-only-password".getBytes(),
+//                PdfWriter.ALLOW_PRINTING, PdfWriter.ENCRYPTION_AES_128);
+
+                    pdfStamper.close();
+
+                    // PDF 파일로 저장
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(savedFilePath)) {
+                        fileOutputStream.write(outputStream.toByteArray());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException("파일을 업로드 할 수 없습니다. " + e);
+                } catch (DocumentException e) {
+                    throw new RuntimeException("파일을 업로드 할 수 없습니다. " + e);
+                }
+            } else if (iFileCategory == 3) {
+                savedFileNm = (dto.getFileLink() != null) ? dto.getFileLink() : null;
+            }
+            if (iFileCategory == 1) {
+                Long resumeCount = studentQdsl.countByResume(studentSave.getIstudent());
+
+                if (resumeCount > 1) {
+                    throw new RuntimeException("한 수강생당 이력서는 1개까지만 올릴 수 있습니다.");
+                }
             }
 
-            Long resumeCount = studentQdsl.countByResume(1L, studentSave.getIstudent());
+            if (iFileCategory == 2) {
+                Long fileCount = studentQdsl.countByFile(studentSave.getIstudent());
 
-            if (resumeCount > 1) {
-                throw new RuntimeException("한 수강생당 이력서는 1개까지만 올릴 수 있습니다.");
+                if (fileCount > 5) {
+                    throw new RuntimeException("한 수강생당 파일은 5개까지만 올릴 수 있습니다.");
+                }
             }
 
-            Long fileCount = studentQdsl.countByFile(2L, studentSave.getIstudent());
+            if (iFileCategory == 3) {
+                Long fileLinkCount = studentQdsl.countByFileLink(studentSave.getIstudent());
+                if (fileLinkCount > 5) {
+                    throw new RuntimeException("한 수강생당 파일링크는 5개까지만 올릴 수 있습니다.");
+                }
 
-            if (fileCount > 5) {
-                throw new RuntimeException("한 수강생당 파일은 5개까지만 올릴 수 있습니다.");
             }
 
-            Long fileLinkCount = studentQdsl.countByFileLink(3L, studentSave.getIstudent());
-
-            if (fileLinkCount > 5) {
-                throw new RuntimeException("한 수강생당 파일링크는 5개까지만 올릴 수 있습니다.");
-            }
 
             StudentInsRes res = StudentInsRes.builder()
                     .file(result.getFile())
                     .ifile(result.getIfile())
                     .createdAt(result.getCreatedAt())
                     .istudent(result.getStudentEntity().getIstudent())
+                    .oneWord(result.getOneWord())
                     .build();
 
             StudentIntroducedLineRes std = StudentIntroducedLineRes.builder()
@@ -268,7 +321,6 @@ public class StudentService {
                     .std(std)
                     .build();
         }
-
         return null;
     }
 
@@ -278,7 +330,7 @@ public class StudentService {
         if (fileId.isPresent()) {
             FileEntity fileEntity = fileId.get();
 
-            String targetDir = String.format("%s/student/%d", fileDir, fileEntity.getStudentEntity().getIstudent());
+            String targetDir = String.format("%s/student/%d", FILE_DIR, fileEntity.getStudentEntity().getIstudent());
             File fileToDelete = new File(String.format("%s/%s", targetDir, fileEntity.getFile()));
 
             if (fileToDelete.exists()) {

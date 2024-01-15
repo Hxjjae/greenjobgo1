@@ -13,5 +13,6 @@ public class StudentInsRes {
     private Long istudent;
     private String file;
     private LocalDate createdAt;
+    private String oneWord;
 
 }
