@@ -662,4 +662,41 @@ public class AdminStudentService {
                 .icourseSubject(dto.getIcourseSubject())
                 .build();
     }
+    public AdminStudentOneYearRes getStudentOneYear(Pageable pageable,Long iclassification,String subjectName,String studentName){
+        long count = adminStudentQdsl.oneYearStudentCount(iclassification, subjectName, studentName);
+
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber() + 1,  (int)count, pageable);
+        utils.setIdx( (int)count);
+
+        List<AdminStudentOneYearVo> studentOneYearlist = adminStudentQdsl.oneYearStudent(pageable, iclassification, subjectName, studentName);
+
+        return AdminStudentOneYearRes.builder().page(utils).vo(studentOneYearlist).build();
+    }
+    @Transactional
+    public int delStudentOneYear(List<Long>istudent){
+
+        //포트폴리오 삭제
+        for (Long student:istudent) {
+            //학생 찾기
+            StudentEntity studentEntity = STU_REP.findById(student).get();
+            //학생 포트폴리오삭제
+            List<FileEntity> allByStudentEntity = FILE_REP.findAllByStudentEntity(studentEntity);
+            for (FileEntity file:allByStudentEntity) {
+                FILE_REP.delete(file);
+            }
+            //학생 수강과목 삭제
+            List<StudentCourseSubjectEntity> StudentEntity = SCS_REP.findByStudentEntity(studentEntity);
+            for (StudentCourseSubjectEntity subject:StudentEntity    ) {
+                SCS_REP.delete(subject);
+            }
+
+            //학생 삭제
+            STU_REP.delete(studentEntity);
+            log.info("studentEntity:{}",studentEntity.getId());
+
+        }
+
+        return 1;
+
+    }
 }
