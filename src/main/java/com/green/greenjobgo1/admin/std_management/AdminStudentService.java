@@ -107,10 +107,10 @@ public class AdminStudentService {
             } else if (iFileCategory == 2) {
                 try {
                     String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
-                    String centerPath = String.format("%s/student/%d", MyFileUtils.getAbsolutePath(fileDir), entity.getStudentEntity().getIstudent());
+                    String centerPath = String.format("%s/student/%d", MyFileUtils.getAbsolutePath(fileDir), entity.getStudentEntity().getIstudent() );
                     String originFileName = file.getOriginalFilename();
                     String savedFileName = MyFileUtils.makeRandomFileNm(originFileName);
-                    String savedFilePath = String.format("%s/%s", centerPath, savedFileName);
+                    String savedFilePath = String.format("%s/%s",centerPath, savedFileName);
 
                     //MultipartFile 타입의 pic을 -> pdf 파일로 변환 해서 -> pdf파일에 대한 권한을 제한한다.
                     // MultipartFile pic 을 PDF를 읽어오기
@@ -525,6 +525,7 @@ public class AdminStudentService {
     }
 
 
+
     public AdminStudentPortfolioMainRes patchPortfolioMain(AdminStudentPortfolioMainDto dto) {
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
 
@@ -624,9 +625,16 @@ public class AdminStudentService {
                 .build();
     }
 
+    public AdminStudentRoundCategoryRes selRoundCategory(AdminStudentCategoryDto dto) {
+        List<AdminStudentRoundCategoryListRes> adminStudentRoundCategoryListRes = adminStudentQdsl.roundCategoryList(dto);
+
+        return AdminStudentRoundCategoryRes.builder()
+                .round(adminStudentRoundCategoryListRes)
+                .build();
+    }
+
     public AdminStudentDelListRes delStudentList(AdminStudentDelDto dto) {
         Optional<CategorySubjectEntity> cateId = A_CATE_REP.findById(dto.getIclassification());
-
 
         if (cateId.isPresent()) {
             List<CourseSubjectEntity> subjectList = cateId.get().getCsList();
@@ -644,6 +652,7 @@ public class AdminStudentService {
                     }
                 }
             }
+
         } else {
             log.warn("해당 카테고리가 존재하지 않습니다.");
         }
@@ -653,5 +662,4 @@ public class AdminStudentService {
                 .icourseSubject(dto.getIcourseSubject())
                 .build();
     }
-
 }

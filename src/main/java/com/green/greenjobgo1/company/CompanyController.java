@@ -68,11 +68,18 @@ public class CompanyController {
 
 
     @GetMapping("/mainstudent")
-    public List<CompanyMainVo> mainstudent(@RequestParam(required = false) Long icategory){
+    @Operation(summary = "기업 메인페이지 조회.", description = "<br>"+
+            "img: 썸네일 이미지  <br>"+
+            "istudent: 수강과정 종료 날짜 <br>"+
+            "name: 학생이름 <br>"+
+            "subjectName: 과목명 <br>"+
+            "icategory: 1번 IT분야, 2번 건축 기계 분야, 3번 UIUX분야, 4번 영상분야, 6번 편집디자인 분야<br>")
+    public CompanyMainRes mainstudent(@RequestParam(required = false) Long icategory){
         return service.mainselstd(icategory);
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation()
     public String studyPdf(@RequestPart MultipartFile pic){
 
         try {

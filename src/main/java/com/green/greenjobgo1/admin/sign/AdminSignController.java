@@ -29,7 +29,7 @@ public class AdminSignController {
     @PostMapping(value = "/excel",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "엑셀로 수강생을 회원가입합니다."
             ,description = "리턴값이 1이면 회원가입완료<br>"+
-            "과목테이블에 없는 과목이 엑셀파일에 있으면 에러가 발생합니다.")
+            "과목테이블에 없는 과목이 엑셀파일에 있으면 에러가 발생합니다.<br>")
     public ResponseEntity<Integer> addExcel(@RequestPart MultipartFile studentfile){
         return ResponseEntity.ok(service.addExcel(studentfile));
     }

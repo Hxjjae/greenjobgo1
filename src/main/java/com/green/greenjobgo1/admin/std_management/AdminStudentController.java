@@ -275,4 +275,21 @@ public class AdminStudentController {
         dto.setIcourseSubject(icourseSubject);
         return SERVICE.delStudentList(dto);
     }
+
+    @GetMapping("/student/oneyearago")
+    @Operation(summary = "1년이 지난 학생 조회")
+    public AdminStudentOneYearRes getOneYearStudent(@ParameterObject @PageableDefault(page = 1)
+                                        @SortDefault(sort = "istudent", direction = Sort.Direction.ASC)Pageable pageable,
+                                    @RequestParam(required = false)Long iclassification,
+                                    @RequestParam(required = false)String subjectName,
+                                    @RequestParam(required = false)String studentName){
+        return SERVICE.getStudentOneYear(pageable,iclassification,subjectName,studentName);
+    }
+
+    @DeleteMapping("/student/oneyearago")
+    @Operation(summary = "1년이 지난 학생 삭제")
+    public int delStudentOneYear(@RequestParam List<Long>istudent){
+        return SERVICE.delStudentOneYear(istudent);
+    }
+
 }

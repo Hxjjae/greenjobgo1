@@ -149,7 +149,7 @@ public class AdminSignService {
 
                 log.info("subject테이블 과정명:{}",subjectentity.getSubjectName());
                 if (subjectentity == null) {
-                    throw new RuntimeException("존재하지 않는 과목입니다");
+                    //throw new RuntimeException("존재하지 않는 과목입니다");
                 }
                 Long iclassification = courseSubjectEntity.getCategorySubjectEntity().getIclassification();
 
