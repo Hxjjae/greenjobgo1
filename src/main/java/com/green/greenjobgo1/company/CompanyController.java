@@ -47,6 +47,26 @@ public class CompanyController {
     {
         return service.getstudent(pageable,icategory,subjectName,studentName);
     }
+    @GetMapping("/student/gallery")
+    @Operation(summary = "수강생을 검색합니다.", description = "<br>"+
+            "maxpage: 총페이지 수 <br>"+
+            "totalcount: 총 학생 수 <br>"+
+            "subjectName: 과목명  <br>"+
+            "studentName: 수강생 이름 <br>"+
+            "istudent: 수강생 pk 번호 <br>"+
+            "img : 포트폴리오 썸네일 이미지 <br>"+
+            "sort 정렬: istudent,ASC or istudent,DESC 넣어주시면 됩니다. <br>"+
+            "icategory: 1번 IT분야, 2번 건축 기계 분야, 3번 UIUX분야, 4번 영상분야, 6번 편집디자인 분야<br>"+
+            "<br>")
+    public CompanyStdGalleryRes getstudentGallery(@ParameterObject @PageableDefault(page = 1)
+                                    @SortDefault(sort = "istudent", direction = Sort.Direction.ASC)Pageable pageable,
+                                    @RequestParam(required = false)Long icategory,
+                                    @RequestParam(required = false)String subjectName,
+                                    @RequestParam(required = false)String studentName)
+    {
+        return service.getstudentGallery(pageable,icategory,subjectName,studentName);
+    }
+
 
     @GetMapping("/student/{istudent}")
     @Operation(summary = "수강생을 상세 조회 합니다.", description = "<br>"+
@@ -78,19 +98,19 @@ public class CompanyController {
         return service.mainselstd(icategory);
     }
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation()
-    public String studyPdf(@RequestPart MultipartFile pic){
-
-        try {
-            return service.studyPdf(pic);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (DocumentException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
+//    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    @Operation()
+//    public String studyPdf(@RequestPart MultipartFile pic){
+//
+//        try {
+//            return service.studyPdf(pic);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        } catch (DocumentException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//    }
 
     @GetMapping("/employee")
     @Operation(summary = "직원 프로필 리스트",description = "사진위치: /home/download/employee/pk번호/사진 <br>" +

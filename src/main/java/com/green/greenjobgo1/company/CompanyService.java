@@ -68,7 +68,7 @@ public class CompanyService {
                 .on(qCategorySubjectEntity.iclassification.eq(qCourseSubject.categorySubjectEntity.iclassification))
                 .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(4L))
                 .where(qstudent.delYn.eq(0))
-                .where(qstudent.huntJobYn.eq(1))
+                .where(qstudent.huntJobYn.eq(0))
                 .where(eqcategory(icategory))
                 .where(eqsubjectName(subjectName))
                 .where(eqstudentName(studentName))
@@ -114,6 +114,82 @@ public class CompanyService {
                 .subjectName(item.getSubjectName()).build()).toList();
 
         return CompanyStdRes.builder().page(utils).maxpage(maxpage).totalcount(totalcount).vo(list).build();
+
+    }
+
+    public CompanyStdGalleryRes getstudentGallery(Pageable pageable,Long icategory,String subjectName,String studentName){
+
+        log.info("pageable:{}",pageable.getSort());
+        List<CompanyStdGalleryVo> StudentEntity = jpaQueryFactory.select(
+                        Projections.bean(CompanyStdGalleryVo.class,
+                                qCourseSubject.subjectName,
+                                qstudent.introducedLine,
+                                qstudent.name.as("studentName"),
+                                qstudent.istudent,
+                                qfileEntity.file.as("img"),
+                                qCourseSubject.startedAt,
+                                qCourseSubject.endedAt
+                        )).from(qstudent)
+                .innerJoin(qstudentCourseSubject)
+                .on(qstudentCourseSubject.studentEntity.istudent.eq(qstudent.istudent))
+                .innerJoin(qCourseSubject)
+                .on(qCourseSubject.icourseSubject.eq(qstudentCourseSubject.courseSubjectEntity.icourseSubject))
+                .innerJoin(qfileEntity)
+                .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
+                .innerJoin(qCategorySubjectEntity)
+                .on(qCategorySubjectEntity.iclassification.eq(qCourseSubject.categorySubjectEntity.iclassification))
+                .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(4L))
+                .where(qstudent.delYn.eq(0))
+                .where(qstudent.huntJobYn.eq(0))
+                .where(eqcategory(icategory))
+                .where(eqsubjectName(subjectName))
+                .where(eqstudentName(studentName))
+                .orderBy(getorder(pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+
+        long count = jpaQueryFactory.select(
+                        qstudent.istudent.count()
+                ).from(qstudent)
+                .innerJoin(qstudentCourseSubject)
+                .on(qstudentCourseSubject.studentEntity.istudent.eq(qstudent.istudent))
+                .innerJoin(qCourseSubject)
+                .on(qCourseSubject.icourseSubject.eq(qstudentCourseSubject.courseSubjectEntity.icourseSubject))
+                .innerJoin(qfileEntity)
+                .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
+                .innerJoin(qCategorySubjectEntity)
+                .on(qCategorySubjectEntity.iclassification.eq(qCourseSubject.categorySubjectEntity.iclassification))
+                .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(4L))
+                .where(qstudent.delYn.eq(0))
+                .where(qstudent.huntJobYn.eq(1))
+                .where(eqcategory(icategory))
+                .where(eqsubjectName(subjectName))
+                .where(eqstudentName(studentName))
+                .fetchOne();
+
+
+        int totalcount = Math.toIntExact(count);
+        int maxpage = (int) Math.ceil((double) count / pageable.getPageSize());
+
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber() + 1,  (int)count, pageable);
+        utils.setIdx( (int)count);
+
+        log.info("maxpage:{}",maxpage);
+
+        //url 위치 붙여주기
+        List<CompanyStdGalleryVo> list = StudentEntity.stream().map(item -> CompanyStdGalleryVo.builder()
+                        .img("/img/student/" + item.getIstudent() + "/" + item.getImg())
+                        .introducedLine(item.getIntroducedLine())
+                        .istudent(item.getIstudent())
+                        .studentName(item.getStudentName())
+                        .subjectName(item.getSubjectName())
+                        .startedAt(item.getStartedAt())
+                        .endedAt(item.getEndedAt()).build())
+                .toList();
+
+        return CompanyStdGalleryRes.builder().page(utils).maxpage(maxpage).totalcount(totalcount).vo(list).build();
 
     }
 
