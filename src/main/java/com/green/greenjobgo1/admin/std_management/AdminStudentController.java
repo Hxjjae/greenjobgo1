@@ -55,6 +55,18 @@ public class AdminStudentController {
         return SERVICE.insFile(file, dto);
     }
 
+    @GetMapping("/category")
+    @Operation(summary = "대분류 과정명 기수 별로 GET")
+    public AdminStudentCategoryRes getCategory(@RequestParam Long iclassfication,
+                                               @RequestParam Long icourseSubject,
+                                               @RequestParam Integer round) {
+        AdminStudentCategoryDto dto = new AdminStudentCategoryDto();
+        dto.setIclassfication(iclassfication);
+        dto.setIcourseSubject(icourseSubject);
+        dto.setRound(round);
+        return SERVICE.selCategory(dto);
+    }
+
 
     @GetMapping
     @Operation(summary = "학생 조회", description = "istudnet : 수강생 PK \n" +
@@ -70,8 +82,7 @@ public class AdminStudentController {
             "\n file : 이력서 + 포트폴리오 ")
     public ResponseEntity<AdminStudentFindRes> getStudentList(@ParameterObject @PageableDefault(sort = "istudent", direction = Sort.Direction.ASC, page = 1) Pageable pageable,
                                                               @RequestParam(required = false) Long icategory,
-                                                              @RequestParam(required = false) String subjectName
-    ) {
+                                                              @RequestParam(required = false) String subjectName) {
         AdminStudentDto dto = new AdminStudentDto();
         dto.setIcategory(icategory);
         dto.setSubjectName(subjectName);

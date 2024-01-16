@@ -602,4 +602,10 @@ public class AdminStudentService {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
         }
     }
+
+    public AdminStudentCategoryRes selCategory(AdminStudentCategoryDto dto) {
+
+
+        return null;
+    }
 }
