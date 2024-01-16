@@ -654,4 +654,15 @@ public class AdminStudentService {
                 .istudent(studentEntity.getIstudent())
                 .build();
     }
+
+    public AdminStudentOneYearRes getStudentOneYear(Pageable pageable,Long iclassification,String subjectName,String studentName){
+        long count = adminStudentQdsl.oneYearStudentCount(iclassification, subjectName, studentName);
+
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber() + 1,  (int)count, pageable);
+        utils.setIdx( (int)count);
+
+        List<AdminStudentOneYearVo> studentOneYearlist = adminStudentQdsl.oneYearStudent(pageable, iclassification, subjectName, studentName);
+
+        return AdminStudentOneYearRes.builder().page(utils).vo(studentOneYearlist).build();
+    }
 }

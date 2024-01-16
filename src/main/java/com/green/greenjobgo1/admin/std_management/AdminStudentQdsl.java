@@ -2,6 +2,9 @@ package com.green.greenjobgo1.admin.std_management;
 
 import com.green.greenjobgo1.admin.std_management.model.*;
 import com.green.greenjobgo1.common.entity.*;
+import com.green.greenjobgo1.company.model.CompanyStdVo;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -11,8 +14,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
@@ -309,6 +315,50 @@ public class AdminStudentQdsl {
         return query.fetchOne();
     }
 
+    public List<AdminStudentOneYearVo> oneYearStudent(Pageable pageable,Long iclassification,String subjectName,String studentName){
+
+        //1년전 날짜 계산
+        LocalDate oneYearAgo = LocalDate.now().minusYears(1);
+
+        return jpaQueryFactory.select(Projections.bean(AdminStudentOneYearVo.class,
+                        cos.subjectName,
+                        cos.round,
+                        stu.name.as("studentName"),
+                        stu.istudent,cas.iclassification
+
+                )).from(stu)
+                .innerJoin(scs)
+                .on(scs.studentEntity.istudent.eq(stu.istudent))
+                .innerJoin(cos)
+                .on(cos.icourseSubject.eq(scs.courseSubjectEntity.icourseSubject))
+                .innerJoin(cas)
+                .on(cas.iclassification.eq(cos.categorySubjectEntity.iclassification))
+                .where(eqIclassification(iclassification))
+                .where(eqSubjectName(subjectName))
+                .where(eqStudentName(studentName))
+                .where(cos.endedAt.before(oneYearAgo))
+                .orderBy(getorder(pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+    }
+
+    public long oneYearStudentCount(Long iclassification,String subjectName,String studentName){
+        LocalDate oneYearAgo = LocalDate.now().minusYears(1);
+       return jpaQueryFactory.select(stu.istudent.count()).from(stu)
+                .innerJoin(scs)
+                .on(scs.studentEntity.istudent.eq(stu.istudent))
+                .innerJoin(cos)
+                .on(cos.icourseSubject.eq(scs.courseSubjectEntity.icourseSubject))
+                .innerJoin(cas)
+                .on(cas.iclassification.eq(cos.categorySubjectEntity.iclassification))
+                .where(eqIcourseSubject(iclassification))
+                .where(eqSubjectName(subjectName))
+                .where(eqStudentName(studentName))
+                .where(cos.endedAt.before(oneYearAgo))
+                .fetchOne();
+    }
+
     private BooleanExpression eqIcourseSubject(Long icourseSubject) {
         return icourseSubject != null ? cos.icourseSubject.eq(icourseSubject) : null;
     }
@@ -332,5 +382,20 @@ public class AdminStudentQdsl {
 
     private BooleanExpression eqDelYn(Integer delYn) {
         return delYn != null ? cos.delYn.eq(delYn) : null;
+    }
+
+    private OrderSpecifier[] getorder(Pageable pageable) {
+        List<OrderSpecifier> orders = new LinkedList();
+        if(!pageable.getSort().isEmpty()) {
+            for(Sort.Order order : pageable.getSort()) {
+                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+
+                switch(order.getProperty().toLowerCase()) {
+                    case "istudent": orders.add(new OrderSpecifier(direction,stu.istudent)); break;
+
+                }
+            }
+        }
+        return orders.stream().toArray(OrderSpecifier[]::new);
     }
 }
