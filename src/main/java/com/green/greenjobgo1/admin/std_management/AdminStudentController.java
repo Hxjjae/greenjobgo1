@@ -64,15 +64,6 @@ public class AdminStudentController {
         return SERVICE.selSubCategory(dto);
     }
 
-    @GetMapping("/round-category")
-    @Operation(summary = "기수별 드롭박스 GET")
-    public AdminStudentRoundCategoryRes getRoundCategory(@RequestParam Long icourseSubject,
-                                                         @RequestParam(required = false) Integer round) {
-        AdminStudentCategoryDto dto = new AdminStudentCategoryDto();
-        dto.setIcourseSubject(icourseSubject);
-        dto.setRound(round);
-        return SERVICE.selRoundCategory(dto);
-    }
 
     @GetMapping
     @Operation(summary = "학생 조회", description = "istudnet : 수강생 PK \n" +
@@ -278,12 +269,10 @@ public class AdminStudentController {
     @DeleteMapping("/student-list")
     @Operation(summary = "학생 일괄 삭제")
     public AdminStudentDelListRes delStudentList(@RequestParam Long iclassification,
-                                             @RequestParam Long icourseSubject,
-                                             @RequestParam Integer round) {
+                                                 @RequestParam Long icourseSubject) {
         AdminStudentDelDto dto = new AdminStudentDelDto();
         dto.setIclassification(iclassification);
         dto.setIcourseSubject(icourseSubject);
-        dto.setRound(round);
         return SERVICE.delStudentList(dto);
     }
 }

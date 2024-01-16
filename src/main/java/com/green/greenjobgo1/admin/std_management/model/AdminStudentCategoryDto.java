@@ -6,5 +6,6 @@ import lombok.Data;
 public class AdminStudentCategoryDto {
     private Long iclassfication;
     private Long icourseSubject;
+    private String subjectName;
     private Integer round;
 }

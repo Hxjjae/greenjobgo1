@@ -9,6 +9,5 @@ public class AdminStudentDelDto {
     private Long istudent;
     private Long iclassification;
     private Long icourseSubject;
-    private Integer round;
 
 }

@@ -10,5 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminStudentRoundCategoryListRes {
+    private Long icourseSubject;
+    private String subjectName;
     private Integer round;
 }

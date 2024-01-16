@@ -199,32 +199,20 @@ public class AdminStudentQdsl {
 
     public List<AdminStudentSubjectCategoryListRes> subjectCategoryList(AdminStudentCategoryDto dto) {
         JPAQuery<AdminStudentSubjectCategoryListRes> query = jpaQueryFactory.select(Projections.bean(
-                                AdminStudentSubjectCategoryListRes.class, cos.subjectName))
+                                AdminStudentSubjectCategoryListRes.class,cos.icourseSubject, cos.subjectName, cos.round, cos.startedAt, cos.endedAt))
                 .from(cos)
                 .leftJoin(cos.categorySubjectEntity, cas)
                 .where(eqIclassification(dto.getIclassfication()));
-        return query.fetch();
-    }
-
-    public List<AdminStudentRoundCategoryListRes> roundCategoryList(AdminStudentCategoryDto dto) {
-        QCourseSubjectEntity round = QCourseSubjectEntity.courseSubjectEntity;
-        QCourseSubjectEntity subject = QCourseSubjectEntity.courseSubjectEntity;
-
-        JPAQuery<AdminStudentRoundCategoryListRes> query = jpaQueryFactory.select(Projections.bean(
-                AdminStudentRoundCategoryListRes.class,cos.round))
-                .from(round)
-                .leftJoin(subject).on(round.subjectName.eq(subject.subjectName))
-                .where(eqIcourseSubject(dto.getIcourseSubject()));
         return query.fetch();
     }
 
     public List<AdminStudentMainCategoryListRes> mainCategoryList(AdminStudentCategoryDto dto) {
         JPAQuery<AdminStudentMainCategoryListRes> query = jpaQueryFactory.select(
                         Projections.bean(AdminStudentMainCategoryListRes.class,
-                                cas.iclassification, cas.classification, cos.subjectName.as("subjectNameList")))
-                .from(cos)
-                .leftJoin(cos.categorySubjectEntity, cas)
-                .where(eqIclassification(dto.getIclassfication()));
+                                cas.iclassification, cas.classification))
+                .from(cas)
+                .where(eqIclassification(dto.getIclassfication()))
+                .orderBy(cas.iclassification.asc());
         return query.fetch();
     }
 

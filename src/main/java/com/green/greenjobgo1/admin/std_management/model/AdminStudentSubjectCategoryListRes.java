@@ -5,11 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminStudentSubjectCategoryListRes {
-    private String icourseSubject;
+    private Long icourseSubject;
     private String subjectName;
+    private Integer round;
+    private LocalDate startedAt;
+    private LocalDate endedAt;
 }

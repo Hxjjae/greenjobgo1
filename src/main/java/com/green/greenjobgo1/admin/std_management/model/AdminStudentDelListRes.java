@@ -12,5 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminStudentDelListRes {
-    private Long istudent;
+    private Long iclassification;
+    private Long icourseSubject;
 }
