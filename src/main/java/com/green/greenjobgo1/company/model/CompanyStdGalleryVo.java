@@ -12,11 +12,12 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompanyStdGalleryVo {
-    private String img;
+
     private String introducedLine;
     private Long istudent;
     private String studentName;
     private String subjectName;
+    private String img;
     private LocalDate startedAt;
     private LocalDate endedAt;
 }
