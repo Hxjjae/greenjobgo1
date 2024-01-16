@@ -320,9 +320,9 @@ public class CompanyService {
         // 모든 권한 제거하기 null은 사용자한테 비밀번호를 받지 않겠다는 뜻, 여기서 0은 모든 권한을 비활성화(제한)하겠다는 뜻
         pdfStamper.setEncryption(null, null, 0, PdfWriter.ENCRYPTION_AES_128);
        //인쇄만 가능하도록 제한하기 PdfWriter.ALLOW_PRINTING을 주면 인쇄만 가능
-//        pdfStamper.setEncryption(null, "read-only-password".getBytes(),
-//                PdfWriter.ALLOW_PRINTING, PdfWriter.ENCRYPTION_AES_128);
-
+        //pdfStamper.setEncryption(null, "read-only-password".getBytes(),
+                //PdfWriter.ALLOW_PRINTING, PdfWriter.ENCRYPTION_AES_128);
+        pdfStamper.setFullCompression();
         pdfStamper.close();
 
         // PDF 파일로 저장

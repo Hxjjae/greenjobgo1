@@ -1,10 +1,12 @@
 package com.green.greenjobgo1.admin.sign;
 
+import ch.qos.logback.core.spi.ErrorCodes;
 import com.green.greenjobgo1.admin.AdminRepository;
 import com.green.greenjobgo1.admin.sign.model.AdminParam;
 import com.green.greenjobgo1.admin.sign.model.AdminSigInParam;
 import com.green.greenjobgo1.admin.sign.model.StudentExcel;
 import com.green.greenjobgo1.common.entity.*;
+import com.green.greenjobgo1.common.security.config.exception.*;
 import com.green.greenjobgo1.common.utils.ExcelUtil;
 import com.green.greenjobgo1.common.utils.ResultUtils;
 import com.green.greenjobgo1.repository.*;
@@ -52,6 +54,7 @@ public class AdminSignService {
     private final FileRepository fileRep;
     private final FileCategoryRepository fileCategoryRep;
     private final AdminCategoryRepository adminCategoryRep;
+    private final GlobalExceptionHandler exception;
 
     @Transactional
     public int addExcel(MultipartFile studentfile) {
@@ -101,12 +104,16 @@ public class AdminSignService {
             CourseSubjectEntity subjectentity = subjectRep.findBySubjectNameAndRound(user.getSubjectName(), Integer.parseInt(user.getRound()));
 
             if (subjectentity == null) {
-                throw new RuntimeException("존재하지 않는 과목입니다");
+                log.info("에러코드 확인: 존재하지 않는 과목입니다");
+                throw new RestApiException(CommonErrorCode.SUBJECT_NULL,"존재하지 않는 과목입니다");
+                //throw new RuntimeException("존재하지 않는 과목입니다");
             }
 
             EmployeeProfileEntity employeeEntity = employeeprofileRep.findByName(user.getEmployee());
             if (employeeEntity == null){
-                throw new RuntimeException("존재하지 않는 직원입니다.");
+                log.info("에러코드 확인: 존재하지 않는 직원입니다.");
+                throw new RestApiException(CommonErrorCode.EMPLOYEE_NULL,"존재하지 않는 직원입니다.");
+                //throw new RuntimeException("존재하지 않는 직원입니다.");
             }
 
 

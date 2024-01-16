@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @OpenAPIDefinition(
-        info = @Info(title = "ToDo 리스트"
-                , description = "Spring Security Exam"
+        info = @Info(title = "그린잡고대구"
+                , description = "그린잡고 테스트"
                 , version = "v0.0.1"
         ),
         security = @SecurityRequirement(name="authorization")
