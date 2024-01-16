@@ -4,6 +4,8 @@ import com.green.greenjobgo1.admin.category.model.AdminCategoryInsDto;
 import com.green.greenjobgo1.admin.category.model.AdminCategoryInsRes;
 import com.green.greenjobgo1.admin.category.model.AdminCategoryVo;
 import com.green.greenjobgo1.common.entity.CategorySubjectEntity;
+import com.green.greenjobgo1.common.security.config.exception.CommonErrorCode;
+import com.green.greenjobgo1.common.security.config.exception.RestApiException;
 import com.green.greenjobgo1.repository.AdminCategoryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AdminCategoryService {
     private final AdminCategoryRepository AC_REP;
+
 
     public AdminCategoryInsRes insCategory(AdminCategoryInsDto dto) {
         CategorySubjectEntity entity = new CategorySubjectEntity();
@@ -57,12 +60,12 @@ public class AdminCategoryService {
                         .classification(save.getClassification())
                         .build();
             } else {
-                throw new EntityNotFoundException("해당 컬럼은 삭제된 컬럼 입니다.");
+                throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "해당 컬럼을 찾을 수 없습니다.");
             }
 
 
         } else {
-            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 카테고리입니다.");
         }
     }
 
@@ -78,7 +81,6 @@ public class AdminCategoryService {
                     .delYn(save.getDelYn())
                     .build();
         } else {
-            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
-        }
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 카테고리입니다.");        }
     }
 }

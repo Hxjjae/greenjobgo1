@@ -2,6 +2,8 @@ package com.green.greenjobgo1.admin.subject;
 
 import com.green.greenjobgo1.admin.category.model.AdminCategoryDto;
 import com.green.greenjobgo1.admin.subject.model.*;
+import com.green.greenjobgo1.common.security.config.exception.CommonErrorCode;
+import com.green.greenjobgo1.common.security.config.exception.RestApiException;
 import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.common.entity.CategorySubjectEntity;
 import com.green.greenjobgo1.common.entity.CourseSubjectEntity;
@@ -113,7 +115,7 @@ public class AdminSubjectService {
                 }
             }
         } else {
-            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 카테고리입니다.");
         }
         CourseSubjectEntity save = AS_REP.save(entity);
         return AdminSubjectUpdRes.builder()
@@ -143,7 +145,7 @@ public class AdminSubjectService {
                     .subjectCondition(save.getSubjectCondition())
                     .build();
         } else {
-            throw new EntityNotFoundException("not found");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 카테고리입니다.");
         }
     }
 
@@ -165,7 +167,7 @@ public class AdminSubjectService {
             }
             return resultList;
         } else {
-            throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 카테고리입니다.");
         }
     }
 
