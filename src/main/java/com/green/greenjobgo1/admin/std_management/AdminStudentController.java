@@ -226,7 +226,9 @@ public class AdminStudentController {
                                          @RequestParam(required = false) String email,
                                          @RequestParam(required = false) String education,
                                          @RequestParam(required = false) String mobileNumber,
-                                         @RequestParam(required = false) Integer huntJobYn) {
+                                         @RequestParam(required = false) Integer huntJobYn,
+                                         @RequestParam(required = false) Integer age,
+                                         @RequestParam(required = false) String gender) {
 
         AdminStudentUpdDto dto = new AdminStudentUpdDto();
         dto.setIstudent(istudent);
@@ -236,6 +238,8 @@ public class AdminStudentController {
         dto.setEducation(education);
         dto.setMobileNumber(mobileNumber);
         dto.setHuntJobYn(huntJobYn);
+        dto.setAge(age);
+        dto.setGender(gender);
         return SERVICE.updStudent(dto);
     }
 

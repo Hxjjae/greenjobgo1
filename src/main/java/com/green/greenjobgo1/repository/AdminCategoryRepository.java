@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface AdminCategoryRepository extends JpaRepository<CategorySubjectEntity, Long> {
 
+    List<CategorySubjectEntity> findByDelYn(Integer delYn);
 }

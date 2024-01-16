@@ -16,4 +16,6 @@ public class AdminStudentUpdDto {
     private String certificate;
     private String mobileNumber;
     private Integer huntJobYn;
+    private Integer age;
+    private String gender;
 }

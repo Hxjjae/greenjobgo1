@@ -24,4 +24,5 @@ public class AdminStudentRes {
     private String education;
     private Long certificate;
     private Long file;
+    private Integer huntJobYn;
 }

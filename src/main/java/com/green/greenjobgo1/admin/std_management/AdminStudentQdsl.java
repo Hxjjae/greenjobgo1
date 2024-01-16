@@ -40,7 +40,7 @@ public class AdminStudentQdsl {
         JPAQuery<AdminStudentRes> query = jpaQueryFactory
                 .select(Projections.bean(AdminStudentRes.class, stu.istudent, cas.classification, cos.subjectName,
                         cos.startedAt, cos.endedAt, stu.name, stu.gender, stu.address, stu.mobileNumber
-                        , stu.education))
+                        , stu.education, stu.huntJobYn))
                 .from(scs)
                 .join(scs.studentEntity, stu)
                 .join(scs.courseSubjectEntity, cos)

@@ -33,10 +33,11 @@ public class AdminCategoryService {
     }
 
     public List<AdminCategoryVo> selCategoryList() {
-        List<CategorySubjectEntity> all = AC_REP.findAll();
+        List<CategorySubjectEntity> all = AC_REP.findByDelYn(0);
         return all.stream().map(list -> AdminCategoryVo.builder()
                 .iclassification(list.getIclassification())
                 .classification(list.getClassification())
+                .delYn(list.getDelYn())
                 .build()).toList();
     }
 

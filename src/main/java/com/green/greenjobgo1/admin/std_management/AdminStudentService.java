@@ -211,6 +211,7 @@ public class AdminStudentService {
                         .mobileNumber(item.getMobileNumber())
                         .subjectName(item.getSubjectName())
                         .file(adminStudentQdsl.fileCount(item.getIstudent()))
+                        .huntJobYn(item.getHuntJobYn())
                         .build()).toList())
                 .build();
         return ResponseEntity.ok(build);
@@ -428,6 +429,8 @@ public class AdminStudentService {
             student.setEducation(dto.getEducation());
             student.setMobileNumber(dto.getMobileNumber());
             student.setHuntJobYn(dto.getHuntJobYn());
+            student.setAge(dto.getAge());
+            student.setGender(dto.getGender());
 
             StudentEntity stdSave = STU_REP.save(student);
 
@@ -439,6 +442,8 @@ public class AdminStudentService {
                     .education(stdSave.getEducation())
                     .mobileNumber(stdSave.getMobileNumber())
                     .huntJobYn(stdSave.getHuntJobYn())
+                    .age(stdSave.getAge())
+                    .gender(stdSave.getGender())
                     .build();
         } else {
             throw new EntityNotFoundException("찾을 수 없는 pk 입니다.");
