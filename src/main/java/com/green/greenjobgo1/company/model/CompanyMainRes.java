@@ -5,13 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanyMainVo {
-    private String img;
-    private Long  istudent;
-    private String name;
-    private String subjectName;
+public class CompanyMainRes {
+    List<CompanyCateVo> vo;
+    List<CompanyMainVo> list;
 }

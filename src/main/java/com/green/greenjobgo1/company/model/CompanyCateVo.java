@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanyMainVo {
-    private String img;
-    private Long  istudent;
-    private String name;
-    private String subjectName;
+public class CompanyCateVo {
+    private Long iclassification;
+    private String classification;
 }

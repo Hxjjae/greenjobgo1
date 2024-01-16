@@ -297,5 +297,10 @@ public class AdminStudentController {
         return SERVICE.getStudentOneYear(pageable,iclassification,subjectName,studentName);
     }
 
+    @DeleteMapping("/student/oneyearago")
+    @Operation(summary = "1년이 지난 학생 삭제")
+    public int delStudentOneYear(@RequestParam List<Long>istudent){
+        return SERVICE.delStudentOneYear(istudent);
+    }
 
 }

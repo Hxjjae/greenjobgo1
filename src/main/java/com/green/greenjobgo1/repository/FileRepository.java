@@ -11,4 +11,5 @@ public interface FileRepository extends JpaRepository<FileEntity, Long> {
     List<FileEntity> findAllByStudentEntity(StudentEntity entity);
 
     List<FileEntity> findByFileCategoryEntityAndStudentEntity(FileCategoryEntity fileCategoryEntity, StudentEntity studentEntity);
+
 }

@@ -6,6 +6,7 @@ import com.green.greenjobgo1.common.entity.*;
 import com.green.greenjobgo1.common.utils.MyFileUtils;
 import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.company.model.*;
+import com.green.greenjobgo1.repository.AdminCategoryRepository;
 import com.green.greenjobgo1.repository.EmployeeProfileRepository;
 import com.green.greenjobgo1.repository.StudentRepository;
 import com.itextpdf.text.DocumentException;
@@ -18,8 +19,6 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
@@ -40,6 +39,7 @@ public class CompanyService {
     private final JPAQueryFactory jpaQueryFactory;
     private final EmployeeProfileRepository EmployeeProfileRep;
     private final StudentRepository studentRep;
+    private final AdminCategoryRepository AdminCategoryRep;
 
     QStudentEntity qstudent = QStudentEntity.studentEntity;
     QStudentCourseSubjectEntity qstudentCourseSubject = QStudentCourseSubjectEntity.studentCourseSubjectEntity;
@@ -261,9 +261,9 @@ public class CompanyService {
         return CompanystdDetailRes.builder().vo(build).file(build1).build();
     }
 
-    public List<CompanyMainVo> mainselstd(Long icategory){
+    public CompanyMainRes mainselstd(Long icategory){
         List<CompanyMainVo> list = jpaQueryFactory.select(Projections.constructor(CompanyMainVo.class,
-                        qfileEntity.file,
+                        qfileEntity.file.as("img"),
                         qstudent.istudent,
                         qstudent.name,
                         qCourseSubject.subjectName))
@@ -281,11 +281,19 @@ public class CompanyService {
                 .where(qstudent.companyMainYn.eq(1))
                 .fetch();
 
-        return list.stream().map(item-> CompanyMainVo.builder()
-                .file("/img/student/" + item.getIstudent()+"/"+item.getFile())
+        List<CompanyMainVo> mainvolist = list.stream().map(item -> CompanyMainVo.builder()
+                .img("/img/student/" + item.getIstudent() + "/" + item.getImg())
                 .istudent(item.getIstudent())
                 .name(item.getName())
                 .subjectName(item.getSubjectName()).build()).toList();
+
+        List<CategorySubjectEntity> all = AdminCategoryRep.findByDelYn(0);
+
+        List<CompanyCateVo> vo = all.stream().map(item -> CompanyCateVo.builder()
+                .iclassification(item.getIclassification())
+                .classification(item.getClassification()).build()).toList();
+
+        return CompanyMainRes.builder().list(mainvolist).vo(vo).build();
 
     }
 
