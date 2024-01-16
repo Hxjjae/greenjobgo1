@@ -2,7 +2,6 @@ package com.green.greenjobgo1.admin.std_management;
 
 import com.green.greenjobgo1.admin.std_management.model.*;
 import com.green.greenjobgo1.common.entity.*;
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -22,6 +21,7 @@ import java.util.List;
 public class AdminStudentQdsl {
 
     private final JPAQueryFactory jpaQueryFactory;
+
     @Autowired
     public AdminStudentQdsl(EntityManager entityManager) {
         this.jpaQueryFactory = new JPAQueryFactory(entityManager);
@@ -57,18 +57,18 @@ public class AdminStudentQdsl {
 
     public List<AdminStudentFileRes> fileVos(AdminStudentDetailDto dto) {
         JPAQuery<AdminStudentFileRes> query = jpaQueryFactory
-                .select(Projections.bean(AdminStudentFileRes.class,file.ifile, file.file, file.oneWord, file.mainYn))
+                .select(Projections.bean(AdminStudentFileRes.class, file.ifile, file.file, file.oneWord, file.mainYn))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),
                         file.fileCategoryEntity.iFileCategory.eq(2L))
-                .orderBy(file.mainYn.desc(),file.ifile.asc());
+                .orderBy(file.mainYn.desc(), file.ifile.asc());
         return query.fetch();
     }
 
     public List<AdminStudentFileLink> fileLinks(AdminStudentDetailDto dto) {
         JPAQuery<AdminStudentFileLink> query = jpaQueryFactory
-                .select(Projections.bean(AdminStudentFileLink.class,file.ifile, file.file.as("fileLink"), file.oneWord))
+                .select(Projections.bean(AdminStudentFileLink.class, file.ifile, file.file.as("fileLink"), file.oneWord))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),
@@ -79,7 +79,7 @@ public class AdminStudentQdsl {
 
     public AdminStudentImg img(AdminStudentDetailDto dto) {
         JPAQuery<AdminStudentImg> query = jpaQueryFactory
-                .select(Projections.bean(AdminStudentImg.class,file.file.as("img"), file.ifile))
+                .select(Projections.bean(AdminStudentImg.class, file.file.as("img"), file.ifile))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),
@@ -87,9 +87,10 @@ public class AdminStudentQdsl {
                 .orderBy(file.ifile.asc());
         return query.fetchOne();
     }
+
     public AdminStudentResume resume(AdminStudentDetailDto dto) {
         JPAQuery<AdminStudentResume> query = jpaQueryFactory
-                .select(Projections.bean(AdminStudentResume.class,file.ifile, file.file.as("resume"), file.oneWord))
+                .select(Projections.bean(AdminStudentResume.class, file.ifile, file.file.as("resume"), file.oneWord))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),
@@ -107,12 +108,13 @@ public class AdminStudentQdsl {
                         certificate.icertificate.eq(dto.getIcertificate()));
         return query.fetchOne();
     }
+
     public Long fileCount(Long istudent) {
         JPAQuery<Long> query = jpaQueryFactory
                 .select(file.file.count())
                 .from(file)
                 .join(file.studentEntity, stu)
-                .where(stu.istudent.eq(istudent), file.fileCategoryEntity.iFileCategory.in(1,2,3));
+                .where(stu.istudent.eq(istudent), file.fileCategoryEntity.iFileCategory.in(1, 2, 3));
         return query.fetchOne();
     }
 
@@ -136,7 +138,7 @@ public class AdminStudentQdsl {
 
     public AdminStudentDetailSubjectRes subjectList(Long istudent) {
         JPAQuery<AdminStudentDetailSubjectRes> query = jpaQueryFactory.select(
-                Projections.bean(AdminStudentDetailSubjectRes.class, cos.icourseSubject, cos.subjectName))
+                        Projections.bean(AdminStudentDetailSubjectRes.class, cos.icourseSubject, cos.subjectName))
                 .from(cos)
                 .join(cos.scsList, scs)
                 .join(scs.studentEntity, stu)
@@ -166,7 +168,7 @@ public class AdminStudentQdsl {
 
     public List<AdminStorageStudentRes> storageVos(AdminStorageStudentDto dto, Pageable pageable) {
         JPAQuery<AdminStorageStudentRes> query = jpaQueryFactory.select(
-                        Projections.bean(AdminStorageStudentRes.class, stu.istudent ,stu.name.as("studentName")
+                        Projections.bean(AdminStorageStudentRes.class, stu.istudent, stu.name.as("studentName")
                                 , cos.subjectName, file.file.as("img"), stu.introducedLine, stu.storageYn, stu.companyMainYn, stu.huntJobYn))
                 .from(stu)
                 .join(stu.scsList, scs)
@@ -194,6 +196,38 @@ public class AdminStudentQdsl {
                 .where(stu.editableYn.eq(1));
         return query.fetch();
     }
+
+    public List<AdminStudentSubjectCategoryListRes> subjectCategoryList(AdminStudentCategoryDto dto) {
+        JPAQuery<AdminStudentSubjectCategoryListRes> query = jpaQueryFactory.select(Projections.bean(
+                                AdminStudentSubjectCategoryListRes.class, cos.subjectName))
+                .from(cos)
+                .leftJoin(cos.categorySubjectEntity, cas)
+                .where(eqIclassification(dto.getIclassfication()));
+        return query.fetch();
+    }
+
+    public List<AdminStudentRoundCategoryListRes> roundCategoryList(AdminStudentCategoryDto dto) {
+        QCourseSubjectEntity round = QCourseSubjectEntity.courseSubjectEntity;
+        QCourseSubjectEntity subject = QCourseSubjectEntity.courseSubjectEntity;
+
+        JPAQuery<AdminStudentRoundCategoryListRes> query = jpaQueryFactory.select(Projections.bean(
+                AdminStudentRoundCategoryListRes.class,cos.round))
+                .from(round)
+                .leftJoin(subject).on(round.subjectName.eq(subject.subjectName))
+                .where(eqIcourseSubject(dto.getIcourseSubject()));
+        return query.fetch();
+    }
+
+    public List<AdminStudentMainCategoryListRes> mainCategoryList(AdminStudentCategoryDto dto) {
+        JPAQuery<AdminStudentMainCategoryListRes> query = jpaQueryFactory.select(
+                        Projections.bean(AdminStudentMainCategoryListRes.class,
+                                cas.iclassification, cas.classification, cos.subjectName.as("subjectNameList")))
+                .from(cos)
+                .leftJoin(cos.categorySubjectEntity, cas)
+                .where(eqIclassification(dto.getIclassfication()));
+        return query.fetch();
+    }
+
 
     public Long rowCount(Long iclassification) {
         JPAQuery<Long> query = jpaQueryFactory
@@ -273,6 +307,10 @@ public class AdminStudentQdsl {
                         stu.storageYn.eq(1),
                         stu.delYn.eq(0));
         return query.fetchOne();
+    }
+
+    private BooleanExpression eqIcourseSubject(Long icourseSubject) {
+        return icourseSubject != null ? cos.icourseSubject.eq(icourseSubject) : null;
     }
 
     private BooleanExpression eqIclassification(Long iclassification) {

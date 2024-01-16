@@ -1,12 +1,6 @@
 package com.green.greenjobgo1.admin.std_management;
 
 import com.green.greenjobgo1.admin.std_management.model.*;
-import com.green.greenjobgo1.common.entity.StudentEntity;
-import com.green.greenjobgo1.repository.StudentRepository;
-import com.green.greenjobgo1.student.model.StudentCertificateDto;
-import com.green.greenjobgo1.student.model.StudentInsDto;
-import com.green.greenjobgo1.student.model.StudentInsTotalRes;
-import com.itextpdf.text.DocumentException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,18 +46,33 @@ public class AdminStudentController {
         return SERVICE.insFile(file, dto);
     }
 
-    @GetMapping("/category")
-    @Operation(summary = "대분류 과정명 기수 별로 GET")
-    public AdminStudentCategoryRes getCategory(@RequestParam Long iclassfication,
-                                               @RequestParam Long icourseSubject,
-                                               @RequestParam Integer round) {
+    @GetMapping("/main-category")
+    @Operation(summary = "대분류별 드롭박스 GET")
+    public AdminStudentMainCategoryRes getMainCategory(@RequestParam(required = false) Long iclassfication) {
         AdminStudentCategoryDto dto = new AdminStudentCategoryDto();
         dto.setIclassfication(iclassfication);
-        dto.setIcourseSubject(icourseSubject);
-        dto.setRound(round);
-        return SERVICE.selCategory(dto);
+        return SERVICE.selMainCategory(dto);
     }
 
+    @GetMapping("/sub-category")
+    @Operation(summary = "과정별 드롭박스 GET")
+    public AdminStudentSubjectCategoryRes getSubjectCategory(@RequestParam Long iclassification,
+                                                             @RequestParam(required = false) Long icourseSubject) {
+        AdminStudentCategoryDto dto = new AdminStudentCategoryDto();
+        dto.setIclassfication(iclassification);
+        dto.setIcourseSubject(icourseSubject);
+        return SERVICE.selSubCategory(dto);
+    }
+
+    @GetMapping("/round-category")
+    @Operation(summary = "기수별 드롭박스 GET")
+    public AdminStudentRoundCategoryRes getRoundCategory(@RequestParam Long icourseSubject,
+                                                         @RequestParam(required = false) Integer round) {
+        AdminStudentCategoryDto dto = new AdminStudentCategoryDto();
+        dto.setIcourseSubject(icourseSubject);
+        dto.setRound(round);
+        return SERVICE.selRoundCategory(dto);
+    }
 
     @GetMapping
     @Operation(summary = "학생 조회", description = "istudnet : 수강생 PK \n" +
@@ -267,5 +273,17 @@ public class AdminStudentController {
         AdminStudentFileDelDto dto = new AdminStudentFileDelDto();
         dto.setIfile(ifile);
         return SERVICE.delFile(dto);
+    }
+
+    @DeleteMapping("/student-list")
+    @Operation(summary = "학생 일괄 삭제")
+    public AdminStudentDelListRes delStudentList(@RequestParam Long iclassification,
+                                             @RequestParam Long icourseSubject,
+                                             @RequestParam Integer round) {
+        AdminStudentDelDto dto = new AdminStudentDelDto();
+        dto.setIclassification(iclassification);
+        dto.setIcourseSubject(icourseSubject);
+        dto.setRound(round);
+        return SERVICE.delStudentList(dto);
     }
 }

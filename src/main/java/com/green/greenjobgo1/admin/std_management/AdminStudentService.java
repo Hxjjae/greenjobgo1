@@ -6,7 +6,6 @@ import com.green.greenjobgo1.common.utils.MyFileUtils;
 import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.company.CompanyService;
 import com.green.greenjobgo1.repository.*;
-import com.green.greenjobgo1.common.security.config.security.MyUserDetailsServiceImpl;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
@@ -23,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 
@@ -608,9 +609,49 @@ public class AdminStudentService {
         }
     }
 
-    public AdminStudentCategoryRes selCategory(AdminStudentCategoryDto dto) {
+    public AdminStudentMainCategoryRes selMainCategory(AdminStudentCategoryDto dto) {
+        List<AdminStudentMainCategoryListRes> adminStudentMainCategoryRes = adminStudentQdsl.mainCategoryList(dto);
 
+        return AdminStudentMainCategoryRes.builder()
+                .mainCategory(adminStudentMainCategoryRes)
+                .build();
+    }
 
-        return null;
+    public AdminStudentSubjectCategoryRes selSubCategory(AdminStudentCategoryDto dto) {
+        List<AdminStudentSubjectCategoryListRes> adminStudentSubjectCategoryRes = adminStudentQdsl.subjectCategoryList(dto);
+
+        return AdminStudentSubjectCategoryRes.builder()
+                .subject(adminStudentSubjectCategoryRes)
+                .build();
+    }
+
+    public AdminStudentRoundCategoryRes selRoundCategory(AdminStudentCategoryDto dto) {
+        List<AdminStudentRoundCategoryListRes> adminStudentRoundCategoryListRes = adminStudentQdsl.roundCategoryList(dto);
+
+        return AdminStudentRoundCategoryRes.builder()
+                .round(adminStudentRoundCategoryListRes)
+                .build();
+    }
+
+    public AdminStudentDelListRes delStudentList(AdminStudentDelDto dto) {
+        Optional<CategorySubjectEntity> cateId = A_CATE_REP.findById(dto.getIclassification());
+        StudentEntity studentEntity = null;
+        List<CourseSubjectEntity> subjectList = cateId.get().getCsList();
+        for (CourseSubjectEntity subject : subjectList) {
+        long differenceInYears = ChronoUnit.YEARS.between(subject.getEndedAt(), LocalDate.now());
+            List<StudentCourseSubjectEntity> scsList = subject.getScsList();
+            for (StudentCourseSubjectEntity scs : scsList) {
+                studentEntity = scs.getStudentEntity();
+                if (differenceInYears > 1) {
+                    log.info("1년미만의 데이터이므로 삭제를 진행합니다.");
+                    STU_REP.delete(studentEntity);
+                } else {
+                    throw new DateTimeException("1년이상의 데이터이므로 삭제할 수 없습니다.");
+                }
+            }
+        }
+        return AdminStudentDelListRes.builder()
+                .istudent(studentEntity.getIstudent())
+                .build();
     }
 }
