@@ -625,33 +625,33 @@ public class AdminStudentService {
                 .build();
     }
 
-    public AdminStudentRoundCategoryRes selRoundCategory(AdminStudentCategoryDto dto) {
-        List<AdminStudentRoundCategoryListRes> adminStudentRoundCategoryListRes = adminStudentQdsl.roundCategoryList(dto);
-
-        return AdminStudentRoundCategoryRes.builder()
-                .round(adminStudentRoundCategoryListRes)
-                .build();
-    }
-
     public AdminStudentDelListRes delStudentList(AdminStudentDelDto dto) {
         Optional<CategorySubjectEntity> cateId = A_CATE_REP.findById(dto.getIclassification());
-        StudentEntity studentEntity = null;
-        List<CourseSubjectEntity> subjectList = cateId.get().getCsList();
-        for (CourseSubjectEntity subject : subjectList) {
-        long differenceInYears = ChronoUnit.YEARS.between(subject.getEndedAt(), LocalDate.now());
-            List<StudentCourseSubjectEntity> scsList = subject.getScsList();
-            for (StudentCourseSubjectEntity scs : scsList) {
-                studentEntity = scs.getStudentEntity();
-                if (differenceInYears > 1) {
-                    log.info("1년미만의 데이터이므로 삭제를 진행합니다.");
-                    STU_REP.delete(studentEntity);
-                } else {
-                    throw new DateTimeException("1년이상의 데이터이므로 삭제할 수 없습니다.");
+
+        if (cateId.isPresent()) {
+            List<CourseSubjectEntity> subjectList = cateId.get().getCsList();
+            for (CourseSubjectEntity subject : subjectList) {
+                if (subject.getIcourseSubject() == dto.getIcourseSubject()) {
+                    long differenceInYears = ChronoUnit.YEARS.between(subject.getEndedAt(), LocalDate.now());
+                    List<StudentCourseSubjectEntity> scsList = subject.getScsList();
+                    for (StudentCourseSubjectEntity scs : scsList) {
+                        StudentEntity studentEntity = scs.getStudentEntity();
+                        List<FileEntity> files = studentEntity.getFiles();
+                        if (differenceInYears <= 1 && files.isEmpty()) {
+                            log.info("1년 미만의 데이터이므로 삭제를 진행합니다.");
+                            STU_REP.delete(studentEntity);
+                        }
+                    }
                 }
             }
+
+        } else {
+            log.warn("해당 카테고리가 존재하지 않습니다.");
         }
+
         return AdminStudentDelListRes.builder()
-                .istudent(studentEntity.getIstudent())
+                .iclassification(dto.getIclassification())
+                .icourseSubject(dto.getIcourseSubject())
                 .build();
     }
     public AdminStudentOneYearRes getStudentOneYear(Pageable pageable,Long iclassification,String subjectName,String studentName){
