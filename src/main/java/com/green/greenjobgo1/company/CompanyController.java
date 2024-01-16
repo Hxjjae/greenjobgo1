@@ -47,24 +47,27 @@ public class CompanyController {
     {
         return service.getstudent(pageable,icategory,subjectName,studentName);
     }
-    @GetMapping("/student/gallery")
-    @Operation(summary = "수강생을 검색합니다.", description = "<br>"+
+    @GetMapping("/student/list")
+    @Operation(summary = "리스트형 수강생을 검색합니다.", description = "<br>"+
             "maxpage: 총페이지 수 <br>"+
             "totalcount: 총 학생 수 <br>"+
-            "subjectName: 과목명  <br>"+
-            "studentName: 수강생 이름 <br>"+
+            "introducedLine: 이력서 한줄소개  <br>"+
             "istudent: 수강생 pk 번호 <br>"+
+            "studentName: 수강생 이름 <br>"+
+            "subjectName: 과목명  <br>"+
             "img : 포트폴리오 썸네일 이미지 <br>"+
+            "startedAt: 수강과목 시작날짜  <br>"+
+            "endedAt: 수강과목 종료날짜  <br>"+
             "sort 정렬: istudent,ASC or istudent,DESC 넣어주시면 됩니다. <br>"+
             "icategory: 1번 IT분야, 2번 건축 기계 분야, 3번 UIUX분야, 4번 영상분야, 6번 편집디자인 분야<br>"+
             "<br>")
-    public CompanyStdGalleryRes getstudentGallery(@ParameterObject @PageableDefault(page = 1)
+    public CompanyStdGalleryRes getstudentlist(@ParameterObject @PageableDefault(page = 1)
                                     @SortDefault(sort = "istudent", direction = Sort.Direction.ASC)Pageable pageable,
                                     @RequestParam(required = false)Long icategory,
                                     @RequestParam(required = false)String subjectName,
                                     @RequestParam(required = false)String studentName)
     {
-        return service.getstudentGallery(pageable,icategory,subjectName,studentName);
+        return service.getstudentlist(pageable,icategory,subjectName,studentName);
     }
 
 

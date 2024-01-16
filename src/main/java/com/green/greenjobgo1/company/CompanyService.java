@@ -117,7 +117,7 @@ public class CompanyService {
 
     }
 
-    public CompanyStdGalleryRes getstudentGallery(Pageable pageable,Long icategory,String subjectName,String studentName){
+    public CompanyStdGalleryRes getstudentlist(Pageable pageable,Long icategory,String subjectName,String studentName){
 
         log.info("pageable:{}",pageable.getSort());
         List<CompanyStdGalleryVo> StudentEntity = jpaQueryFactory.select(
