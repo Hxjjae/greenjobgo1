@@ -73,6 +73,7 @@ public class CompanyService {
                 .where(eqsubjectName(subjectName))
                 .where(eqstudentName(studentName))
                 .orderBy(getorder(pageable))
+                .groupBy(qstudent.istudent)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -144,6 +145,7 @@ public class CompanyService {
                 .where(eqcategory(icategory))
                 .where(eqsubjectName(subjectName))
                 .where(eqstudentName(studentName))
+                .groupBy(qstudent.istudent)
                 .orderBy(getorder(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
