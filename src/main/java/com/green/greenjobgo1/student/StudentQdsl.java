@@ -87,6 +87,24 @@ public class StudentQdsl {
         return query.fetchOne();
     }
 
+    public Long countByThumbnail(Long istudent) {
+        JPAQuery<Long> query = jpaQueryFactory
+                .select(file.file.count())
+                .from(file)
+                .where(file.fileCategoryEntity.iFileCategory.eq(4L),
+                        file.studentEntity.istudent.eq(istudent));
+        return query.fetchOne();
+    }
+
+    public Long countByPortfolioMain(Long istudent) {
+        JPAQuery<Long> query = jpaQueryFactory
+                .select(file.file.count())
+                .from(file)
+                .where(file.studentEntity.istudent.eq(istudent),
+                        file.mainYn.eq(1));
+        return query.fetchOne();
+    }
+
     public List<CompanyListEntity> companyList(String companyName, Pageable pageable) {
         JPAQuery<CompanyListEntity> query =  jpaQueryFactory.select(Projections.constructor(CompanyListEntity.class,
                         qCompanyList.companyCode,

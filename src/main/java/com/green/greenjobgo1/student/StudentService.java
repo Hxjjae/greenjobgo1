@@ -1,10 +1,7 @@
 package com.green.greenjobgo1.student;
 
 import com.green.greenjobgo1.admin.companylist.model.CompanylistRes;
-import com.green.greenjobgo1.admin.std_management.model.AdminStudentCertificateRes;
-import com.green.greenjobgo1.admin.std_management.model.AdminStudentInsRes;
-import com.green.greenjobgo1.admin.std_management.model.AdminStudentInsTotalRes;
-import com.green.greenjobgo1.admin.std_management.model.AdminStudentIntroducedLineRes;
+import com.green.greenjobgo1.admin.std_management.model.*;
 import com.green.greenjobgo1.common.entity.*;
 import com.green.greenjobgo1.common.security.config.exception.CommonErrorCode;
 import com.green.greenjobgo1.common.security.config.exception.RestApiException;
@@ -166,7 +163,13 @@ public class StudentService {
                 if (fileLinkCount > 5) {
                     throw new RestApiException(CommonErrorCode.UPLOAD_FAILED,"한 수강생당 파일링크는 5개까지만 올릴 수 있습니다.");
                 }
+            }
 
+            if (iFileCategory == 4) {
+                Long thumbnailCount = studentQdsl.countByThumbnail(studentSave.getIstudent());
+                if (thumbnailCount > 1) {
+                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "한 수강생당 포트폴리오 대표 이미지는 1개만 올릴 수 있습니다.");
+                }
             }
 
 
@@ -322,5 +325,39 @@ public class StudentService {
         } else {
             throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 PK값 입니다.");
         }
+    }
+
+    public StudentPortfolioMainRes patchPortfolioMain(StudentPortfolioMainDto dto) {
+        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+        List<FileEntity> files = stdId.get().getFiles();
+
+        if (stdId.isPresent()) {
+            for (FileEntity file : files) {
+                Long countByPortfolioMain = studentQdsl.countByPortfolioMain(stdId.get().getIstudent());
+
+                if (countByPortfolioMain > 1) {
+                    Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
+                    FileEntity fileEntity = new FileEntity();
+
+                    if (dto.getMainYn() != null) {
+                        fileEntity = fileId.get();
+                        fileEntity.setMainYn(dto.getMainYn());
+                    }
+                    FileEntity save = FILE_REP.save(fileEntity);
+
+                    return StudentPortfolioMainRes.builder()
+                            .mainYn(save.getMainYn())
+                            .ifile(save.getIfile())
+                            .istudent(stdId.get().getIstudent())
+                            .build();
+
+                } else {
+                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "한 수강생당 대표 포트폴리오는 1개까지만 설정 할 수 있습니다.");
+                }
+            }
+        } else {
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 PK값 입니다.");
+        }
+        return null;
     }
 }
