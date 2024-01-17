@@ -205,7 +205,7 @@ public class AdminStudentQdsl {
 
     public List<AdminStudentSubjectCategoryListRes> subjectCategoryList(AdminStudentCategoryDto dto, Pageable pageable) {
         JPAQuery<AdminStudentSubjectCategoryListRes> query = jpaQueryFactory.select(Projections.bean(
-                        AdminStudentSubjectCategoryListRes.class,cos.icourseSubject, cos.subjectName, cos.round, cos.startedAt, cos.endedAt))
+                        AdminStudentSubjectCategoryListRes.class, cas.iclassification, cas.classification, cos.icourseSubject, cos.subjectName, cos.round, cos.startedAt, cos.endedAt))
                 .from(cos)
                 .leftJoin(cos.categorySubjectEntity, cas)
                 .where(eqIclassification(dto.getIclassfication()),

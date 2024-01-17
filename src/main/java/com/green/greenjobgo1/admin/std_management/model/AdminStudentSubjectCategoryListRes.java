@@ -12,6 +12,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminStudentSubjectCategoryListRes {
+    private Long iclassification;
+    private String classification;
     private Long icourseSubject;
     private String subjectName;
     private Integer round;
