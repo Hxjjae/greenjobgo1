@@ -46,8 +46,8 @@ public class AdminStudentController {
         return SERVICE.insFile(file, dto);
     }
 
-    @GetMapping("/sub-category")
-    @Operation(summary = "과정별 드롭박스 GET")
+    @GetMapping("/sub-category-list")
+    @Operation(summary = "일괄삭제 리스트 GET")
     public AdminStudentSubjectCategoryRes getSubjectCategory(@ParameterObject @PageableDefault(sort = "icourseSubject", direction = Sort.Direction.DESC, page = 1) Pageable pageable,
                                                              @RequestParam(required = false) Long iclassification,
                                                              @RequestParam(required = false) Long icourseSubject) {
@@ -55,6 +55,14 @@ public class AdminStudentController {
         dto.setIclassfication(iclassification);
         dto.setIcourseSubject(icourseSubject);
         return SERVICE.selSubjectCategoryList(dto, pageable);
+    }
+
+    @GetMapping("/dropbox-category")
+    @Operation(summary = "과정별 드롭박스 GET")
+    public AdminStudentSubjectDropBoxRes getSubjectDropbox(@RequestParam Long iclassification) {
+        AdminStudentSubjectDropBoxDto dto = new AdminStudentSubjectDropBoxDto();
+        dto.setIclassification(iclassification);
+        return SERVICE.selSubjectDropBox(dto);
     }
 
 

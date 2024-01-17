@@ -216,6 +216,15 @@ public class AdminStudentQdsl {
         return query.fetch();
     }
 
+    public List<AdminStudentSubjectDropBox> selSubjectDropBox(AdminStudentSubjectDropBoxDto dto) {
+        JPAQuery<AdminStudentSubjectDropBox> query = jpaQueryFactory
+                .select(Projections.bean(AdminStudentSubjectDropBox.class, cos.icourseSubject, cos.subjectName, cos.round))
+                .from(cos)
+                .leftJoin(cos.categorySubjectEntity, cas)
+                .where(cas.iclassification.eq(dto.getIclassification()));
+        return query.fetch();
+    }
+
     public Long subjectCategoryCount(AdminStudentCategoryDto dto) {
         JPAQuery<Long> query = jpaQueryFactory
                 .select(cos.icourseSubject.count())
@@ -413,4 +422,6 @@ public class AdminStudentQdsl {
         }
         return orders.stream().toArray(OrderSpecifier[]::new);
     }
+
+
 }

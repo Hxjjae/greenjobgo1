@@ -719,4 +719,12 @@ public class AdminStudentService {
         return 1;
 
     }
+
+    public AdminStudentSubjectDropBoxRes selSubjectDropBox(AdminStudentSubjectDropBoxDto dto) {
+        List<AdminStudentSubjectDropBox> dropBox = adminStudentQdsl.selSubjectDropBox(dto);
+
+        return AdminStudentSubjectDropBoxRes.builder()
+                .res(dropBox)
+                .build();
+    }
 }
