@@ -169,6 +169,13 @@ public class AdminStudentService {
 
             }
 
+            if (iFileCategory == 4) {
+                Long thumbnailCount = adminStudentQdsl.countByThumbnail(studentSave.getIstudent());
+                if (thumbnailCount > 1) {
+                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "한 수강생당 포트폴리오 대표 이미지는 1개만 올릴 수 있습니다.");
+                }
+            }
+
 
             AdminStudentInsRes res = AdminStudentInsRes.builder()
                     .file(result.getFile())
@@ -530,26 +537,36 @@ public class AdminStudentService {
 
     public AdminStudentPortfolioMainRes patchPortfolioMain(AdminStudentPortfolioMainDto dto) {
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+        List<FileEntity> files = stdId.get().getFiles();
 
         if (stdId.isPresent()) {
-            Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
-            FileEntity fileEntity = new FileEntity();
+            for (FileEntity file : files) {
+                Long countByPortfolioMain = adminStudentQdsl.countByPortfolioMain(stdId.get().getIstudent());
 
-            if (dto.getMainYn() != null) {
-                fileEntity = fileId.get();
-                fileEntity.setMainYn(dto.getMainYn());
+                if (countByPortfolioMain > 1) {
+                    Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
+                    FileEntity fileEntity = new FileEntity();
+
+                    if (dto.getMainYn() != null) {
+                        fileEntity = fileId.get();
+                        fileEntity.setMainYn(dto.getMainYn());
+                    }
+                    FileEntity save = FILE_REP.save(fileEntity);
+
+                    return AdminStudentPortfolioMainRes.builder()
+                            .mainYn(save.getMainYn())
+                            .ifile(save.getIfile())
+                            .istudent(stdId.get().getIstudent())
+                            .build();
+
+                } else {
+                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "한 수강생당 대표 포트폴리오는 1개까지만 설정 할 수 있습니다.");
+                }
             }
-            FileEntity save = FILE_REP.save(fileEntity);
-
-            return AdminStudentPortfolioMainRes.builder()
-                    .mainYn(save.getMainYn())
-                    .ifile(save.getIfile())
-                    .istudent(stdId.get().getIstudent())
-                    .build();
-
         } else {
             throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 PK값 입니다.");
         }
+        return null;
     }
 
     public AdminStudentCertificateTotalRes updCertificateList(AdminStudentCertificateListDto dto) {
@@ -611,18 +628,15 @@ public class AdminStudentService {
         }
     }
 
-    public AdminStudentMainCategoryRes selMainCategory(AdminStudentCategoryDto dto) {
-        List<AdminStudentMainCategoryListRes> adminStudentMainCategoryRes = adminStudentQdsl.mainCategoryList(dto);
+    public AdminStudentSubjectCategoryRes selSubjectCategoryList(AdminStudentCategoryDto dto,Pageable pageable) {
+        long maxPage = adminStudentQdsl.subjectCategoryCount(dto);
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber() + 1, (int) maxPage, pageable);
+        utils.setIdx((int) maxPage);
 
-        return AdminStudentMainCategoryRes.builder()
-                .mainCategory(adminStudentMainCategoryRes)
-                .build();
-    }
-
-    public AdminStudentSubjectCategoryRes selSubCategory(AdminStudentCategoryDto dto) {
-        List<AdminStudentSubjectCategoryListRes> adminStudentSubjectCategoryRes = adminStudentQdsl.subjectCategoryList(dto);
+        List<AdminStudentSubjectCategoryListRes> adminStudentSubjectCategoryRes = adminStudentQdsl.subjectCategoryList(dto, pageable);
 
         return AdminStudentSubjectCategoryRes.builder()
+                .page(utils)
                 .subject(adminStudentSubjectCategoryRes)
                 .build();
     }

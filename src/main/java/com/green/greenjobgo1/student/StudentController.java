@@ -1,5 +1,7 @@
 package com.green.greenjobgo1.student;
 
+import com.green.greenjobgo1.admin.std_management.model.AdminStudentPortfolioMainDto;
+import com.green.greenjobgo1.admin.std_management.model.AdminStudentPortfolioMainRes;
 import com.green.greenjobgo1.common.entity.StudentEntity;
 import com.green.greenjobgo1.repository.StudentRepository;
 import com.green.greenjobgo1.student.model.*;
@@ -136,11 +138,16 @@ public class StudentController {
         return ResponseEntity.ok(SERVICE.companyList(companyName, pageable));
     }
 
-
-    private boolean isEditableYnAllowed() {
-        // Implement your logic to check if editableYn is allowed for the current user
-        // You may load user details from the security context or perform custom checks
-        // This is just a placeholder; replace it with your actual logic
-        return true;
+    @PatchMapping("/portfolio-main")
+    @Operation(summary = "대표 포트폴리오 설정")
+    @PreAuthorize("hasAnyRole('USER')")
+    public StudentPortfolioMainRes patchPortfolioMain(@RequestParam Long istudent,
+                                                           @RequestParam Long ifile,
+                                                           @RequestParam Integer mainYn) {
+        StudentPortfolioMainDto dto = new StudentPortfolioMainDto();
+        dto.setIfile(ifile);
+        dto.setIstudent(istudent);
+        dto.setMainYn(mainYn);
+        return SERVICE.patchPortfolioMain(dto);
     }
 }
