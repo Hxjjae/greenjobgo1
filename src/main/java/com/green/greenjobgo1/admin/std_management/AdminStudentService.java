@@ -628,16 +628,12 @@ public class AdminStudentService {
         }
     }
 
-    public AdminStudentMainCategoryRes selMainCategory(AdminStudentCategoryDto dto) {
-        List<AdminStudentMainCategoryListRes> adminStudentMainCategoryRes = adminStudentQdsl.mainCategoryList(dto);
+    public AdminStudentSubjectCategoryRes selSubjectCategoryList(AdminStudentCategoryDto dto,Pageable pageable) {
+        long maxPage = adminStudentQdsl.storageIdx(dto);
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber() + 1, (int) maxPage, pageable);
+        utils.setIdx((int) maxPage);
 
-        return AdminStudentMainCategoryRes.builder()
-                .mainCategory(adminStudentMainCategoryRes)
-                .build();
-    }
-
-    public AdminStudentSubjectCategoryRes selSubCategory(AdminStudentCategoryDto dto) {
-        List<AdminStudentSubjectCategoryListRes> adminStudentSubjectCategoryRes = adminStudentQdsl.subjectCategoryList(dto);
+        List<AdminStudentSubjectCategoryListRes> adminStudentSubjectCategoryRes = adminStudentQdsl.subjectCategoryList(dto, pageable);
 
         return AdminStudentSubjectCategoryRes.builder()
                 .subject(adminStudentSubjectCategoryRes)

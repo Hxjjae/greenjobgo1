@@ -46,22 +46,14 @@ public class AdminStudentController {
         return SERVICE.insFile(file, dto);
     }
 
-    @GetMapping("/main-category")
-    @Operation(summary = "대분류별 드롭박스 GET")
-    public AdminStudentMainCategoryRes getMainCategory(@RequestParam(required = false) Long iclassfication) {
-        AdminStudentCategoryDto dto = new AdminStudentCategoryDto();
-        dto.setIclassfication(iclassfication);
-        return SERVICE.selMainCategory(dto);
-    }
-
     @GetMapping("/sub-category")
     @Operation(summary = "과정별 드롭박스 GET")
-    public AdminStudentSubjectCategoryRes getSubjectCategory(@RequestParam Long iclassification,
+    public AdminStudentSubjectCategoryRes getSubjectCategory(@RequestParam(required = false) Long iclassification,
                                                              @RequestParam(required = false) Long icourseSubject) {
         AdminStudentCategoryDto dto = new AdminStudentCategoryDto();
         dto.setIclassfication(iclassification);
         dto.setIcourseSubject(icourseSubject);
-        return SERVICE.selSubCategory(dto);
+        return SERVICE.selSubjectCategoryList(dto);
     }
 
 
