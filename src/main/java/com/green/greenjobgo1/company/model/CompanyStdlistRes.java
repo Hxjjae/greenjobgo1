@@ -8,9 +8,9 @@ import java.util.List;
 
 @Getter
 @Builder
-public class CompanyStdGalleryRes {
+public class CompanyStdlistRes {
     private PagingUtils page;
     private int maxpage;
     private int totalcount;
-    private List<CompanyStdGalleryVo> vo;
+    private List<CompanyStdlistVo> vo;
 }

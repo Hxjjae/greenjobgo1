@@ -14,5 +14,5 @@ import java.util.List;
 @AllArgsConstructor
 public class AdminStudentOneYearRes {
     private PagingUtils page;
-    private List<AdminStudentOneYearVo> vo;
+    private List<AdminStudentOneYearFileVo> vo;
 }

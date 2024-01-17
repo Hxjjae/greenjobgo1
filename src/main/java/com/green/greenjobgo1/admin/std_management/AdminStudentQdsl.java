@@ -309,11 +309,14 @@ public class AdminStudentQdsl {
         LocalDate oneYearAgo = LocalDate.now().minusYears(1);
 
         return jpaQueryFactory.select(Projections.bean(AdminStudentOneYearVo.class,
+                        cas.classification,
                         cos.subjectName,
                         cos.round,
+                        cos.startedAt,
+                        cos.endedAt,
+                        stu.istudent,
                         stu.name.as("studentName"),
-                        stu.istudent,cas.iclassification
-
+                        stu.gender, stu.storageYn
                 )).from(stu)
                 .innerJoin(scs)
                 .on(scs.studentEntity.istudent.eq(stu.istudent))
@@ -330,6 +333,7 @@ public class AdminStudentQdsl {
                 .limit(pageable.getPageSize())
                 .fetch();
     }
+
 
     public long oneYearStudentCount(Long iclassification,String subjectName,String studentName){
         LocalDate oneYearAgo = LocalDate.now().minusYears(1);

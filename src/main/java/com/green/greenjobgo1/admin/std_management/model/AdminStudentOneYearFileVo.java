@@ -1,17 +1,14 @@
 package com.green.greenjobgo1.admin.std_management.model;
 
-import lombok.AllArgsConstructor;
+
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 import java.time.LocalDate;
 
-@Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class AdminStudentOneYearVo {
+@Getter
+public class AdminStudentOneYearFileVo {
     private String classification;
     private String subjectName;
     private int round;
@@ -20,5 +17,6 @@ public class AdminStudentOneYearVo {
     private Long istudent;
     private String studentName;
     private String gender;
+    private Long portfolio;
     private int storageYn;
 }

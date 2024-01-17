@@ -2,7 +2,6 @@ package com.green.greenjobgo1.company;
 
 import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileVo;
 import com.green.greenjobgo1.company.model.*;
-import com.itextpdf.text.DocumentException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -61,11 +57,11 @@ public class CompanyController {
             "sort 정렬: istudent,ASC or istudent,DESC 넣어주시면 됩니다. <br>"+
             "icategory: 1번 IT분야, 2번 건축 기계 분야, 3번 UIUX분야, 4번 영상분야, 6번 편집디자인 분야<br>"+
             "<br>")
-    public CompanyStdGalleryRes getstudentlist(@ParameterObject @PageableDefault(page = 1)
+    public CompanyStdlistRes getstudentlist(@ParameterObject @PageableDefault(page = 1)
                                     @SortDefault(sort = "istudent", direction = Sort.Direction.ASC)Pageable pageable,
-                                    @RequestParam(required = false)Long icategory,
-                                    @RequestParam(required = false)String subjectName,
-                                    @RequestParam(required = false)String studentName)
+                                            @RequestParam(required = false)Long icategory,
+                                            @RequestParam(required = false)String subjectName,
+                                            @RequestParam(required = false)String studentName)
     {
         return service.getstudentlist(pageable,icategory,subjectName,studentName);
     }

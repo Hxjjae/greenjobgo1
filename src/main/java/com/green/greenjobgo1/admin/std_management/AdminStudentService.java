@@ -664,7 +664,19 @@ public class AdminStudentService {
 
         List<AdminStudentOneYearVo> studentOneYearlist = adminStudentQdsl.oneYearStudent(pageable, iclassification, subjectName, studentName);
 
-        return AdminStudentOneYearRes.builder().page(utils).vo(studentOneYearlist).build();
+        List<AdminStudentOneYearFileVo> list = studentOneYearlist.stream().map(item -> AdminStudentOneYearFileVo.builder()
+                .classification(item.getClassification())
+                .subjectName(item.getSubjectName())
+                .round(item.getRound())
+                .startedAt(item.getStartedAt())
+                .endedAt(item.getEndedAt())
+                .istudent(item.getIstudent())
+                .studentName(item.getStudentName())
+                .gender(item.getGender())
+                .portfolio(adminStudentQdsl.fileCount(item.getIstudent()))
+                .storageYn(item.getStorageYn()).build()).toList();
+        return AdminStudentOneYearRes.builder().page(utils).vo(list).build();
+
     }
     @Transactional
     public int delStudentOneYear(List<Long>istudent){

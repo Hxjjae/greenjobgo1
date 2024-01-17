@@ -117,11 +117,11 @@ public class CompanyService {
 
     }
 
-    public CompanyStdGalleryRes getstudentlist(Pageable pageable,Long icategory,String subjectName,String studentName){
+    public CompanyStdlistRes getstudentlist(Pageable pageable, Long icategory, String subjectName, String studentName){
 
         log.info("pageable:{}",pageable.getSort());
-        List<CompanyStdGalleryVo> StudentEntity = jpaQueryFactory.select(
-                        Projections.bean(CompanyStdGalleryVo.class,
+        List<CompanyStdlistVo> StudentEntity = jpaQueryFactory.select(
+                        Projections.bean(CompanyStdlistVo.class,
                                 qCourseSubject.subjectName,
                                 qstudent.introducedLine,
                                 qstudent.name.as("studentName"),
@@ -179,7 +179,7 @@ public class CompanyService {
         log.info("maxpage:{}",maxpage);
 
         //url 위치 붙여주기
-        List<CompanyStdGalleryVo> list = StudentEntity.stream().map(item -> CompanyStdGalleryVo.builder()
+        List<CompanyStdlistVo> list = StudentEntity.stream().map(item -> CompanyStdlistVo.builder()
                         .img("/img/student/" + item.getIstudent() + "/" + item.getImg())
                         .introducedLine(item.getIntroducedLine())
                         .istudent(item.getIstudent())
@@ -189,7 +189,7 @@ public class CompanyService {
                         .endedAt(item.getEndedAt()).build())
                 .toList();
 
-        return CompanyStdGalleryRes.builder().page(utils).maxpage(maxpage).totalcount(totalcount).vo(list).build();
+        return CompanyStdlistRes.builder().page(utils).maxpage(maxpage).totalcount(totalcount).vo(list).build();
 
     }
 

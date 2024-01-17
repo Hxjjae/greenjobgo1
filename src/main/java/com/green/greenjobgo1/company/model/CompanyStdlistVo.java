@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanyStdGalleryVo {
+public class CompanyStdlistVo {
 
     private String introducedLine;
     private Long istudent;
