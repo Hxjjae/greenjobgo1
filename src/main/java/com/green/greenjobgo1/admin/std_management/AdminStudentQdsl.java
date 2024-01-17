@@ -120,7 +120,7 @@ public class AdminStudentQdsl {
                 .select(file.file.count())
                 .from(file)
                 .join(file.studentEntity, stu)
-                .where(stu.istudent.eq(istudent), file.fileCategoryEntity.iFileCategory.in(1, 2, 3));
+                .where(stu.istudent.eq(istudent), file.fileCategoryEntity.iFileCategory.in(2, 3));
         return query.fetchOne();
     }
 
