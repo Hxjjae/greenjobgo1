@@ -203,23 +203,28 @@ public class AdminStudentQdsl {
         return query.fetch();
     }
 
-    public List<AdminStudentSubjectCategoryListRes> subjectCategoryList(AdminStudentCategoryDto dto) {
+    public List<AdminStudentSubjectCategoryListRes> subjectCategoryList(AdminStudentCategoryDto dto, Pageable pageable) {
         JPAQuery<AdminStudentSubjectCategoryListRes> query = jpaQueryFactory.select(Projections.bean(
-                                AdminStudentSubjectCategoryListRes.class,cos.icourseSubject, cos.subjectName, cos.round, cos.startedAt, cos.endedAt))
+                        AdminStudentSubjectCategoryListRes.class,cos.icourseSubject, cos.subjectName, cos.round, cos.startedAt, cos.endedAt))
                 .from(cos)
                 .leftJoin(cos.categorySubjectEntity, cas)
-                .where(eqIclassification(dto.getIclassfication()));
+                .where(eqIclassification(dto.getIclassfication()),
+                        eqIcourseSubject(dto.getIcourseSubject()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(cos.icourseSubject.desc());
         return query.fetch();
     }
 
-    public List<AdminStudentMainCategoryListRes> mainCategoryList(AdminStudentCategoryDto dto) {
-        JPAQuery<AdminStudentMainCategoryListRes> query = jpaQueryFactory.select(
-                        Projections.bean(AdminStudentMainCategoryListRes.class,
-                                cas.iclassification, cas.classification))
-                .from(cas)
-                .where(eqIclassification(dto.getIclassfication()))
-                .orderBy(cas.iclassification.asc());
-        return query.fetch();
+    public Long subjectCategoryCount(AdminStudentCategoryDto dto) {
+        JPAQuery<Long> query = jpaQueryFactory
+                .select(cos.icourseSubject.count())
+                .from(cos)
+                .join(cos.categorySubjectEntity, cas)
+                .where(eqIclassification(dto.getIclassfication()),
+                        eqIcourseSubject(dto.getIcourseSubject()));
+        return query.fetchOne();
+
     }
 
 

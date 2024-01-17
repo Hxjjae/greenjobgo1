@@ -629,13 +629,14 @@ public class AdminStudentService {
     }
 
     public AdminStudentSubjectCategoryRes selSubjectCategoryList(AdminStudentCategoryDto dto,Pageable pageable) {
-        long maxPage = adminStudentQdsl.storageIdx(dto);
+        long maxPage = adminStudentQdsl.subjectCategoryCount(dto);
         PagingUtils utils = new PagingUtils(pageable.getPageNumber() + 1, (int) maxPage, pageable);
         utils.setIdx((int) maxPage);
 
         List<AdminStudentSubjectCategoryListRes> adminStudentSubjectCategoryRes = adminStudentQdsl.subjectCategoryList(dto, pageable);
 
         return AdminStudentSubjectCategoryRes.builder()
+                .page(utils)
                 .subject(adminStudentSubjectCategoryRes)
                 .build();
     }
