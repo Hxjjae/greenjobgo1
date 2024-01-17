@@ -268,7 +268,7 @@ public class CompanyService {
                 .where(qstudent.istudent.eq(istudent)).fetch();
 
         List<CompanyStdfileImgVo> thumbnail = jpaQueryFactory.select(Projections.bean(CompanyStdfileImgVo.class,
-                        qfileEntity.file,qfileEntity.oneWord
+                        qfileEntity.file
                 )).from(qfileEntity)
                 .innerJoin(qfileEntity)
                 .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
@@ -277,7 +277,7 @@ public class CompanyService {
                 .fetch();
 
         List<CompanyStdfileImgVo> aboutMe = jpaQueryFactory.select(Projections.bean(CompanyStdfileImgVo.class,
-                        qfileEntity.file,qfileEntity.oneWord
+                        qfileEntity.file
                 )).from(qfileEntity)
                 .innerJoin(qfileEntity)
                 .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
@@ -322,12 +322,12 @@ public class CompanyService {
 
         //url 붙여주기
         CompanyStdfileRes build1 = CompanyStdfileRes.builder()
-                .thumbnail((thumbnail.stream().map(item-> CompanyStdfileImgVo.builder()
+                .thumbnail((thumbnail.stream().map(item-> CompanythumbnailVo.builder()
                         .file("/img/student/" + student.getIstudent() + "/"+item.getFile())
-                        .oneWord(item.getOneWord()).build()).toList()))
-                .aboutMe((aboutMe.stream().map(item-> CompanyStdfileImgVo.builder()
+                        .build()).toList()))
+                .aboutMe((aboutMe.stream().map(item-> CompanythumbnailVo.builder()
                         .file("/img/student/" + student.getIstudent() + "/"+item.getFile())
-                        .oneWord(item.getOneWord()).build()).toList()))
+                        .build()).toList()))
                 .portfolio((portfolio.stream().map(item-> CompanystdportfolioVo.builder()
                                 .file("/img/student/" + student.getIstudent() + "/"+item.getFile())
                                 .oneWord(item.getOneWord()).mainYn(item.getMainYn()).build()).toList()))
