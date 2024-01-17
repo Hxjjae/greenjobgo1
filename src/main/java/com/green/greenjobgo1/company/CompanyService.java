@@ -322,9 +322,10 @@ public class CompanyService {
 
         //url 붙여주기
         CompanyStdfileRes build1 = CompanyStdfileRes.builder()
-                .thumbnail((thumbnail.stream().map(item-> CompanythumbnailVo.builder().file(item.getFile()).build()).toList()))
-                .aboutMe((aboutMe.stream().map(item-> CompanythumbnailVo.builder().file(item.getFile()).build()).toList()))
-                .portfolio((portfolio.stream().map(item-> CompanystdportfolioVo.builder().file(item.getFile())
+                .thumbnail(CompanythumbnailVo.builder().file(thumbnail.get(0).getFile()).build())
+                .aboutMe(CompanythumbnailVo.builder().file(aboutMe.get(0).getFile()).build())
+                .portfolio((portfolio.stream().map(item-> CompanystdportfolioVo.builder()
+                                .file(item.getFile())
                                 .oneWord(item.getOneWord()).mainYn(item.getMainYn()).build()).toList()))
                 .fileLink(fileLink.stream().map(item-> CompanyStdfileImgVo.builder()
                                 .file(item.getFile())

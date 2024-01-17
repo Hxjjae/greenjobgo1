@@ -12,8 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompanyStdfileRes {
-    private List<CompanythumbnailVo> thumbnail;
-    private List<CompanythumbnailVo> aboutMe;
+    private CompanythumbnailVo thumbnail;
+    private CompanythumbnailVo aboutMe;
     private List<CompanystdportfolioVo> portfolio;
     private List<CompanyStdfileImgVo> fileLink;
 
