@@ -137,9 +137,14 @@ public class EmployeeProfileService {
         //저장된 파일 삭제
         String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
         String centerPath = String.format("%s/employee/%d", MyFileUtils.getAbsolutePath(fileDir), iemply);
-        File file = new File(centerPath);
+        File file = new File(centerPath+"/"+entity.getProfilePic());
         log.info("file :{}",file);
         file.delete();
+
+
+        //빈 폴더 삭제
+        File emptyDirectoryFile = new File(centerPath);
+        emptyDirectoryFile.delete();
 
         // delYn으로 삭제처리
         entity.setDelYn(1);

@@ -2,6 +2,7 @@ package com.green.greenjobgo1.admin.sign;
 
 import com.green.greenjobgo1.admin.sign.model.AdminParam;
 import com.green.greenjobgo1.admin.sign.model.AdminSigInParam;
+import com.green.greenjobgo1.admin.sign.model.AdminSignInResultDto;
 import com.green.greenjobgo1.common.entity.AdminEntity;
 import com.green.greenjobgo1.common.security.CommonRes;
 import com.green.greenjobgo1.common.security.sign.model.SignInResultDto;
@@ -42,13 +43,16 @@ public class AdminSignController {
     @PostMapping("/sign-in")
     @Operation(summary = "로그인", description = """
             "id": 아이디<br>
-            "pw": 비밀번호
+            "pw": 비밀번호<br>
+            <예외처리> <br>
+            이메일 오류: code:422, "code": "EMAIL_NULL","message": "존재하지 않는 이메일입니다.<br>"
+            비밀번호 오류 :code:422, "code": "PASSWORD_FAILED","message": "비밀번호 불일치"
             """)
-    public SignInResultDto signIn(HttpServletRequest req, @RequestBody AdminSigInParam p) {
+    public AdminSignInResultDto signIn(HttpServletRequest req, @RequestBody AdminSigInParam p) {
         String ip = req.getRemoteAddr();
         log.info("[signIn] 로그인을 시도하고 있습니다. email: {}, pw: {}, ip: {}", p.getId(), p.getPw(), ip);
 
-        SignInResultDto dto = service.signIn(p, ip);
+        AdminSignInResultDto dto = service.signIn(p, ip);
         if (dto.getCode() == CommonRes.SUCCESS.getCode()) {
             log.info("[signIn] 정상적으로 로그인 되었습니다. email: {}, token: {}", p.getId(), dto.getAccessToken());
         }

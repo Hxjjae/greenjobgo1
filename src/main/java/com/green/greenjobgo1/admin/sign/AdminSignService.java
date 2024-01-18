@@ -4,6 +4,7 @@ import ch.qos.logback.core.spi.ErrorCodes;
 import com.green.greenjobgo1.admin.AdminRepository;
 import com.green.greenjobgo1.admin.sign.model.AdminParam;
 import com.green.greenjobgo1.admin.sign.model.AdminSigInParam;
+import com.green.greenjobgo1.admin.sign.model.AdminSignInResultDto;
 import com.green.greenjobgo1.admin.sign.model.StudentExcel;
 import com.green.greenjobgo1.common.entity.*;
 import com.green.greenjobgo1.common.security.config.exception.*;
@@ -35,6 +36,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.IntStream;
 
 @Slf4j
@@ -335,7 +337,7 @@ public class AdminSignService {
     public  int generateGenderCode(LocalDate birth, String gender) {
         int genderCode;
 
-        // 1999년 이전 여자: 2, 남자: 1
+        // 2000년 이전 여자: 2, 남자: 1
         // 2000년 이후 여자: 3, 남자: 4
         LocalDate comparisonDate = LocalDate.of(2000, 1, 1);
         if (birth.isBefore(comparisonDate)) {
@@ -358,15 +360,17 @@ public class AdminSignService {
         }
         return null;
     }
-    public SignInResultDto signIn(AdminSigInParam p, String ip) {
+    public AdminSignInResultDto signIn(AdminSigInParam p, String ip) {
         final String ADMIN = "ROLE_ADMIN";
         AdminEntity adminEntity = AdminRep.findById(p.getId());
 
         if (adminEntity == null) {
-            throw new RuntimeException("존재하지 않는 이메일");
+            throw new RestApiException(CommonErrorCode.EMAIL_NULL,"존재하지 않는 이메일");
+            //throw new RuntimeException("존재하지 않는 이메일");
         }
         if (!PW_ENCODER.matches(p.getPw(), adminEntity.getPw())) {
-            throw new RuntimeException("비밀번호 불일치");
+            throw new RestApiException(CommonErrorCode.PASSWORD_FAILED,"비밀번호 불일치");
+            //throw new RuntimeException("비밀번호 불일치");
         }
 
         String redisKey = String.format("c:RT(%s):ADMIN:%s:%s", "Server", adminEntity.getIadmin(), ip);
@@ -381,7 +385,7 @@ public class AdminSignService {
         Long accessTokenTime = JWT_PROVIDER.ACCESS_TOKEN_VALID_MS;
         redisService.setValues(redisKey, refreshToken);
 
-        SignInResultDto dto = SignInResultDto.builder()
+        AdminSignInResultDto dto = AdminSignInResultDto.builder()
                 .accessToken(accessToken)
                 .accessTokenTime(accessTokenTime)
                 .refreshToken(refreshToken)

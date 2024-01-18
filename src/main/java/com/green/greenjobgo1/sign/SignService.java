@@ -81,6 +81,7 @@ public class SignService {
                 .refreshToken(refreshToken)
                 .role(user.getRole())
                 .id(p.getEmail())
+                .editableYn(user.getEditableYn())
                 .build();
 
 

@@ -708,9 +708,13 @@ public class AdminStudentService {
                 }
 
             }
-//            String format = String.format("%s/student/%d", MyFileUtils.getAbsolutePath(fileDir), studentEntity.getIstudent());
-//            File fileToDelete = new File(format);
-//            fileToDelete.delete();
+
+
+            // 빈폴더 삭제
+            String format = String.format("%s/student/%d", MyFileUtils.getAbsolutePath(fileDir), studentEntity.getIstudent());
+            log.info("format:{}",format);
+            File emptyDirectoryFile = new File(format);
+            emptyDirectoryFile.delete();
 
 
             //학생 수강과목 삭제
