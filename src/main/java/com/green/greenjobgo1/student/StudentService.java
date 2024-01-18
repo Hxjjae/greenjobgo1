@@ -45,7 +45,6 @@ public class StudentService {
     private String FILE_DIR;
 
 
-
     @Transactional
     public StudentInsTotalRes insFile(MultipartFile file, StudentInsDto dto) {
         Optional<FileCategoryEntity> fileCateId = FILE_CATE_REP.findById(dto.getIFileCategory());
@@ -86,8 +85,8 @@ public class StudentService {
             FileEntity result = FILE_REP.save(entity);
 
 
-            String centerPath = String.format("%s/student/%d", MyFileUtils.getAbsolutePath(FILE_DIR), entity.getStudentEntity().getIstudent() );
-            String savedFilePath = String.format("%s/%s",centerPath, savedFileNm);
+            String centerPath = String.format("%s/student/%d", MyFileUtils.getAbsolutePath(FILE_DIR), entity.getStudentEntity().getIstudent());
+            String savedFilePath = String.format("%s/%s", centerPath, savedFileNm);
             File fileTargetDir = new File(centerPath);
 
             if (!fileTargetDir.exists()) {
@@ -100,65 +99,67 @@ public class StudentService {
 
             if (iFileCategory == 1 || iFileCategory == 4) {
                 File fileTarget = new File(String.format("%s/%s", centerPath, savedFileNm));
-                try {
-                    file.transferTo(fileTarget);
-                } catch (IOException e) {
-                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED,"파일을 업로드 할 수 없습니다.");
-                }
-            } else if (iFileCategory == 2) {
-                try {
+                if (iFileCategory == 1) {
+                    Long resumeCount = studentQdsl.countByResume(studentSave.getIstudent());
 
-                    InputStream inputStream = file.getInputStream();
-                    PdfReader pdfReader = new PdfReader(inputStream);
-
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-                    PdfStamper pdfStamper = new PdfStamper(pdfReader, outputStream);
-                    pdfStamper.setEncryption(null, null, 0, PdfWriter.ENCRYPTION_AES_128);
-
-                    pdfStamper.close();
-
-                    // PDF 파일로 저장
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(savedFilePath)) {
-                        fileOutputStream.write(outputStream.toByteArray());
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    if (resumeCount > 1) {
+                        throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "한 수강생당 이력서는 1개까지만 올릴 수 있습니다.");
+                    } else {
+                        try {
+                            file.transferTo(fileTarget);
+                        } catch (IOException e) {
+                            throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "파일을 업로드 할 수 없습니다.");
+                        }
                     }
-                } catch (IOException e) {
-                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED,"파일을 업로드 할 수 없습니다.");
-                } catch (DocumentException e) {
-                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED,"파일을 업로드 할 수 없습니다.");
+                } else {
+                    Long thumbnailCount = studentQdsl.countByThumbnail(studentSave.getIstudent());
+                    if (thumbnailCount > 1) {
+                        throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "한 수강생당 포트폴리오 대표 이미지는 1개만 올릴 수 있습니다.");
+                    } else {
+                        try {
+                            file.transferTo(fileTarget);
+                        } catch (IOException e) {
+                            throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "파일을 업로드 할 수 없습니다.");
+                        }
+                    }
                 }
-            } else if (iFileCategory == 3) {
-                savedFileNm = (dto.getFileLink() != null) ? dto.getFileLink() : null;
-            }
-            if (iFileCategory == 1) {
-                Long resumeCount = studentQdsl.countByResume(studentSave.getIstudent());
 
-                if (resumeCount > 1) {
-                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED,"한 수강생당 이력서는 1개까지만 올릴 수 있습니다.");
-                }
-            }
-
-            if (iFileCategory == 2) {
+            } else if (iFileCategory == 2) {
                 Long fileCount = studentQdsl.countByFile(studentSave.getIstudent());
 
                 if (fileCount > 5) {
-                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED,"한 수강생당 파일은 5개까지만 올릴 수 있습니다.");
-                }
-            }
+                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "한 수강생당 파일은 5개까지만 올릴 수 있습니다.");
+                } else {
+                    try {
 
-            if (iFileCategory == 3) {
+                        InputStream inputStream = file.getInputStream();
+                        PdfReader pdfReader = new PdfReader(inputStream);
+
+                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+                        PdfStamper pdfStamper = new PdfStamper(pdfReader, outputStream);
+                        pdfStamper.setEncryption(null, null, 0, PdfWriter.ENCRYPTION_AES_128);
+
+                        pdfStamper.close();
+
+                        // PDF 파일로 저장
+                        try (FileOutputStream fileOutputStream = new FileOutputStream(savedFilePath)) {
+                            fileOutputStream.write(outputStream.toByteArray());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } catch (IOException e) {
+                        throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "파일을 업로드 할 수 없습니다.");
+                    } catch (DocumentException e) {
+                        throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "파일을 업로드 할 수 없습니다.");
+                    }
+                }
+            } else if (iFileCategory == 3) {
                 Long fileLinkCount = studentQdsl.countByFileLink(studentSave.getIstudent());
                 if (fileLinkCount > 5) {
-                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED,"한 수강생당 파일링크는 5개까지만 올릴 수 있습니다.");
-                }
-            }
-
-            if (iFileCategory == 4) {
-                Long thumbnailCount = studentQdsl.countByThumbnail(studentSave.getIstudent());
-                if (thumbnailCount > 1) {
-                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "한 수강생당 포트폴리오 대표 이미지는 1개만 올릴 수 있습니다.");
+                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "한 수강생당 파일링크는 5개까지만 올릴 수 있습니다.");
+                } else {
+                    savedFileNm = (dto.getFileLink() != null) ? dto.getFileLink() : null;
                 }
             }
 
@@ -194,20 +195,20 @@ public class StudentService {
 
             if (fileToDelete.exists()) {
                 if (!fileToDelete.delete()) {
-                    throw new RestApiException(CommonErrorCode.DELETE_FAILED,"파일을 저장한 곳에서 삭제할 수 없습니다.");
+                    throw new RestApiException(CommonErrorCode.DELETE_FAILED, "파일을 저장한 곳에서 삭제할 수 없습니다.");
                 }
             }
 
             try {
                 FILE_REP.delete(fileEntity);
             } catch (Exception e) {
-                throw new RestApiException(CommonErrorCode.DELETE_FAILED,"데이터베이스에서 파일 엔터티를 삭제할 수 없습니다.");
+                throw new RestApiException(CommonErrorCode.DELETE_FAILED, "데이터베이스에서 파일 엔터티를 삭제할 수 없습니다.");
             }
             return StudentDelRes.builder()
                     .ifile(fileEntity.getIfile())
                     .build();
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND,"ID에 해당하는 파일이 존재하지 않습니다: " + dto.getIfile());
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "ID에 해당하는 파일이 존재하지 않습니다: " + dto.getIfile());
         }
     }
 
