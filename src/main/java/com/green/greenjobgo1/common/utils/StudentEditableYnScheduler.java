@@ -21,11 +21,16 @@ public class StudentEditableYnScheduler {
     @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
     public void updateEditableYn() {
         // endedAt이 현재 날짜보다 이전인 학생들
-        List<StudentEntity> studentsToUpdate = STU_REP.findByEndedAtBefore(LocalDate.now());
+        LocalDate currentDate = LocalDate.now();
+        List<StudentEntity> studentsToUpdateEndedAt = STU_REP.findByEndedAtBefore(currentDate);
+        List<StudentEntity> studentsToUpdateStartedAt = STU_REP.findByStartedAtAfter(currentDate);
 
+        // 조회된 학생들의 editableYn을 1로 설정
+        studentsToUpdateStartedAt.forEach(student ->  student.setEditableYn(1));
         // 조회된 학생들의 editableYn을 0으로 설정
-        studentsToUpdate.forEach(student -> student.setEditableYn(0));
+        studentsToUpdateEndedAt.forEach(student -> student.setEditableYn(0));
 
-        STU_REP.saveAll(studentsToUpdate);
+        STU_REP.saveAll(studentsToUpdateStartedAt);
+        STU_REP.saveAll(studentsToUpdateEndedAt);
     }
 }

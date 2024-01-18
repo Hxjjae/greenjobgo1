@@ -16,4 +16,6 @@ public interface StudentRepository extends JpaRepository<StudentEntity,Long> {
     List<StudentEntity> findByStartedAtBeforeAndEndedAtAfterAndEditableYn(LocalDate currentDate, LocalDate currentDate1, int i);
 
     List<StudentEntity> findByEndedAtBefore(LocalDate now);
+
+    List<StudentEntity> findByStartedAtAfter(LocalDate now);
 }
