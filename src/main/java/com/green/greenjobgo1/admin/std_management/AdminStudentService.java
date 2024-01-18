@@ -393,7 +393,7 @@ public class AdminStudentService {
             studentEntity.setEndedAt(dto.getEndedAt());
 
             LocalDate currentDate = LocalDate.now();
-            if (currentDate.isAfter(studentEntity.getStartedAt()) && currentDate.isBefore(studentEntity.getEndedAt())) {
+            if (currentDate.isAfter(studentEntity.getStartedAt().minusDays(1)) && currentDate.isBefore(studentEntity.getEndedAt())) {
                 studentEntity.setEditableYn(1);
             } else {
                 studentEntity.setEditableYn(0);
