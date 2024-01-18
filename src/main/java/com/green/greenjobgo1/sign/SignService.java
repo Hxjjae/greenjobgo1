@@ -1,7 +1,10 @@
 package com.green.greenjobgo1.sign;
 
+import com.green.greenjobgo1.common.entity.QFileEntity;
+import com.green.greenjobgo1.common.entity.QStudentEntity;
 import com.green.greenjobgo1.common.security.config.exception.CommonErrorCode;
 import com.green.greenjobgo1.common.security.config.exception.RestApiException;
+import com.green.greenjobgo1.repository.FileRepository;
 import com.green.greenjobgo1.sign.model.CompanySignInParam;
 import com.green.greenjobgo1.common.entity.CompanyEntity;
 import com.green.greenjobgo1.repository.CompanyRepository;
@@ -14,6 +17,8 @@ import com.green.greenjobgo1.repository.StudentRepository;
 import com.green.greenjobgo1.common.security.config.RedisService;
 import com.green.greenjobgo1.common.security.config.security.JwtTokenProvider;
 import com.green.greenjobgo1.common.security.sign.model.SignInResultDto;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +42,11 @@ public class SignService {
     private final CompanyRepository companyRep;
     private final AuthenticationFacade facade;
     private final RedisService redisService;
+    private final JPAQueryFactory jpaQueryFactory;
+
+    QFileEntity file = QFileEntity.fileEntity;
+    QStudentEntity stu = QStudentEntity.studentEntity;
+
     public SignInResultDto signIn(SignInParam p, String ip) {
         log.info("[getSignInResult] signDataHandler로 회원 정보 요청");
         StudentEntity user = studentRepository.findById(p.getEmail());
@@ -76,6 +86,15 @@ public class SignService {
 
         redisService.setValues(redisKey, refreshToken);
 
+        //파일 개수 찾기
+
+        long count = jpaQueryFactory.select(file.file.count())
+                .from(file)
+                .join(file.studentEntity, stu)
+                .where(stu.istudent.eq(user.getIstudent()),
+                        file.fileCategoryEntity.iFileCategory.in(1,2, 3)).fetchOne();
+
+
         log.info("[getSignInResult] SignInResultDto 객체 생성");
         SignInResultDto dto = SignInResultDto.builder()
                 .accessToken(accessToken)
@@ -84,6 +103,7 @@ public class SignService {
                 .role(user.getRole())
                 .id(p.getEmail())
                 .editableYn(user.getEditableYn())
+                .portfolioYn((count > 1) ? 1 : 0)
                 .build();
 
 

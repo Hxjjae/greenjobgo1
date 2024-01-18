@@ -14,4 +14,5 @@ public class SignInResultDto extends SignUpResultDto {
     private String role;
     private String id;
     private int editableYn;
+    private int portfolioYn;
 }

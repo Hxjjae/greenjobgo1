@@ -99,10 +99,12 @@ public class AdminSignService {
             //생년월일 생성
             
             // 생년월일 앞자리와 전화번호 뒷자리를 조합하여 비밀번호 생성
-            String pwfirst = birthday.substring(0, 6);
+            String pwfirst = user.getBirthday().substring(0, 6);
             String phone = user.getPhone();
             String pwsecond = phone.substring(9, 13);
-
+            log.info("패스워드확인:{}",pwfirst);
+            log.info("패스워드확인:{}",pwsecond);
+            log.info("패스워드확인:{}",pwfirst+pwsecond);
             CourseSubjectEntity subjectentity = subjectRep.findBySubjectNameAndRound(user.getSubjectName(), Integer.parseInt(user.getRound()));
 
             if (subjectentity == null) {
