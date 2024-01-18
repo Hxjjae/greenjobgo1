@@ -199,7 +199,10 @@ public class AdminStudentQdsl {
                 .from(cos)
                 .join(cos.scsList, scs)
                 .join(scs.studentEntity, stu)
-                .where(stu.editableYn.eq(1),stu.startedAt.isNotNull(),stu.endedAt.isNotNull());
+                .where(stu.editableYn.eq(1)
+                        ,stu.startedAt.isNotNull()
+                        ,stu.endedAt.isNotNull())
+                .orderBy(stu.endedAt.asc());
         return query.fetch();
     }
 
