@@ -88,8 +88,10 @@ public class AdminStudentService {
             entity.setFile(savedFileNm);
             FileEntity result = FILE_REP.save(entity);
 
-            String targetDir = String.format("%s/student/%d", FILE_DIR, entity.getStudentEntity().getIstudent());
-            File fileTargetDir = new File(targetDir);
+
+            String centerPath = String.format("%s/student/%d", MyFileUtils.getAbsolutePath(FILE_DIR), entity.getStudentEntity().getIstudent());
+            String savedFilePath = String.format("%s/%s",centerPath, savedFileNm);
+            File fileTargetDir = new File(centerPath);
 
             if (!fileTargetDir.exists()) {
                 if (!fileTargetDir.mkdirs()) {
@@ -100,7 +102,7 @@ public class AdminStudentService {
             }
 
             if (iFileCategory == 1 || iFileCategory == 4) {
-                File fileTarget = new File(String.format("%s/%s", targetDir, savedFileNm));
+                File fileTarget = new File(String.format("%s/%s", centerPath, savedFileNm));
                 try {
                     file.transferTo(fileTarget);
                 } catch (IOException e) {
@@ -108,30 +110,16 @@ public class AdminStudentService {
                 }
             } else if (iFileCategory == 2) {
                 try {
-                    String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
-                    String centerPath = String.format("%s/student/%d", MyFileUtils.getAbsolutePath(fileDir), entity.getStudentEntity().getIstudent() );
-                    String originFileName = file.getOriginalFilename();
-                    String savedFileName = MyFileUtils.makeRandomFileNm(originFileName);
-                    String savedFilePath = String.format("%s/%s",centerPath, savedFileName);
-
-                    //MultipartFile 타입의 pic을 -> pdf 파일로 변환 해서 -> pdf파일에 대한 권한을 제한한다.
-                    // MultipartFile pic 을 PDF를 읽어오기
                     InputStream inputStream = file.getInputStream();
                     PdfReader pdfReader = new PdfReader(inputStream);
 
-                    // 읽기 전용으로 만들기 위한 객체 생성
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
                     PdfStamper pdfStamper = new PdfStamper(pdfReader, outputStream);
-                    // 모든 권한 제거하기 null은 사용자한테 비밀번호를 받지 않겠다는 뜻, 여기서 0은 모든 권한을 비활성화(제한)하겠다는 뜻
                     pdfStamper.setEncryption(null, null, 0, PdfWriter.ENCRYPTION_AES_128);
-                    //인쇄만 가능하도록 제한하기 PdfWriter.ALLOW_PRINTING을 주면 인쇄만 가능
-//        pdfStamper.setEncryption(null, "read-only-password".getBytes(),
-//                PdfWriter.ALLOW_PRINTING, PdfWriter.ENCRYPTION_AES_128);
 
                     pdfStamper.close();
 
-                    // PDF 파일로 저장
                     try (FileOutputStream fileOutputStream = new FileOutputStream(savedFilePath)) {
                         fileOutputStream.write(outputStream.toByteArray());
                     } catch (Exception e) {
