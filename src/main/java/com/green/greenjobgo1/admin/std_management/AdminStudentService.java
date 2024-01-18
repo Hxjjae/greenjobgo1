@@ -701,12 +701,27 @@ public class AdminStudentService {
             StudentEntity studentEntity = STU_REP.findById(student).get();
             //학생 포트폴리오삭제
             List<FileEntity> allByStudentEntity = FILE_REP.findAllByStudentEntity(studentEntity);
-            for (FileEntity file:allByStudentEntity) {
-                FILE_REP.delete(file);
+            for (FileEntity fileEntity:allByStudentEntity) {
+                String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
+                log.info("file:{}",fileEntity.getFile());
+                String targetDir = String.format("%s/student/%d", MyFileUtils.getAbsolutePath(fileDir), fileEntity.getStudentEntity().getIstudent());
+                log.info("targetDir:{}",targetDir);
+                File fileToDelete = new File(String.format("%s/%s", targetDir, fileEntity.getFile()));
+                log.info("fileToDelete:{}",fileToDelete);
+                FILE_REP.delete(fileEntity);
+
+                fileToDelete.delete();
+
+                if (fileToDelete.exists()) {
+                    if (!fileToDelete.delete()) {
+                        throw new RestApiException(CommonErrorCode.DELETE_FAILED,"파일을 저장한 곳에서 삭제할 수 없습니다.");
+                    }
+                }
+
             }
             //학생 수강과목 삭제
             List<StudentCourseSubjectEntity> StudentEntity = SCS_REP.findByStudentEntity(studentEntity);
-            for (StudentCourseSubjectEntity subject:StudentEntity    ) {
+            for (StudentCourseSubjectEntity subject:StudentEntity) {
                 SCS_REP.delete(subject);
             }
 

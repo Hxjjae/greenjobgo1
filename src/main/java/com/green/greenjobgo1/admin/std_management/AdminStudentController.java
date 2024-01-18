@@ -277,8 +277,20 @@ public class AdminStudentController {
         return SERVICE.delStudentList(dto);
     }
 
-    @GetMapping("/student/oneyearago")
-    @Operation(summary = "1년이 지난 학생 조회")
+    @GetMapping("/oneyearago")
+    @Operation(summary = "1년이 지난 학생 조회",
+            description = "classification: 대분류<br>"+
+                    "subjectName: 수강과목 <br>"+
+                    "round: 기수(회차)<br>"+
+                    "startedAt: 과정 시작날짜 <br>"+
+                    "endedAt: 과정 종료날짜<br>"+
+                    "istudent: 학생pk번호<br>"+
+                    "studentName: 학생이름<br>"+
+                    "gender: 성별<br>"+
+                    "portfolio: 포트폴리오 개수<br>"+
+                    "storageYn: 저장된 포트폴리오 (보관함) 유무 1이면 보관함<br>"+
+                    "studentName: <br>"
+    )
     public AdminStudentOneYearRes getOneYearStudent(@ParameterObject @PageableDefault(page = 1)
                                                     @SortDefault(sort = "istudent", direction = Sort.Direction.ASC) Pageable pageable,
                                                     @RequestParam(required = false) Long iclassification,
@@ -287,7 +299,7 @@ public class AdminStudentController {
         return SERVICE.getStudentOneYear(pageable, iclassification, subjectName, studentName);
     }
 
-    @DeleteMapping("/student/oneyearago")
+    @DeleteMapping("/oneyearago")
     @Operation(summary = "1년이 지난 학생 삭제")
     public int delStudentOneYear(@RequestParam List<Long> istudent) {
         return SERVICE.delStudentOneYear(istudent);
