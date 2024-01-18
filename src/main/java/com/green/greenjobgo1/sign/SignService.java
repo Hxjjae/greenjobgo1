@@ -1,5 +1,7 @@
 package com.green.greenjobgo1.sign;
 
+import com.green.greenjobgo1.common.security.config.exception.CommonErrorCode;
+import com.green.greenjobgo1.common.security.config.exception.RestApiException;
 import com.green.greenjobgo1.sign.model.CompanySignInParam;
 import com.green.greenjobgo1.common.entity.CompanyEntity;
 import com.green.greenjobgo1.repository.CompanyRepository;
@@ -95,14 +97,17 @@ public class SignService {
 
         log.info("Icompany :{}",companyentity.getIcompany());
         if (companyentity == null) {
-            throw new RuntimeException("존재하지 않는 아이디");
+            throw new RestApiException(CommonErrorCode.ID_NULL,"존재하지 않는 아이디");
+            //throw new RuntimeException("존재하지 않는 아이디");
         }
         if(!PW_ENCODER.matches(p.getPw(), companyentity.getPassword())) {
-            throw new RuntimeException("비밀번호 불일치");
+            throw new RestApiException(CommonErrorCode.PASSWORD_FAILED,"비밀번호 불일치");
+            //throw new RuntimeException("비밀번호 불일치");
         }
         LocalDate currentTime = LocalDate.now();
         if(currentTime.isBefore(companyentity.getStartedAt()) && !currentTime.isAfter(companyentity.getEndedAt())) {
-            throw new RuntimeException("조회기간 만료");
+            throw new RestApiException(CommonErrorCode.EXPIRE_LOGIN,"조회기간 만료");
+            //throw new RuntimeException("조회기간 만료");
         }
 
         String redisKey = String.format("c:RT(%s):COMPANY:%s:%s", "Server", companyentity.getIcompany(), ip);
