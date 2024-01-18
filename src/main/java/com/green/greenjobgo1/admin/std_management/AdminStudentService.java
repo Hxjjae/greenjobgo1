@@ -682,6 +682,7 @@ public class AdminStudentService {
     }
     @Transactional
     public int delStudentOneYear(List<Long>istudent){
+        String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
 
         //포트폴리오 삭제
         for (Long student:istudent) {
@@ -690,7 +691,7 @@ public class AdminStudentService {
             //학생 포트폴리오삭제
             List<FileEntity> allByStudentEntity = FILE_REP.findAllByStudentEntity(studentEntity);
             for (FileEntity fileEntity:allByStudentEntity) {
-                String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
+
                 log.info("file:{}",fileEntity.getFile());
                 String targetDir = String.format("%s/student/%d", MyFileUtils.getAbsolutePath(fileDir), fileEntity.getStudentEntity().getIstudent());
                 log.info("targetDir:{}",targetDir);
@@ -707,6 +708,11 @@ public class AdminStudentService {
                 }
 
             }
+//            String format = String.format("%s/student/%d", MyFileUtils.getAbsolutePath(fileDir), studentEntity.getIstudent());
+//            File fileToDelete = new File(format);
+//            fileToDelete.delete();
+
+
             //학생 수강과목 삭제
             List<StudentCourseSubjectEntity> StudentEntity = SCS_REP.findByStudentEntity(studentEntity);
             for (StudentCourseSubjectEntity subject:StudentEntity) {
@@ -718,7 +724,6 @@ public class AdminStudentService {
             log.info("studentEntity:{}",studentEntity.getId());
 
         }
-
         return 1;
 
     }
