@@ -3,6 +3,8 @@ package com.green.greenjobgo1.student;
 import com.green.greenjobgo1.admin.std_management.model.AdminStudentPortfolioMainDto;
 import com.green.greenjobgo1.admin.std_management.model.AdminStudentPortfolioMainRes;
 import com.green.greenjobgo1.common.entity.StudentEntity;
+import com.green.greenjobgo1.common.security.config.security.AuthenticationFacade;
+import com.green.greenjobgo1.common.security.config.security.model.MyUserDetails;
 import com.green.greenjobgo1.repository.StudentRepository;
 import com.green.greenjobgo1.student.model.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,13 +32,22 @@ public class StudentController {
 
     private final StudentService SERVICE;
     private final StudentRepository STU_REP;
+    private final AuthenticationFacade USERPK;
+
 
     @GetMapping
     @Operation(summary = "수강생 기본정보 보기")
-    public ResponseEntity<StudentSelTotalRes> getStudent(@RequestParam Long istudent) {
+
+    public ResponseEntity<StudentSelTotalRes> getStudent() {
+        MyUserDetails loginUser = USERPK.getLoginUser();
+        Optional<StudentEntity> stdId = STU_REP.findById(loginUser.getIuser());
+        if (stdId.get().getEditableYn() == 1) {
             StudentSelDto dto = new StudentSelDto();
-            dto.setIstudent(istudent);
+            dto.setIstudent(loginUser.getIuser());
             return ResponseEntity.ok(SERVICE.selStudent(dto));
+        } else {
+            throw new RuntimeException("editableYn이 비활성화 되어있습니다.");
+        }
     }
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, path = "/file")

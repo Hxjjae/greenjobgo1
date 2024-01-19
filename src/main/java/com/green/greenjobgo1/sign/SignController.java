@@ -22,7 +22,9 @@ public class SignController {
     @PostMapping("/sign-in")
     @Operation(summary = "로그인", description = """
             "email(id)": 이메일(기업id: greendg100)<br>
-            "pw": 비밀번호(기업pw green1234)
+            "pw": 비밀번호(기업pw green1234)<br>
+            "editableYn: 편집가능유무 1이면 편집가능" <br>
+            "portfolioYn: 포트폴리오가 있으면 1" <br>
             """)
     public SignInResultDto signIn(HttpServletRequest req, @RequestBody SignInParam p) {
         String ip = req.getRemoteAddr();

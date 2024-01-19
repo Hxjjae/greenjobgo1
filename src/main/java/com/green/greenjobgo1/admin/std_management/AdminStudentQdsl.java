@@ -379,7 +379,7 @@ public class AdminStudentQdsl {
                 .on(cos.icourseSubject.eq(scs.courseSubjectEntity.icourseSubject))
                 .innerJoin(cas)
                 .on(cas.iclassification.eq(cos.categorySubjectEntity.iclassification))
-                .where(eqIcourseSubject(iclassification))
+                .where(eqIclassification(iclassification))
                 .where(eqSubjectName(subjectName))
                 .where(eqStudentName(studentName))
                 .where(cos.endedAt.before(oneYearAgo))
