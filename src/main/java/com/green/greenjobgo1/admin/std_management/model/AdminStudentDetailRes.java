@@ -1,6 +1,8 @@
 package com.green.greenjobgo1.admin.std_management.model;
 
 import com.green.greenjobgo1.common.entity.CertificateEntity;
+import com.green.greenjobgo1.student.model.StudentCertificateRes;
+import com.green.greenjobgo1.student.model.StudentCertificateSelRes;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,11 +1,8 @@
 package com.green.greenjobgo1.student;
 
-import com.green.greenjobgo1.admin.std_management.model.AdminStudentCertificateRes;
+import com.green.greenjobgo1.admin.std_management.model.*;
 import com.green.greenjobgo1.common.entity.*;
-import com.green.greenjobgo1.student.model.StudentCertificateRes;
-import com.green.greenjobgo1.student.model.StudentCertificateSelRes;
-import com.green.greenjobgo1.student.model.StudentSelStudentRes;
-import com.green.greenjobgo1.student.model.StudentSelSubjectRes;
+import com.green.greenjobgo1.student.model.*;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -50,12 +47,56 @@ public class StudentQdsl {
         return query.fetch();
     }
 
-    public StudentSelSubjectRes subjectVo(Long istudent) {
-        JPAQuery<StudentSelSubjectRes> query = jpaQueryFactory
-                .select(Projections.bean(StudentSelSubjectRes.class, cos.subjectName, cos.startedAt, cos.endedAt))
-                .from(scs)
+    public List<StudentFileRes> fileVos(StudentSelDto dto) {
+        JPAQuery<StudentFileRes> query = jpaQueryFactory
+                .select(Projections.bean(StudentFileRes.class, file.ifile, file.file, file.oneWord, file.mainYn))
+                .from(file)
+                .join(file.studentEntity, stu)
+                .where(stu.istudent.eq(dto.getIstudent()),
+                        file.fileCategoryEntity.iFileCategory.eq(2L))
+                .orderBy(file.mainYn.desc(), file.ifile.asc());
+        return query.fetch();
+    }
+
+    public List<StudentFileLink> fileLinks(StudentSelDto dto) {
+        JPAQuery<StudentFileLink> query = jpaQueryFactory
+                .select(Projections.bean(StudentFileLink.class, file.ifile, file.file.as("fileLink"), file.oneWord))
+                .from(file)
+                .join(file.studentEntity, stu)
+                .where(stu.istudent.eq(dto.getIstudent()),
+                        file.fileCategoryEntity.iFileCategory.eq(3L))
+                .orderBy(file.ifile.asc());
+        return query.fetch();
+    }
+
+    public StudentImg img(StudentSelDto dto) {
+        JPAQuery<StudentImg> query = jpaQueryFactory
+                .select(Projections.bean(StudentImg.class, file.file.as("img"), file.ifile))
+                .from(file)
+                .join(file.studentEntity, stu)
+                .where(stu.istudent.eq(dto.getIstudent()),
+                        file.fileCategoryEntity.iFileCategory.eq(4L))
+                .orderBy(file.ifile.asc());
+        return query.fetchOne();
+    }
+
+    public StudentResume resume(StudentSelDto dto) {
+        JPAQuery<StudentResume> query = jpaQueryFactory
+                .select(Projections.bean(StudentResume.class, file.ifile, file.file.as("resume"), file.oneWord))
+                .from(file)
+                .join(file.studentEntity, stu)
+                .where(stu.istudent.eq(dto.getIstudent()),
+                        file.fileCategoryEntity.iFileCategory.eq(1L))
+                .orderBy(file.ifile.asc());
+        return query.fetchOne();
+    }
+
+    public StudentDetailSubjectRes subjectList(Long istudent) {
+        JPAQuery<StudentDetailSubjectRes> query = jpaQueryFactory.select(
+                        Projections.bean(StudentDetailSubjectRes.class, cos.icourseSubject, cos.subjectName))
+                .from(cos)
+                .join(cos.scsList, scs)
                 .join(scs.studentEntity, stu)
-                .join(scs.courseSubjectEntity, cos)
                 .where(stu.istudent.eq(istudent));
         return query.fetchOne();
     }

@@ -34,14 +34,9 @@ public class StudentController {
     @GetMapping
     @Operation(summary = "수강생 기본정보 보기")
     public ResponseEntity<StudentSelTotalRes> getStudent(@RequestParam Long istudent) {
-        Optional<StudentEntity> stdId = STU_REP.findById(istudent);
-        if (stdId.get().getEditableYn() == 1) {
             StudentSelDto dto = new StudentSelDto();
             dto.setIstudent(istudent);
             return ResponseEntity.ok(SERVICE.selStudent(dto));
-        } else {
-            throw new RuntimeException("editableYn이 비활성화 되어있습니다.");
-        }
     }
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, path = "/file")

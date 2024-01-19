@@ -5,13 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-@Data
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentSelTotalRes {
-    private StudentSelStudentRes std;
-    private StudentSelFileRes file;
+public class StudentResume {
+    private Long ifile;
+    private String resume;
+    private String oneWord;
 }

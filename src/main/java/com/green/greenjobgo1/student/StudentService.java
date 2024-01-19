@@ -214,27 +214,40 @@ public class StudentService {
 
     public StudentSelTotalRes selStudent(StudentSelDto dto) {
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
-        StudentSelSubjectRes subjectRes = studentQdsl.subjectVo(dto.getIstudent());
-        List<StudentCertificateSelRes> certificateRes = studentQdsl.certificateRes(dto.getIstudent());
 
-        if (stdId != null) {
-            StudentSelTotalRes build = StudentSelTotalRes.builder()
+        StudentImg img = studentQdsl.img(dto);
+        StudentResume resume = studentQdsl.resume(dto);
+        List<StudentFileRes> files = studentQdsl.fileVos(dto);
+        List<StudentFileLink> fileLinks = studentQdsl.fileLinks(dto);
+        List<StudentCertificateSelRes> certificateRes = studentQdsl.certificateRes(dto.getIstudent());
+        StudentDetailSubjectRes subjectList = studentQdsl.subjectList(dto.getIstudent());
+
+        if (stdId.isPresent()) {
+            return StudentSelTotalRes.builder()
                     .std(StudentSelStudentRes.builder()
-                            .istudent(stdId.get().getIstudent())
+                            .age(stdId.get().getAge())
+                            .gender(stdId.get().getGender())
                             .name(stdId.get().getName())
+                            .startedAt(stdId.get().getStartedAt())
+                            .endedAt(stdId.get().getEndedAt())
+                            .birthday(stdId.get().getBirthday())
                             .address(stdId.get().getAddress())
-                            .mobileNumber(stdId.get().getMobileNumber())
-                            .id(stdId.get().getId())
                             .education(stdId.get().getEducation())
-                            .startedAt(stdId.orElseThrow().getStartedAt())
-                            .endedAt(stdId.orElseThrow().getEndedAt())
-                            .subject(subjectRes)
-                            .certificates(certificateRes)
+                            .email(stdId.get().getId())
+                            .mobileNumber(stdId.get().getMobileNumber())
+                            .huntJobYn(stdId.get().getHuntJobYn())
+                            .introducedLine(stdId.get().getIntroducedLine())
+                            .Certificates(certificateRes)
+                            .subject(subjectList)
+                            .build())
+                    .file(StudentSelFileRes.builder()
+                            .img(img)
+                            .resume(resume)
+                            .portfolio(files)
+                            .fileLinks(fileLinks)
                             .build())
                     .build();
-            return build;
         } else {
-            log.info("studentSelRes : " + stdId);
             throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 PK값 입니다.");
         }
     }
