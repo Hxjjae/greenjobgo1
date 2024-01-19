@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudentSelStudentRes {
+    private Long istudent;
     private int age;
     private String gender;
     private String name;

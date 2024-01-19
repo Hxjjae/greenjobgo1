@@ -225,6 +225,7 @@ public class StudentService {
         if (stdId.isPresent()) {
             return StudentSelTotalRes.builder()
                     .std(StudentSelStudentRes.builder()
+                            .istudent(stdId.get().getIstudent())
                             .age(stdId.get().getAge())
                             .gender(stdId.get().getGender())
                             .name(stdId.get().getName())
