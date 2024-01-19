@@ -40,14 +40,9 @@ public class StudentController {
 
     public ResponseEntity<StudentSelTotalRes> getStudent() {
         MyUserDetails loginUser = USERPK.getLoginUser();
-        Optional<StudentEntity> stdId = STU_REP.findById(loginUser.getIuser());
-        if (stdId.get().getEditableYn() == 1) {
-            StudentSelDto dto = new StudentSelDto();
-            dto.setIstudent(loginUser.getIuser());
-            return ResponseEntity.ok(SERVICE.selStudent(dto));
-        } else {
-            throw new RuntimeException("editableYn이 비활성화 되어있습니다.");
-        }
+        StudentSelDto dto = new StudentSelDto();
+        dto.setIstudent(loginUser.getIuser());
+        return ResponseEntity.ok(SERVICE.selStudent(dto));
     }
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, path = "/file")
@@ -83,7 +78,7 @@ public class StudentController {
             "\n certificates = 자격증 list 로 입력")
     @PreAuthorize("hasAnyRole('USER')")
     public StudentCertificateRes postCertificate(@RequestParam Long istudent,
-                                          @RequestParam List<String> certificates) {
+                                                 @RequestParam List<String> certificates) {
         Optional<StudentEntity> stdId = STU_REP.findById(istudent);
         if (stdId.get().getEditableYn() == 1) {
             StudentCertificateDto dto = new StudentCertificateDto();
@@ -131,16 +126,16 @@ public class StudentController {
     @GetMapping("/company")
     @Operation(summary = "회사 리스트 조회",
             description = "companyCode: DB 회사 pk값 <br>" +
-                    "area: 지역 <br>"+
-                    "leaderName: 대표 이름 <br>"+
-                    "companyName: 회사 명 <br>"+
-                    "leaderName: 대표 이름 <br>"+
-                    "homepage: 홈페이지링크 <br>"+
-                    "manager : 담당자 이름<br>"+
-                    "phonenumber : 전화번호 <br>"+
+                    "area: 지역 <br>" +
+                    "leaderName: 대표 이름 <br>" +
+                    "companyName: 회사 명 <br>" +
+                    "leaderName: 대표 이름 <br>" +
+                    "homepage: 홈페이지링크 <br>" +
+                    "manager : 담당자 이름<br>" +
+                    "phonenumber : 전화번호 <br>" +
                     "dateConslusion: 체결일자 <br>")
     public ResponseEntity<StudentCompanyListVo> companyList(@ParameterObject @PageableDefault(direction = Sort.Direction.ASC, page = 1) Pageable pageable,
-                                                     @RequestParam(required = false) String companyName){
+                                                            @RequestParam(required = false) String companyName) {
         return ResponseEntity.ok(SERVICE.companyList(companyName, pageable));
     }
 
@@ -148,8 +143,8 @@ public class StudentController {
     @Operation(summary = "대표 포트폴리오 설정")
     @PreAuthorize("hasAnyRole('USER')")
     public StudentPortfolioMainRes patchPortfolioMain(@RequestParam Long istudent,
-                                                           @RequestParam Long ifile,
-                                                           @RequestParam Integer mainYn) {
+                                                      @RequestParam Long ifile,
+                                                      @RequestParam Integer mainYn) {
         StudentPortfolioMainDto dto = new StudentPortfolioMainDto();
         dto.setIfile(ifile);
         dto.setIstudent(istudent);
