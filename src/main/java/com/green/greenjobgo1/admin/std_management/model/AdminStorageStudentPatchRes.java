@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class AdminStorageStudentPatchRes {
     private Long istudent;
     private int storageYn;
+    private int companyMainYn;
 
 }

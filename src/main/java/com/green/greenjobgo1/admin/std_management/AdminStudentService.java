@@ -316,13 +316,16 @@ public class AdminStudentService {
         if (byId.isPresent()) {
             if (dto.getStorageYn() == 1) {
                 byId.get().setStorageYn(1);
+
             } else {
                 byId.get().setStorageYn(0);
+                byId.get().setCompanyMainYn(0);
             }
             StudentEntity save = STU_REP.save(byId.get());
             return AdminStorageStudentPatchRes.builder()
                     .istudent(save.getIstudent())
                     .storageYn(save.getStorageYn())
+                    .companyMainYn(save.getCompanyMainYn())
                     .build();
         } else {
             throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 PK값 입니다.");
