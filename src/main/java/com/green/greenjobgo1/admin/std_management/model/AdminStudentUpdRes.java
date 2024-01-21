@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -21,4 +22,5 @@ public class AdminStudentUpdRes {
     private Integer huntJobYn;
     private Integer age;
     private String gender;
+    private LocalDate birthday;
 }
