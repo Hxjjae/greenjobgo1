@@ -164,6 +164,15 @@ public class StudentQdsl {
         return query.fetch();
     }
 
+    public CertificateRes certificate(StudentCertificateDto dto) {
+        JPAQuery<CertificateRes> query = jpaQueryFactory
+                .select(Projections.bean(CertificateRes.class, certificate.icertificate, certificate.certificate))
+                .from(certificate)
+                .join(certificate.studentEntity, stu)
+                .where(stu.istudent.eq(dto.getIstudent()),
+                        certificate.icertificate.eq(dto.getIcertificate()));
+        return query.fetchOne();
+    }
     public Long companyIdx(String companyName) {
         JPAQuery<Long> count = jpaQueryFactory
                 .select(qCompanyList.companyCode.count())
