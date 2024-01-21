@@ -151,10 +151,6 @@ public class AdminSignService {
                 //subject의 대분류 조회
                 CategorySubjectEntity categorySubjectEntity = adminCategoryRep.findById(courseSubjectEntity.getCategorySubjectEntity().getIclassification()).get();
 
-                log.info("subject테이블 과정명:{}",subjectentity.getSubjectName());
-                if (subjectentity == null) {
-                    //throw new RuntimeException("존재하지 않는 과목입니다");
-                }
                 Long iclassification = courseSubjectEntity.getCategorySubjectEntity().getIclassification();
 
 
@@ -167,7 +163,7 @@ public class AdminSignService {
 
                 studentCourseSubjectRep.save(entity);
                 if (save.getId() == null){
-                    return 0;
+                    throw new RestApiException(CommonErrorCode.INTERNAL_SERVER_ERROR,"저장실패!.");
                 }
 
             }
