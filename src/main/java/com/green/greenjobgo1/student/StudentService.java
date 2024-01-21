@@ -278,10 +278,10 @@ public class StudentService {
 
             student.setCertificates(certificates);
 
-            StudentEntity save = STU_REP.save(student);
+
 
             return StudentCertificateRes.builder()
-                    .istudent(save.getIstudent())
+                    .istudent(student.getIstudent())
                     .res(resultList)
                     .build();
         } else {
