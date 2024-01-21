@@ -17,6 +17,7 @@ import com.green.greenjobgo1.repository.StudentRepository;
 import com.green.greenjobgo1.common.security.config.RedisService;
 import com.green.greenjobgo1.common.security.config.security.JwtTokenProvider;
 import com.green.greenjobgo1.common.security.sign.model.SignInResultDto;
+import com.green.greenjobgo1.sign.model.SignInVo;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.jsonwebtoken.Claims;
@@ -57,16 +58,17 @@ public class SignService {
             param.setId(p.getEmail());
             param.setPw(p.getPw());
             SignInResultDto signInResultDto = companysignIn(param, ip);
-
             return signInResultDto;
         }
 
 
         if (user == null) {
-            throw new RuntimeException("존재하지 않는 이메일");
+            throw new RestApiException(CommonErrorCode.EMAIL_NULL,"존재하지 않는 이메일");
+            //throw new RuntimeException("존재하지 않는 이메일");
         }
         if(!PW_ENCODER.matches(p.getPw(), user.getPw())) {
-            throw new RuntimeException("비밀번호 불일치");
+            throw new RestApiException(CommonErrorCode.PASSWORD_FAILED,"비밀번호 불일치");
+            //throw new RuntimeException("비밀번호 불일치");
         }
 
         String redisKey = String.format("c:RT(%s):USER:%s:%s", "Server", user.getIstudent(), ip);
@@ -92,9 +94,17 @@ public class SignService {
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(user.getIstudent()),
-                        file.fileCategoryEntity.iFileCategory.in(1,2, 3)).fetchOne();
+                        file.fileCategoryEntity.iFileCategory.in(2, 3)).fetchOne();
 
+        long aboutMecount = jpaQueryFactory.select(file.file.count())
+                .from(file)
+                .join(file.studentEntity, stu)
+                .where(stu.istudent.eq(user.getIstudent()),
+                        file.fileCategoryEntity.iFileCategory.eq(1L)).fetchOne();
 
+        SignInVo build = SignInVo.builder().editableYn(user.getEditableYn())
+                .portfolioYn((count > 0L) ? 1 : 0)
+                .aboutMeYn((aboutMecount > 0L) ? 1 : 0).build();
         log.info("[getSignInResult] SignInResultDto 객체 생성");
         SignInResultDto dto = SignInResultDto.builder()
                 .accessToken(accessToken)
@@ -102,8 +112,7 @@ public class SignService {
                 .refreshToken(refreshToken)
                 .role(user.getRole())
                 .id(p.getEmail())
-                .editableYn(user.getEditableYn())
-                .portfolioYn((count > 1) ? 1 : 0)
+                .vo(build)
                 .build();
 
 
