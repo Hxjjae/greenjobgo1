@@ -14,4 +14,5 @@ public class AdminSignInResultDto extends SignUpResultDto {
     private String refreshToken;
     private String role;
     private String id;
+    private String name;
 }

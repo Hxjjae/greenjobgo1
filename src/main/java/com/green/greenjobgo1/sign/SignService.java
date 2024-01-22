@@ -63,11 +63,11 @@ public class SignService {
 
 
         if (user == null) {
-            throw new RestApiException(CommonErrorCode.EMAIL_NULL,"존재하지 않는 이메일");
+            throw new RestApiException(CommonErrorCode.EMAIL_NULL);
             //throw new RuntimeException("존재하지 않는 이메일");
         }
         if(!PW_ENCODER.matches(p.getPw(), user.getPw())) {
-            throw new RestApiException(CommonErrorCode.PASSWORD_FAILED,"비밀번호 불일치");
+            throw new RestApiException(CommonErrorCode.PASSWORD_FAILED);
             //throw new RuntimeException("비밀번호 불일치");
         }
 
@@ -126,16 +126,16 @@ public class SignService {
 
         log.info("Icompany :{}",companyentity.getIcompany());
         if (companyentity == null) {
-            throw new RestApiException(CommonErrorCode.ID_NULL,"존재하지 않는 아이디");
+            throw new RestApiException(CommonErrorCode.ID_NULL);
             //throw new RuntimeException("존재하지 않는 아이디");
         }
         if(!PW_ENCODER.matches(p.getPw(), companyentity.getPassword())) {
-            throw new RestApiException(CommonErrorCode.PASSWORD_FAILED,"비밀번호 불일치");
+            throw new RestApiException(CommonErrorCode.PASSWORD_FAILED);
             //throw new RuntimeException("비밀번호 불일치");
         }
         LocalDate currentTime = LocalDate.now();
         if(currentTime.isBefore(companyentity.getStartedAt()) && !currentTime.isAfter(companyentity.getEndedAt())) {
-            throw new RestApiException(CommonErrorCode.EXPIRE_LOGIN,"조회기간 만료");
+            throw new RestApiException(CommonErrorCode.EXPIRE_LOGIN);
             //throw new RuntimeException("조회기간 만료");
         }
 

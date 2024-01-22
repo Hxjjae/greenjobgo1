@@ -13,7 +13,7 @@ public enum CommonErrorCode implements ErrorCode {
     SUBJECT_NULL(HttpStatus.UNPROCESSABLE_ENTITY,"없는 과목입니다."),
     EMPLOYEE_NULL(HttpStatus.UNPROCESSABLE_ENTITY,"존재하지 않는 직원입니다."),
     //로그인 에러
-    EMAIL_NULL(HttpStatus.UNPROCESSABLE_ENTITY,"존재하지 않는 이메일"),
+    EMAIL_NULL(HttpStatus.UNPROCESSABLE_ENTITY,"존재하지 않는 이메일22222"),
     ID_NULL(HttpStatus.UNPROCESSABLE_ENTITY,"존재하지 않는 아이디"),
     PASSWORD_FAILED(HttpStatus.UNPROCESSABLE_ENTITY,"비밀번호 불일치."),
     EXPIRE_LOGIN(HttpStatus.UNPROCESSABLE_ENTITY,"조회만료"),

@@ -109,14 +109,14 @@ public class AdminSignService {
 
             if (subjectentity == null) {
                 log.info("에러코드 확인: 존재하지 않는 과목입니다");
-                throw new RestApiException(CommonErrorCode.SUBJECT_NULL,"존재하지 않는 과목입니다");
+                throw new RestApiException(CommonErrorCode.SUBJECT_NULL);
                 //throw new RuntimeException("존재하지 않는 과목입니다");
             }
 
             EmployeeProfileEntity employeeEntity = employeeprofileRep.findByName(user.getEmployee());
             if (employeeEntity == null){
                 log.info("에러코드 확인: 존재하지 않는 직원입니다.");
-                throw new RestApiException(CommonErrorCode.EMPLOYEE_NULL,"존재하지 않는 직원입니다.");
+                throw new RestApiException(CommonErrorCode.EMPLOYEE_NULL);
                 //throw new RuntimeException("존재하지 않는 직원입니다.");
             }
 
@@ -163,7 +163,7 @@ public class AdminSignService {
 
                 studentCourseSubjectRep.save(entity);
                 if (save.getId() == null){
-                    throw new RestApiException(CommonErrorCode.INTERNAL_SERVER_ERROR,"저장실패!.");
+                    throw new RestApiException(CommonErrorCode.INTERNAL_SERVER_ERROR);
                 }
 
             }
@@ -354,6 +354,7 @@ public class AdminSignService {
             return AdminRep.save(AdminEntity.builder()
                     .id(p.getId())
                     .pw(PW_ENCODER.encode(p.getPw()))
+                    .name(p.getName())
                     .role(ADMIN).build());
         }
         return null;
@@ -363,11 +364,11 @@ public class AdminSignService {
         AdminEntity adminEntity = AdminRep.findById(p.getId());
 
         if (adminEntity == null) {
-            throw new RestApiException(CommonErrorCode.EMAIL_NULL,"존재하지 않는 이메일");
+            throw new RestApiException(CommonErrorCode.EMAIL_NULL);
             //throw new RuntimeException("존재하지 않는 이메일");
         }
         if (!PW_ENCODER.matches(p.getPw(), adminEntity.getPw())) {
-            throw new RestApiException(CommonErrorCode.PASSWORD_FAILED,"비밀번호 불일치");
+            throw new RestApiException(CommonErrorCode.PASSWORD_FAILED);
             //throw new RuntimeException("비밀번호 불일치");
         }
 

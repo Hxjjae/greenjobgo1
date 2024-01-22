@@ -115,7 +115,7 @@ public class AdminSubjectService {
                 }
             }
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 카테고리입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
         CourseSubjectEntity save = AS_REP.save(entity);
         return AdminSubjectUpdRes.builder()
@@ -145,7 +145,7 @@ public class AdminSubjectService {
                     .subjectCondition(save.getSubjectCondition())
                     .build();
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 카테고리입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
     }
 
@@ -167,7 +167,7 @@ public class AdminSubjectService {
             }
             return resultList;
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 카테고리입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
     }
 

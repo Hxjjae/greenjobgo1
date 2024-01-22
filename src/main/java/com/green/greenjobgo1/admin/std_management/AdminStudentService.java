@@ -107,23 +107,23 @@ public class AdminStudentService {
                     Long resumeCount = adminStudentQdsl.countByResume(studentSave.getIstudent());
 
                     if (resumeCount > 1) {
-                        throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "한 수강생당 이력서는 1개만 올릴 수 있습니다.");
+                        throw new RestApiException(CommonErrorCode.UPLOAD_FAILED);
                     } else {
                         try {
                             file.transferTo(fileTarget);
                         } catch (IOException e) {
-                            throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "파일을 업로드 할 수 없습니다.");
+                            throw new RestApiException(CommonErrorCode.UPLOAD_FAILED);
                         }
                     }
                 } else {
                     Long thumbnailCount = adminStudentQdsl.countByThumbnail(studentSave.getIstudent());
                     if (thumbnailCount > 1) {
-                        throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "한 수강생당 포트폴리오 대표 이미지는 1개만 올릴 수 있습니다.");
+                        throw new RestApiException(CommonErrorCode.UPLOAD_FAILED);
                     } else {
                         try {
                             file.transferTo(fileTarget);
                         } catch (IOException e) {
-                            throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "파일을 업로드 할 수 없습니다.");
+                            throw new RestApiException(CommonErrorCode.UPLOAD_FAILED);
                         }
                     }
                 }
@@ -132,7 +132,7 @@ public class AdminStudentService {
                 Long fileCount = adminStudentQdsl.countByFile(studentSave.getIstudent());
 
                 if (fileCount > 5) {
-                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "한 수강생당 포트폴리오는 5개까지만 올릴 수 있습니다.");
+                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED);
                 } else {
                     try {
                         InputStream inputStream = file.getInputStream();
@@ -151,16 +151,16 @@ public class AdminStudentService {
                             e.printStackTrace();
                         }
                     } catch (IOException e) {
-                        throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "파일을 업로드 할 수 없습니다.");
+                        throw new RestApiException(CommonErrorCode.UPLOAD_FAILED);
                     } catch (DocumentException e) {
-                        throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "파일을 업로드 할 수 없습니다.");
+                        throw new RestApiException(CommonErrorCode.UPLOAD_FAILED);
                     }
 
                 }
             } else if (iFileCategory == 3) {
                 Long fileLinkCount = adminStudentQdsl.countByFileLink(studentSave.getIstudent());
                 if (fileLinkCount > 5) {
-                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "한 수강생당 포트폴리오 링크는 5개까지만 올릴 수 있습니다.");
+                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED);
                 } else {
                     savedFileNm = (dto.getFileLink() != null) ? dto.getFileLink() : null;
                 }
@@ -254,7 +254,7 @@ public class AdminStudentService {
                             .build())
                     .build();
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 PK값 입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
     }
 
@@ -328,7 +328,7 @@ public class AdminStudentService {
                     .companyMainYn(save.getCompanyMainYn())
                     .build();
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 PK값 입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
     }
 
@@ -348,7 +348,7 @@ public class AdminStudentService {
                             studentEntity.setCompanyMainYn(1);
 
                         } else {
-                            throw new RestApiException(CommonErrorCode.INTERNAL_SERVER_ERROR,"특정 카테고리의 row 값은 이미 10개입니다.");
+                            throw new RestApiException(CommonErrorCode.INTERNAL_SERVER_ERROR);
                         }
                     } else {
                         studentEntity.setCompanyMainYn(0);
@@ -364,7 +364,7 @@ public class AdminStudentService {
                 return resultList;
             }
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 PK값 입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
         return null;
     }
@@ -382,7 +382,7 @@ public class AdminStudentService {
                     .delYn(save.getDelYn())
                     .build();
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 PK값 입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
     }
 
@@ -450,7 +450,7 @@ public class AdminStudentService {
                     .gender(stdSave.getGender())
                     .build();
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 PK값 입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
     }
 
@@ -472,7 +472,7 @@ public class AdminStudentService {
                     .build();
 
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 PK값 입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
     }
 
@@ -486,7 +486,7 @@ public class AdminStudentService {
             try {
                 CERT_REP.delete(entity);
             } catch (Exception e) {
-                throw new RestApiException(CommonErrorCode.INTERNAL_SERVER_ERROR,"데이터베이스에서 데이터를 지울 수 없습니다.");
+                throw new RestApiException(CommonErrorCode.INTERNAL_SERVER_ERROR);
             }
 
             return AdminStudentCertificateRes.builder()
@@ -494,7 +494,7 @@ public class AdminStudentService {
                     .certificate(entity.getCertificate())
                     .build();
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 PK값 입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
     }
 
@@ -509,20 +509,20 @@ public class AdminStudentService {
 
             if (fileToDelete.exists()) {
                 if (!fileToDelete.delete()) {
-                    throw new RestApiException(CommonErrorCode.DELETE_FAILED,"파일을 저장한 곳에서 삭제할 수 없습니다.");
+                    throw new RestApiException(CommonErrorCode.DELETE_FAILED);
                 }
             }
 
             try {
                 FILE_REP.delete(fileEntity);
             } catch (Exception e) {
-                throw new RestApiException(CommonErrorCode.DELETE_FAILED,"데이터베이스에서 파일 엔터티를 삭제할 수 없습니다.");
+                throw new RestApiException(CommonErrorCode.DELETE_FAILED);
             }
             return AdminStudentFileDelRes.builder()
                     .ifile(fileEntity.getIfile())
                     .build();
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 PK값 입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
 
     }
@@ -554,11 +554,11 @@ public class AdminStudentService {
                             .build();
 
                 } else {
-                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED, "한 수강생당 대표 포트폴리오는 1개까지만 설정 할 수 있습니다.");
+                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED);
                 }
             }
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 PK값 입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
         return null;
     }
@@ -618,7 +618,7 @@ public class AdminStudentService {
                         .build();
             }
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 PK값 입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
     }
 
@@ -656,7 +656,7 @@ public class AdminStudentService {
             }
 
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 PK값 입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
 
         return AdminStudentDelListRes.builder()
@@ -709,7 +709,7 @@ public class AdminStudentService {
 
                 if (fileToDelete.exists()) {
                     if (!fileToDelete.delete()) {
-                        throw new RestApiException(CommonErrorCode.DELETE_FAILED,"파일을 저장한 곳에서 삭제할 수 없습니다.");
+                        throw new RestApiException(CommonErrorCode.DELETE_FAILED);
                     }
                 }
 
@@ -727,6 +727,12 @@ public class AdminStudentService {
             List<StudentCourseSubjectEntity> StudentEntity = SCS_REP.findByStudentEntity(studentEntity);
             for (StudentCourseSubjectEntity subject:StudentEntity) {
                 SCS_REP.delete(subject);
+            }
+
+            //학생 자격증 삭제
+            List<CertificateEntity> CertificateStudentEntity = CERT_REP.findByStudentEntity(studentEntity);
+            for (CertificateEntity subject:CertificateStudentEntity) {
+                CERT_REP.delete(subject);
             }
 
             //학생 삭제

@@ -60,12 +60,12 @@ public class AdminCategoryService {
                         .classification(save.getClassification())
                         .build();
             } else {
-                throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "해당 컬럼을 찾을 수 없습니다.");
+                throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
             }
 
 
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 카테고리입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
     }
 
@@ -81,6 +81,6 @@ public class AdminCategoryService {
                     .delYn(save.getDelYn())
                     .build();
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 카테고리입니다.");        }
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);        }
     }
 }

@@ -31,6 +31,10 @@ public class AdminEntity{
     @Column(nullable = false, length = 30)
     private String role;
 
+    /** admin name ex) 취업지원실 **/
+    @Column(nullable = false, length = 50)
+    private String name; 
+
     /** **/
     @Column(nullable = false, length = 10, name = "del_yn")
     @ColumnDefault("0")
