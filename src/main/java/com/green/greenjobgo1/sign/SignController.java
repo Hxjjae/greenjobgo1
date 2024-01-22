@@ -25,6 +25,11 @@ public class SignController {
             "pw": 비밀번호(기업pw green1234)<br>
             "editableYn: 편집가능유무 1이면 편집가능" <br>
             "portfolioYn: 포트폴리오가 있으면 1" <br>
+            "aboutMeYn: 이력서가 있으면 1" <br>
+            <예외처리> <br>
+            이메일 오류: code:422, "code": "EMAIL_NULL","message": "존재하지 않는 이메일입니다.<br>"
+            비밀번호 오류 :code:422, "code": "PASSWORD_FAILED","message": "비밀번호 불일치<br>"
+            조회기간 만료 :code:422, "code": "PASSWORD_FAILED","message": "조회 만료<br>"
             """)
     public SignInResultDto signIn(HttpServletRequest req, @RequestBody SignInParam p) {
         String ip = req.getRemoteAddr();

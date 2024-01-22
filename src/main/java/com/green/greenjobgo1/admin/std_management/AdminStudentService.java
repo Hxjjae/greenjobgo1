@@ -435,6 +435,7 @@ public class AdminStudentService {
             student.setHuntJobYn(dto.getHuntJobYn());
             student.setAge(dto.getAge());
             student.setGender(dto.getGender());
+            student.setBirthday(LocalDate.now().minusYears(dto.getAge()));
 
             StudentEntity stdSave = STU_REP.save(student);
 
@@ -448,6 +449,7 @@ public class AdminStudentService {
                     .huntJobYn(stdSave.getHuntJobYn())
                     .age(stdSave.getAge())
                     .gender(stdSave.getGender())
+                    .birthday(stdSave.getBirthday())
                     .build();
         } else {
             throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);

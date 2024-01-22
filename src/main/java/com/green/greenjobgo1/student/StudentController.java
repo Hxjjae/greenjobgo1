@@ -1,7 +1,6 @@
 package com.green.greenjobgo1.student;
 
-import com.green.greenjobgo1.admin.std_management.model.AdminStudentPortfolioMainDto;
-import com.green.greenjobgo1.admin.std_management.model.AdminStudentPortfolioMainRes;
+import com.green.greenjobgo1.admin.std_management.model.*;
 import com.green.greenjobgo1.common.entity.StudentEntity;
 import com.green.greenjobgo1.common.security.config.security.AuthenticationFacade;
 import com.green.greenjobgo1.common.security.config.security.model.MyUserDetails;
@@ -107,6 +106,16 @@ public class StudentController {
         }
     }
 
+    @PutMapping("/certificate-list")
+    @Operation(summary = "자격증 수정-리스트")
+    public StudentCertificateTotalRes putCertificateList(@RequestParam List<String> certificate,
+                                                         @RequestParam Long istudent) {
+        StudentCertificateListDto dto = new StudentCertificateListDto();
+        dto.setCertificate(certificate);
+        dto.setIstudent(istudent);
+        return SERVICE.updCertificateList(dto);
+    }
+
     @DeleteMapping("/file")
     @Operation(summary = "수강생 파일 삭제")
     @PreAuthorize("hasAnyRole('USER')")
@@ -150,5 +159,15 @@ public class StudentController {
         dto.setIstudent(istudent);
         dto.setMainYn(mainYn);
         return SERVICE.patchPortfolioMain(dto);
+    }
+
+    @DeleteMapping("/certificate")
+    @Operation(summary = "자격증 삭제")
+    public CertificateRes delCertificatee(@RequestParam Long istudent,
+                                          @RequestParam Long icertificate) {
+        StudentCertificateDto dto = new StudentCertificateDto();
+        dto.setIstudent(istudent);
+        dto.setIcertificate(icertificate);
+        return SERVICE.delCertificate(dto);
     }
 }
