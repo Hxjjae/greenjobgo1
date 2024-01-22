@@ -369,7 +369,7 @@ public class StudentService {
                         .build();
             }
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 PK값 입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
     }
 
@@ -435,7 +435,7 @@ public class StudentService {
             try {
                 CERT_REP.delete(entity);
             } catch (Exception e) {
-                throw new RestApiException(CommonErrorCode.INTERNAL_SERVER_ERROR,"데이터베이스에서 데이터를 지울 수 없습니다.");
+                throw new RestApiException(CommonErrorCode.INTERNAL_SERVER_ERROR);
             }
 
             return CertificateRes.builder()
@@ -443,7 +443,7 @@ public class StudentService {
                     .certificate(entity.getCertificate())
                     .build();
         } else {
-            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND, "찾을 수 없는 PK값 입니다.");
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
     }
 }
