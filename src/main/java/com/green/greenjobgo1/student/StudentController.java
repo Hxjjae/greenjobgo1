@@ -2,6 +2,8 @@ package com.green.greenjobgo1.student;
 
 import com.green.greenjobgo1.admin.std_management.model.*;
 import com.green.greenjobgo1.common.entity.StudentEntity;
+import com.green.greenjobgo1.common.security.config.exception.CommonErrorCode;
+import com.green.greenjobgo1.common.security.config.exception.RestApiException;
 import com.green.greenjobgo1.common.security.config.security.AuthenticationFacade;
 import com.green.greenjobgo1.common.security.config.security.model.MyUserDetails;
 import com.green.greenjobgo1.repository.StudentRepository;
@@ -68,7 +70,7 @@ public class StudentController {
             dto.setOneWord(oneWord);
             return SERVICE.insFile(file, dto);
         } else {
-            throw new RuntimeException("editableYn이 비활성화 되어있습니다.");
+            throw new RestApiException(CommonErrorCode.NOT_AUTHORIZED);
         }
     }
 
@@ -85,7 +87,7 @@ public class StudentController {
             dto.setCertificates(certificates);
             return SERVICE.insCertificates(dto);
         } else {
-            throw new RuntimeException("editableYn이 비활성화 되어있습니다.");
+            throw new RestApiException(CommonErrorCode.NOT_AUTHORIZED);
         }
     }
 
@@ -102,18 +104,25 @@ public class StudentController {
             dto.setHuntJobYn(huntJobYn);
             return SERVICE.patchHuntJob(dto);
         } else {
-            throw new RuntimeException("editableYn이 비활성화 되어있습니다.");
+            throw new RestApiException(CommonErrorCode.NOT_AUTHORIZED);
         }
     }
 
     @PutMapping("/certificate-list")
     @Operation(summary = "자격증 수정-리스트")
+    @PreAuthorize("hasAnyRole('USER')")
     public StudentCertificateTotalRes putCertificateList(@RequestParam List<String> certificate,
                                                          @RequestParam Long istudent) {
-        StudentCertificateListDto dto = new StudentCertificateListDto();
-        dto.setCertificate(certificate);
-        dto.setIstudent(istudent);
-        return SERVICE.updCertificateList(dto);
+
+        Optional<StudentEntity> stdId = STU_REP.findById(istudent);
+        if (stdId.get().getEditableYn() == 1) {
+            StudentCertificateListDto dto = new StudentCertificateListDto();
+            dto.setCertificate(certificate);
+            dto.setIstudent(istudent);
+            return SERVICE.updCertificateList(dto);
+        } else {
+            throw new RestApiException(CommonErrorCode.NOT_AUTHORIZED);
+        }
     }
 
     @DeleteMapping("/file")
@@ -154,20 +163,33 @@ public class StudentController {
     public StudentPortfolioMainRes patchPortfolioMain(@RequestParam Long istudent,
                                                       @RequestParam Long ifile,
                                                       @RequestParam Integer mainYn) {
-        StudentPortfolioMainDto dto = new StudentPortfolioMainDto();
-        dto.setIfile(ifile);
-        dto.setIstudent(istudent);
-        dto.setMainYn(mainYn);
-        return SERVICE.patchPortfolioMain(dto);
+
+        Optional<StudentEntity> stdId = STU_REP.findById(istudent);
+        if (stdId.get().getEditableYn() == 1) {
+            StudentPortfolioMainDto dto = new StudentPortfolioMainDto();
+            dto.setIfile(ifile);
+            dto.setIstudent(istudent);
+            dto.setMainYn(mainYn);
+            return SERVICE.patchPortfolioMain(dto);
+        } else {
+            throw new RestApiException(CommonErrorCode.NOT_AUTHORIZED);
+        }
     }
 
     @DeleteMapping("/certificate")
     @Operation(summary = "자격증 삭제")
+    @PreAuthorize("hasAnyRole('USER')")
     public CertificateRes delCertificatee(@RequestParam Long istudent,
                                           @RequestParam Long icertificate) {
-        StudentCertificateDto dto = new StudentCertificateDto();
-        dto.setIstudent(istudent);
-        dto.setIcertificate(icertificate);
-        return SERVICE.delCertificate(dto);
+
+        Optional<StudentEntity> stdId = STU_REP.findById(istudent);
+        if (stdId.get().getEditableYn() == 1) {
+            StudentCertificateDto dto = new StudentCertificateDto();
+            dto.setIstudent(istudent);
+            dto.setIcertificate(icertificate);
+            return SERVICE.delCertificate(dto);
+        } else {
+            throw new RestApiException(CommonErrorCode.NOT_AUTHORIZED);
+        }
     }
 }

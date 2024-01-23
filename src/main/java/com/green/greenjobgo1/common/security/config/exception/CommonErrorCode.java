@@ -20,7 +20,8 @@ public enum CommonErrorCode implements ErrorCode {
     DELETE_SUCCESS(HttpStatus.OK,"성공적으로 삭제되었습니다."),
 
     UPLOAD_FAILED(HttpStatus.NOT_ACCEPTABLE, "파일을 업로드 할 수 없습니다."),
-    DELETE_FAILED(HttpStatus.NOT_ACCEPTABLE, "파일을 삭제할 수 없습니다.");
+    DELETE_FAILED(HttpStatus.NOT_ACCEPTABLE, "파일을 삭제할 수 없습니다."),
+    NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "editableYn이 활성화 되지 않았습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
