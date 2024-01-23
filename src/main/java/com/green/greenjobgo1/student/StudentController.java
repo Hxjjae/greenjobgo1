@@ -161,15 +161,13 @@ public class StudentController {
     @Operation(summary = "대표 포트폴리오 설정")
     @PreAuthorize("hasAnyRole('USER')")
     public StudentPortfolioMainRes patchPortfolioMain(@RequestParam Long istudent,
-                                                      @RequestParam Long ifile,
-                                                      @RequestParam Integer mainYn) {
+                                                      @RequestParam Long ifile) {
 
         Optional<StudentEntity> stdId = STU_REP.findById(istudent);
         if (stdId.get().getEditableYn() == 1) {
             StudentPortfolioMainDto dto = new StudentPortfolioMainDto();
             dto.setIfile(ifile);
             dto.setIstudent(istudent);
-            dto.setMainYn(mainYn);
             return SERVICE.patchPortfolioMain(dto);
         } else {
             throw new RestApiException(CommonErrorCode.NOT_AUTHORIZED);

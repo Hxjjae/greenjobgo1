@@ -409,7 +409,23 @@ public class StudentService {
 
                     if (dto.getMainYn() != null) {
                         fileEntity = fileId.get();
-                        fileEntity.setMainYn(dto.getMainYn());
+                        fileEntity.setMainYn(1);
+                    }
+                    FileEntity save = FILE_REP.save(fileEntity);
+
+                    return StudentPortfolioMainRes.builder()
+                            .mainYn(save.getMainYn())
+                            .ifile(save.getIfile())
+                            .istudent(stdId.get().getIstudent())
+                            .build();
+
+                } else if (countByPortfolioMain == 1) {
+                    Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
+                    FileEntity fileEntity = new FileEntity();
+
+                    if (dto.getMainYn() != null) {
+                        fileEntity = fileId.get();
+                        fileEntity.setMainYn(0);
                     }
                     FileEntity save = FILE_REP.save(fileEntity);
 
