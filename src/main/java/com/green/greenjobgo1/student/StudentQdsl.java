@@ -119,6 +119,15 @@ public class StudentQdsl {
         return query.fetchOne();
     }
 
+    public Long countByFileAndFileLink(Long studentId) {
+        JPAQuery<Long> query = jpaQueryFactory
+                .select(file.file.count())
+                .from(file)
+                .where(file.fileCategoryEntity.iFileCategory.in(2, 3L)
+                        .and(file.studentEntity.istudent.eq(studentId)));
+        return query.fetchOne();
+    }
+
     public Long countByResume(Long istudent) {
         JPAQuery<Long> query = jpaQueryFactory
                 .select(file.file.count())

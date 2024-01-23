@@ -14,4 +14,6 @@ import java.util.List;
 public class StudentSelTotalRes {
     private StudentSelStudentRes std;
     private StudentSelFileRes file;
+    private int portfolioYn;
+    private int aboutMeYn;
 }

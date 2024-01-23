@@ -221,6 +221,8 @@ public class StudentService {
         List<StudentFileLink> fileLinks = studentQdsl.fileLinks(dto);
         List<StudentCertificateSelRes> certificateRes = studentQdsl.certificateRes(dto.getIstudent());
         StudentDetailSubjectRes subjectList = studentQdsl.subjectList(dto.getIstudent());
+        Long countByFileAndFileLink = studentQdsl.countByFileAndFileLink(dto.getIstudent());
+        Long countByResume = studentQdsl.countByResume(dto.getIstudent());
 
         if (stdId.isPresent()) {
             return StudentSelTotalRes.builder()
@@ -247,6 +249,8 @@ public class StudentService {
                             .portfolio(files)
                             .fileLinks(fileLinks)
                             .build())
+                    .portfolioYn((countByFileAndFileLink > 0) ? 1 : 0)
+                    .aboutMeYn((countByResume > 0) ? 1 : 0)
                     .build();
         } else {
             throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
