@@ -283,7 +283,6 @@ public class StudentService {
             student.setCertificates(certificates);
 
 
-
             return StudentCertificateRes.builder()
                     .istudent(student.getIstudent())
                     .res(resultList)
@@ -407,10 +406,10 @@ public class StudentService {
                     Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
                     FileEntity fileEntity = new FileEntity();
 
-                    if (dto.getMainYn() != null) {
-                        fileEntity = fileId.get();
-                        fileEntity.setMainYn(1);
-                    }
+
+                    fileEntity = fileId.get();
+                    fileEntity.setMainYn(1);
+
                     FileEntity save = FILE_REP.save(fileEntity);
 
                     return StudentPortfolioMainRes.builder()
@@ -423,10 +422,9 @@ public class StudentService {
                     Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
                     FileEntity fileEntity = new FileEntity();
 
-                    if (dto.getMainYn() != null) {
-                        fileEntity = fileId.get();
-                        fileEntity.setMainYn(0);
-                    }
+                    fileEntity = fileId.get();
+                    fileEntity.setMainYn(0);
+
                     FileEntity save = FILE_REP.save(fileEntity);
 
                     return StudentPortfolioMainRes.builder()
