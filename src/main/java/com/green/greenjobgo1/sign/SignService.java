@@ -2,9 +2,8 @@ package com.green.greenjobgo1.sign;
 
 import com.green.greenjobgo1.common.entity.QFileEntity;
 import com.green.greenjobgo1.common.entity.QStudentEntity;
-import com.green.greenjobgo1.common.security.config.exception.CommonErrorCode;
+import com.green.greenjobgo1.common.security.config.exception.SignErrorCode;
 import com.green.greenjobgo1.common.security.config.exception.RestApiException;
-import com.green.greenjobgo1.repository.FileRepository;
 import com.green.greenjobgo1.sign.model.CompanySignInParam;
 import com.green.greenjobgo1.common.entity.CompanyEntity;
 import com.green.greenjobgo1.repository.CompanyRepository;
@@ -18,7 +17,6 @@ import com.green.greenjobgo1.common.security.config.RedisService;
 import com.green.greenjobgo1.common.security.config.security.JwtTokenProvider;
 import com.green.greenjobgo1.common.security.sign.model.SignInResultDto;
 import com.green.greenjobgo1.sign.model.SignInVo;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -63,12 +61,10 @@ public class SignService {
 
 
         if (user == null) {
-            throw new RestApiException(CommonErrorCode.EMAIL_NULL);
-            //throw new RuntimeException("존재하지 않는 이메일");
+            throw new RestApiException(SignErrorCode.EMAIL_NULL);
         }
         if(!PW_ENCODER.matches(p.getPw(), user.getPw())) {
-            throw new RestApiException(CommonErrorCode.PASSWORD_FAILED);
-            //throw new RuntimeException("비밀번호 불일치");
+            throw new RestApiException(SignErrorCode.PASSWORD_FAILED);
         }
 
         String redisKey = String.format("c:RT(%s):USER:%s:%s", "Server", user.getIstudent(), ip);
@@ -126,17 +122,14 @@ public class SignService {
 
         log.info("Icompany :{}",companyentity.getIcompany());
         if (companyentity == null) {
-            throw new RestApiException(CommonErrorCode.ID_NULL);
-            //throw new RuntimeException("존재하지 않는 아이디");
+            throw new RestApiException(SignErrorCode.ID_NULL);
         }
         if(!PW_ENCODER.matches(p.getPw(), companyentity.getPassword())) {
-            throw new RestApiException(CommonErrorCode.PASSWORD_FAILED);
-            //throw new RuntimeException("비밀번호 불일치");
+            throw new RestApiException(SignErrorCode.PASSWORD_FAILED);
         }
         LocalDate currentTime = LocalDate.now();
         if(currentTime.isBefore(companyentity.getStartedAt()) && !currentTime.isAfter(companyentity.getEndedAt())) {
-            throw new RestApiException(CommonErrorCode.EXPIRE_LOGIN);
-            //throw new RuntimeException("조회기간 만료");
+            throw new RestApiException(SignErrorCode.EXPIRE_LOGIN);
         }
 
         String redisKey = String.format("c:RT(%s):COMPANY:%s:%s", "Server", companyentity.getIcompany(), ip);

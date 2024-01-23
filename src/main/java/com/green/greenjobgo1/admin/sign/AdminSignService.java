@@ -109,18 +109,14 @@ public class AdminSignService {
 
             if (subjectentity == null) {
                 log.info("에러코드 확인: 존재하지 않는 과목입니다");
-                throw new RestApiException(CommonErrorCode.SUBJECT_NULL);
-                //throw new RuntimeException("존재하지 않는 과목입니다");
+                throw new RestApiException(SignErrorCode.SUBJECT_NULL);
             }
 
             EmployeeProfileEntity employeeEntity = employeeprofileRep.findByName(user.getEmployee());
             if (employeeEntity == null){
                 log.info("에러코드 확인: 존재하지 않는 직원입니다.");
-                throw new RestApiException(CommonErrorCode.EMPLOYEE_NULL);
-                //throw new RuntimeException("존재하지 않는 직원입니다.");
+                throw new RestApiException(SignErrorCode.EMPLOYEE_NULL);
             }
-
-
 
             StudentEntity student = StudentEntity.builder()
                     .gender(user.getGender())
@@ -167,29 +163,6 @@ public class AdminSignService {
                 }
 
             }
-
-                // 한개의 아이디에 두개이상 과목추가
-//                CourseSubjectEntity courseSubjectEntity = subjectRep.findBySubjectNameAndRound(user.getSubjectName(), Integer.parseInt(user.getRound()));
-//                List<StudentCourseSubjectEntity> StudentEntity = studentCourseSubjectRep.findByStudentEntity(studententity);
-//                StudentCourseSubjectEntity CourseSubjectEntity = studentCourseSubjectRep.findByCourseSubjectEntityAndStudentEntity(courseSubjectEntity, studententity);
-//
-//
-//                if (CourseSubjectEntity == null) {
-//                    log.info("수강과목:{}",courseSubjectEntity.getSubjectName());
-//
-//                    CategorySubjectEntity categorySubjectEntity = courseSubjectEntity.getCategorySubjectEntity();
-//
-//                    Long iclassification = (categorySubjectEntity != null) ? categorySubjectEntity.getIclassification() : null;
-//
-//                    StudentCourseSubjectEntity entity = StudentCourseSubjectEntity.builder()
-//                            .studentEntity(studententity)
-//                            .courseSubjectEntity(courseSubjectEntity)
-//                            .iclassification(iclassification)
-//                            .build();
-//                    studentCourseSubjectRep.save(entity);
-//                }
-
-
         }
         return 1;
     }
@@ -357,19 +330,17 @@ public class AdminSignService {
                     .name(p.getName())
                     .role(ADMIN).build());
         }
-        return null;
+        throw new RestApiException(CommonErrorCode.INTERNAL_SERVER_ERROR);
     }
     public AdminSignInResultDto signIn(AdminSigInParam p, String ip) {
         final String ADMIN = "ROLE_ADMIN";
         AdminEntity adminEntity = AdminRep.findById(p.getId());
 
         if (adminEntity == null) {
-            throw new RestApiException(CommonErrorCode.EMAIL_NULL);
-            //throw new RuntimeException("존재하지 않는 이메일");
+            throw new RestApiException(SignErrorCode.ID_NULL);
         }
         if (!PW_ENCODER.matches(p.getPw(), adminEntity.getPw())) {
-            throw new RestApiException(CommonErrorCode.PASSWORD_FAILED);
-            //throw new RuntimeException("비밀번호 불일치");
+            throw new RestApiException(SignErrorCode.PASSWORD_FAILED);
         }
 
         String redisKey = String.format("c:RT(%s):ADMIN:%s:%s", "Server", adminEntity.getIadmin(), ip);
