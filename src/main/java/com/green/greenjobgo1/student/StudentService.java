@@ -397,9 +397,9 @@ public class StudentService {
 
         if (stdId.isPresent()) {
             for (FileEntity file : files) {
-                Long countByPortfolioMain = studentQdsl.countByPortfolioMain(stdId.get().getIstudent());
+                Long countByPortfolioMain = studentQdsl.countByPortfolioMain(dto.getIstudent());
 
-                if (countByPortfolioMain > 1) {
+                if (countByPortfolioMain < 1) {
                     Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
                     FileEntity fileEntity = new FileEntity();
 
