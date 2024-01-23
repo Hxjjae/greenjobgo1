@@ -348,7 +348,7 @@ public class AdminStudentService {
                             studentEntity.setCompanyMainYn(1);
 
                         } else {
-                            throw new RestApiException(CommonErrorCode.INTERNAL_SERVER_ERROR);
+                            throw new RestApiException(CommonErrorCode.MAIN_YN_FAILED);
                         }
                     } else {
                         studentEntity.setCompanyMainYn(0);
