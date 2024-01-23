@@ -19,9 +19,11 @@ public enum CommonErrorCode implements ErrorCode {
     EXPIRE_LOGIN(500,"조회만료"),
     DELETE_SUCCESS(500,"성공적으로 삭제되었습니다."),
 
-    UPLOAD_FAILED(500, "파일을 업로드 할 수 없습니다."),
-    DELETE_FAILED(500, "파일을 삭제할 수 없습니다."),
-    NOT_AUTHORIZED(500, "editableYn이 활성화 되지 않았습니다.");
+    NOT_AUTHORIZED(452, "editableYn이 활성화 되지 않았습니다."),
+    UPLOAD_FAILED(453, "파일을 업로드 할 수 없습니다."),
+    DELETE_FAILED(454, "파일을 삭제할 수 없습니다."),
+    MAIN_YN_FAILED(455, "특정 분야 카테고리의 대표포트폴리오가 10개가 넘습니다.");
+
 
     private final int httpStatus;
     private final String message;
