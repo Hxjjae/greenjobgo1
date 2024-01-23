@@ -30,7 +30,9 @@ public class AdminSignController {
     @PostMapping(value = "/excel",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "엑셀로 수강생을 회원가입합니다."
             ,description = "리턴값이 1이면 회원가입완료<br>"+
-            "과목테이블에 없는 과목이 엑셀파일에 있으면 에러가 발생합니다.<br>")
+            "과목테이블에 없는 과목이 엑셀파일에 있으면 에러코드: 437.<br>"+
+            "취업관리실 직원이 Employee테이블에 없다면 에러코드: 438"
+    )
     public ResponseEntity<Integer> addExcel(@RequestPart MultipartFile studentfile){
         return ResponseEntity.ok(service.addExcel(studentfile));
     }
@@ -45,8 +47,8 @@ public class AdminSignController {
             "id": 아이디<br>
             "pw": 비밀번호<br>
             <예외처리> <br>
-            이메일 오류: code:422, "code": "EMAIL_NULL","message": "존재하지 않는 이메일입니다.<br>"
-            비밀번호 오류 :code:422, "code": "PASSWORD_FAILED","message": "비밀번호 불일치"
+            아이디 오류: code:433, <br>
+            비밀번호 오류 :code:434<br>
             """)
     public AdminSignInResultDto signIn(HttpServletRequest req, @RequestBody AdminSigInParam p) {
         String ip = req.getRemoteAddr();
