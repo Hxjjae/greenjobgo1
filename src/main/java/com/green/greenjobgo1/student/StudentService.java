@@ -436,7 +436,7 @@ public class StudentService {
                             .build();
 
                 } else {
-                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED);
+                    throw new RestApiException(CommonErrorCode.MAIN_YN_FAILED);
                 }
             }
         } else {
