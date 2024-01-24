@@ -15,6 +15,6 @@ public class CompanyStdfileRes {
     private CompanythumbnailVo thumbnail;
     private CompanythumbnailVo aboutMe;
     private List<CompanystdportfolioVo> portfolio;
-    private List<CompanyStdfileImgVo> fileLink;
+    private List<CompanystdportfolioVo> fileLink;
 
 }

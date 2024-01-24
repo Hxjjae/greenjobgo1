@@ -16,6 +16,8 @@ import com.green.greenjobgo1.common.security.config.security.AuthenticationFacad
 import com.green.greenjobgo1.common.security.config.security.JwtTokenProvider;
 import com.green.greenjobgo1.common.security.config.security.model.MyUserDetails;
 import com.green.greenjobgo1.common.security.sign.model.SignInResultDto;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
@@ -57,6 +59,10 @@ public class AdminSignService {
     private final FileCategoryRepository fileCategoryRep;
     private final AdminCategoryRepository adminCategoryRep;
     private final GlobalExceptionHandler exception;
+    private final JPAQueryFactory jpaQueryFactory;
+
+    QFileEntity file = QFileEntity.fileEntity;
+    QStudentEntity stu = QStudentEntity.studentEntity;
 
     @Transactional
     public int addExcel(MultipartFile studentfile) {
@@ -248,14 +254,19 @@ public class AdminSignService {
                 for (int i = 0; i < scsList.size(); i++) {
                 CourseSubjectEntity subjectEntity = subjectRep.findById(scsList.get(i).getCourseSubjectEntity().getIcourseSubject()).orElse(null);
                 if (subjectEntity != null) {
-                    // 1L은 이력서
-                    FileCategoryEntity fileCategoryEntity = fileCategoryRep.findById(1L).get();
 
-                    //포트폴리오파일
-                    FileCategoryEntity fileCategoryportfolio = fileCategoryRep.findById(2L).get();
+                    Long aboutMeCount = jpaQueryFactory
+                            .select(file.file.count())
+                            .from(file)
+                            .join(file.studentEntity, stu)
+                            .where(stu.istudent.eq(student.getIstudent()), file.fileCategoryEntity.iFileCategory.eq(1L)).fetchOne();
 
-                    List<FileEntity> FileCategoryEntity = fileRep.findByFileCategoryEntityAndStudentEntity(fileCategoryEntity, student);
-                    List<FileEntity> FileCategoryportfolio = fileRep.findByFileCategoryEntityAndStudentEntity(fileCategoryportfolio, student);
+                    Long portfolioCount = jpaQueryFactory
+                            .select(file.file.count())
+                            .from(file)
+                            .join(file.studentEntity, stu)
+                            .where(stu.istudent.eq(student.getIstudent()), file.fileCategoryEntity.iFileCategory.in(2, 3)).fetchOne();
+
 
                     Row row = sheet.createRow(rowNum++);
                     row.createCell(0).setCellValue(subjectEntity.getSubjectName()); //과목명
@@ -273,8 +284,8 @@ public class AdminSignService {
                     row.createCell(11).setCellValue(student.getGender());
                     row.createCell(12).setCellValue(student.getAge());
                     row.createCell(13).setCellValue(student.getEducation()); // 학력
-                    row.createCell(14).setCellValue(FileCategoryEntity.size() !=0 ? "O": "-" );
-                    row.createCell(15).setCellValue(FileCategoryportfolio.size() !=0 ? "O": "-" );
+                    row.createCell(14).setCellValue(aboutMeCount >0 ? "O": "-" );
+                    row.createCell(15).setCellValue(portfolioCount > 0 ? "O": "-" );
                 }
                 }
             }
@@ -283,9 +294,6 @@ public class AdminSignService {
         // Download
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment;filename=student.xlsx");
-//        ServletOutputStream servletOutputStream = response.getOutputStream();
-//        servletOutputStream.flush();
-//        servletOutputStream.close();
 
         try {
             wb.write(response.getOutputStream());

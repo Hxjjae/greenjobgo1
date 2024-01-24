@@ -9,4 +9,5 @@ import lombok.*;
 public class CompanyStdfileImgVo {
     private String file;
     private String oneWord;
+    private int mainYn;
 }
