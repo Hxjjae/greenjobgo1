@@ -331,6 +331,7 @@ public class AdminSignService {
         final String ADMIN = "ROLE_ADMIN";
         AdminEntity adminEntity = AdminRep.findById(p.getId());
 
+
         if (adminEntity == null) {
             return AdminRep.save(AdminEntity.builder()
                     .id(p.getId())
@@ -338,7 +339,8 @@ public class AdminSignService {
                     .name(p.getName())
                     .role(ADMIN).build());
         }
-        throw new RestApiException(CommonErrorCode.INTERNAL_SERVER_ERROR);
+        //아이디가 있으면 에러
+        throw new RestApiException(SignErrorCode.ID_DUPLICATE);
     }
     public AdminSignInResultDto signIn(AdminSigInParam p, String ip) {
         final String ADMIN = "ROLE_ADMIN";
