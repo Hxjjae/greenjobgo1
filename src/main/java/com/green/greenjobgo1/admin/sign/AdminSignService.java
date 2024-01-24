@@ -369,6 +369,7 @@ public class AdminSignService {
                 .refreshToken(refreshToken)
                 .role(ADMIN)
                 .id(p.getId())
+                .name(adminEntity.getName())
                 .build();
 
         ResultUtils.setSuccessResult(dto);

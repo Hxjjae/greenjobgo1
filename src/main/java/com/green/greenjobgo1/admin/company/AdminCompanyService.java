@@ -60,6 +60,7 @@ public class AdminCompanyService {
         Optional.ofNullable(startedAt).ifPresent(entity::setStartedAt);
         Optional.ofNullable(endedAt).ifPresent(entity::setEndedAt);
 
+
         companyRep.save(entity);
         return entity;
     }
