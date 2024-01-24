@@ -60,7 +60,7 @@ public class StudentQdsl {
 
     public List<StudentFileLink> fileLinks(StudentSelDto dto) {
         JPAQuery<StudentFileLink> query = jpaQueryFactory
-                .select(Projections.bean(StudentFileLink.class, file.ifile, file.file.as("fileLink"), file.oneWord))
+                .select(Projections.bean(StudentFileLink.class, file.ifile, file.file.as("fileLink"), file.oneWord, file.mainYn))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),

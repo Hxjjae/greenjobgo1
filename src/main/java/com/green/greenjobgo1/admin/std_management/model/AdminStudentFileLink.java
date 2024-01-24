@@ -13,4 +13,5 @@ public class AdminStudentFileLink {
     private Long ifile;
     private String fileLink;
     private String oneWord;
+    private Integer mainYn;
 }
