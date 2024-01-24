@@ -286,7 +286,7 @@ public class CompanyService {
                 .fetchOne();
 
         List<CompanyStdfileImgVo> fileLink = jpaQueryFactory.select(Projections.bean(CompanyStdfileImgVo.class,
-                        qfileEntity.file,qfileEntity.oneWord
+                        qfileEntity.file,qfileEntity.oneWord,qfileEntity.mainYn
                 )).from(qfileEntity)
                 .innerJoin(qfileEntity)
                 .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
@@ -320,16 +320,18 @@ public class CompanyService {
                 .certificates(res)
                 .subject(vo.getSubjectName()).build();
 
-        //url 붙여주기
+        //CompanythumbnailVo aboutMeNull = CompanythumbnailVo.builder().file("").build();
+
         CompanyStdfileRes build1 = CompanyStdfileRes.builder()
                 .thumbnail(thumbnail)
                 .aboutMe(aboutMe)
                 .portfolio((portfolio.stream().map(item-> CompanystdportfolioVo.builder()
                                 .file(item.getFile())
                                 .oneWord(item.getOneWord()).mainYn(item.getMainYn()).build()).toList()))
-                .fileLink(fileLink.stream().map(item-> CompanyStdfileImgVo.builder()
+                .fileLink(fileLink.stream().map(item-> CompanystdportfolioVo.builder()
                                 .file(item.getFile())
-                        .oneWord(item.getOneWord()).build()).toList()).build();
+                        .oneWord(item.getOneWord()).mainYn(item.getMainYn())
+                        .build()).toList()).build();
         return CompanystdDetailRes.builder().vo(build).file(build1).build();
     }
 
