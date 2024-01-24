@@ -211,11 +211,14 @@ public class AdminStudentQdsl {
                         AdminStudentSubjectCategoryListRes.class, cas.iclassification, cas.classification, cos.icourseSubject, cos.subjectName, cos.round, cos.startedAt, cos.endedAt))
                 .from(cos)
                 .leftJoin(cos.categorySubjectEntity, cas)
+                .leftJoin(cos.scsList, scs)
                 .where(eqIclassification(dto.getIclassfication()),
-                        eqIcourseSubject(dto.getIcourseSubject()))
+                        eqIcourseSubject(dto.getIcourseSubject()),
+                        scs.studentEntity.isNotNull())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(cos.icourseSubject.desc());
+                .orderBy(cos.icourseSubject.desc())
+                .groupBy(cos.icourseSubject);
         return query.fetch();
     }
 
@@ -232,9 +235,10 @@ public class AdminStudentQdsl {
         JPAQuery<Long> query = jpaQueryFactory
                 .select(cos.icourseSubject.count())
                 .from(cos)
-                .join(cos.categorySubjectEntity, cas)
+                .leftJoin(cos.categorySubjectEntity, cas)
                 .where(eqIclassification(dto.getIclassfication()),
-                        eqIcourseSubject(dto.getIcourseSubject()));
+                        eqIcourseSubject(dto.getIcourseSubject()),
+                        cos.scsList.isNotEmpty());
         return query.fetchOne();
 
     }
