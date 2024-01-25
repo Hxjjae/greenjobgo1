@@ -302,7 +302,8 @@ public class AdminStudentController {
 
     @DeleteMapping("/oneyearago")
     @Operation(summary = "1년이 지난 학생 삭제",description = "리턴값이 1이면 삭제완료 처리<br>"+
-    "파일 삭제 실패시: code: 406, body에 담긴 내용  code: DELETE_FAILED, message:파일을 저장한 곳에서 삭제할 수 없습니다."
+            "<예외처리><br>"+
+    "파일 삭제 실패시: code: 454,"
     )
     public int delStudentOneYear(@RequestParam List<Long> istudent) {
          return SERVICE.delStudentOneYear(istudent);

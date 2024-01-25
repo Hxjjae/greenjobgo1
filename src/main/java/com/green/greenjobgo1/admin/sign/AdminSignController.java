@@ -64,7 +64,9 @@ public class AdminSignController {
 
     @PostMapping("/sign-up")
     @Operation(summary = "회원가입", description = """
-            스웨거에서 관리자를 임의로 생성하기 위한 메소드입니다.
+            스웨거에서 관리자를 임의로 생성하기 위한 메소드입니다.<br>
+            <예외처리><br>
+            아이디 중복 오류: code 439
             """)
     public AdminEntity signUp(@RequestBody AdminParam p) {
         return service.signUp(p);

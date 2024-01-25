@@ -20,7 +20,7 @@ public class AdminEntity{
     private Long iadmin;
 
     /** admin ID **/
-    @Column(nullable = false, length = 20, name = "admin_id")
+    @Column(nullable = false, length = 20, name = "admin_id",unique = true)
     private String id;
 
     /** admin PW **/
