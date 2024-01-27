@@ -25,17 +25,13 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(authz ->
                             authz.requestMatchers(
-                                             "/swagger-ui.html"
-                                            , "/swagger-ui/**"
+                                            "/favicon.ico","/js/**", "/css/**", "/static/**", "/","/assets/**",
+                                            "/index.html", "/swagger-ui.html", "/swagger-ui/**", "/pic/**", "/img/**"
                                             , "/v3/api-docs/**"
                                             , "webjars/**"
                                             , "swagger-resources/**"
-                                            , "/"
-                                            , "/index.html"
-                                            , "/static/**"
                                             , "/api/admin/sign/sign-in", "/api/admin/sign/refresh-token", "/api/admin/sign/sign-up"
                                             , "/api/admin-student/**"
-                                            , "/pic/**", "/img/**"
                                             ,"/api/sign/**"
                                             ,"/sign-api/sign-in"
                                             , "/sign-api/sign-up"
@@ -44,7 +40,7 @@ public class SecurityConfiguration {
                                             , "/sign-api/test"
                                             , "/sign-api/otp-valid"
                                             , "/view/**"
-                                            , "/error"
+                                            , "/error","/admin/**"
                                             , "/err"
                                     ).permitAll()
                                     .requestMatchers(HttpMethod.GET, "/sign-api/refresh-token").permitAll()
