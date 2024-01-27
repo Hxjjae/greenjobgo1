@@ -25,7 +25,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(authz ->
                             authz.requestMatchers(
-                                             "/js/**", "/css/**", "/static/**", "/",
+                                            "/favicon.ico","/js/**", "/css/**", "/static/**", "/","/assets/**",
                                             "/index.html", "/swagger-ui.html", "/swagger-ui/**", "/pic/**", "/img/**"
                                             , "/v3/api-docs/**"
                                             , "webjars/**"
