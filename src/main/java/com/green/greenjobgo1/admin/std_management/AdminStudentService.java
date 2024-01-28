@@ -8,6 +8,9 @@ import com.green.greenjobgo1.common.utils.MyFileUtils;
 import com.green.greenjobgo1.common.utils.PagingUtils;
 import com.green.greenjobgo1.company.CompanyService;
 import com.green.greenjobgo1.repository.*;
+import com.green.greenjobgo1.student.model.CertificateRes;
+import com.green.greenjobgo1.student.model.StudentCertificateDto;
+import com.green.greenjobgo1.student.model.StudentCertificateRes;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
@@ -752,6 +755,41 @@ public class AdminStudentService {
 
     }
 
+    public AdminStudentCertificateListRes insCertificates(StudentCertificateDto dto) {
+        Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
+        if (stdId.isPresent()) {
+            List<CertificateEntity> certificates = new ArrayList<>();
+            List<CertificateRes> resultList = new ArrayList<>();
+
+            StudentEntity student = stdId.get();
+
+            for (int i = 0; i < dto.getCertificates().size(); i++) {
+                CertificateEntity entity = new CertificateEntity();
+                entity.setCertificate(dto.getCertificates().get(i));
+                entity.setStudentEntity(student);
+
+                CertificateEntity save = CERT_REP.save(entity);
+
+                CertificateRes certRes = CertificateRes.builder()
+                        .icertificate(save.getIcertificate())
+                        .certificate(save.getCertificate())
+                        .build();
+                resultList.add(certRes);
+                certificates.add(save);
+            }
+
+            student.setCertificates(certificates);
+
+
+            return AdminStudentCertificateListRes.builder()
+                    .istudent(student.getIstudent())
+                    .res(resultList)
+                    .build();
+        } else {
+            throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
+        }
+    }
+
     public AdminStudentSubjectDropBoxRes selSubjectDropBox(AdminStudentSubjectDropBoxDto dto) {
         List<AdminStudentSubjectDropBox> dropBox = adminStudentQdsl.selSubjectDropBox(dto);
 
@@ -759,4 +797,6 @@ public class AdminStudentService {
                 .res(dropBox)
                 .build();
     }
+
+
 }

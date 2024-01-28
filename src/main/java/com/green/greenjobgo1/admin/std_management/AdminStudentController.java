@@ -1,7 +1,11 @@
 package com.green.greenjobgo1.admin.std_management;
 
 import com.green.greenjobgo1.admin.std_management.model.*;
+import com.green.greenjobgo1.common.entity.StudentEntity;
 import com.green.greenjobgo1.common.security.config.exception.CommonErrorCode;
+import com.green.greenjobgo1.common.security.config.exception.RestApiException;
+import com.green.greenjobgo1.student.model.StudentCertificateDto;
+import com.green.greenjobgo1.student.model.StudentCertificateRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +16,13 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -170,15 +176,15 @@ public class AdminStudentController {
         return SERVICE.updCertificate(dto);
     }
 
-    @PutMapping("/certificate-list")
-    @Operation(summary = "자격증 수정-리스트")
-    public AdminStudentCertificateTotalRes putCertificateList(@RequestParam List<String> certificate,
-                                                              @RequestParam Long istudent) {
-        AdminStudentCertificateListDto dto = new AdminStudentCertificateListDto();
-        dto.setCertificate(certificate);
-        dto.setIstudent(istudent);
-        return SERVICE.updCertificateList(dto);
-    }
+//    @PutMapping("/certificate-list")
+//    @Operation(summary = "자격증 수정-리스트")
+//    public AdminStudentCertificateTotalRes putCertificateList(@RequestParam List<String> certificate,
+//                                                              @RequestParam Long istudent) {
+//        AdminStudentCertificateListDto dto = new AdminStudentCertificateListDto();
+//        dto.setCertificate(certificate);
+//        dto.setIstudent(istudent);
+//        return SERVICE.updCertificateList(dto);
+//    }
 
     @PatchMapping("/portfolio-main")
     @Operation(summary = "대표 포트폴리오 설정")
@@ -276,6 +282,18 @@ public class AdminStudentController {
         dto.setIclassification(iclassification);
         dto.setIcourseSubject(icourseSubject);
         return SERVICE.delStudentList(dto);
+    }
+
+    @PostMapping("/certificate")
+    @Operation(summary = "수강생 자격증 추가", description = "istudent = 수강생 pk \n" +
+            "\n certificates = 자격증 list 로 입력")
+    public AdminStudentCertificateListRes postCertificate(@RequestParam Long istudent,
+                                                 @RequestParam List<String> certificates) {
+            StudentCertificateDto dto = new StudentCertificateDto();
+            dto.setIstudent(istudent);
+            dto.setCertificates(certificates);
+            return SERVICE.insCertificates(dto);
+
     }
 
     @GetMapping("/oneyearago")
