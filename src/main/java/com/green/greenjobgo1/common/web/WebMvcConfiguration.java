@@ -31,6 +31,22 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         reg.addResourceHandler( "/img/**")
                 .addResourceLocations(String.format("file:%s/", FILE_DIR));
 
+        reg.addResourceHandler("/admin", "/admin/**")
+                .addResourceLocations("classpath:/static/admin/**")
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver() {
+                    @Override
+                    protected Resource getResource(String resourcePath, Resource location) throws IOException {
+                        Resource requestedResource = location.createRelative(resourcePath);
+                        // If we actually hit a file, serve that. This is stuff like .js and .css files.
+                        if (requestedResource.exists() && requestedResource.isReadable()) {
+                            return requestedResource;
+                        }
+                        // Anything else returns the index.
+                        return new ClassPathResource("/static/admin/index.html");
+                    }
+                });
+
         reg.addResourceHandler( "/**")
                 .addResourceLocations("classpath:/static/**")
                 .resourceChain(true)
