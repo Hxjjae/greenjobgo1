@@ -186,6 +186,7 @@ public class StudentService {
 
     public StudentDelRes delFile(StudentDelDto dto) {
         Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
+        StudentEntity studentEntity = fileId.get().getStudentEntity();
 
         if (fileId.isPresent()) {
             FileEntity fileEntity = fileId.get();
@@ -203,6 +204,11 @@ public class StudentService {
                 FILE_REP.delete(fileEntity);
             } catch (Exception e) {
                 throw new RestApiException(CommonErrorCode.DELETE_FAILED);
+            }
+
+            if (fileEntity.getFileCategoryEntity().getIFileCategory() == 1) {
+                studentEntity.setIntroducedLine("");
+                STU_REP.save(studentEntity);
             }
             return StudentDelRes.builder()
                     .ifile(fileEntity.getIfile())
