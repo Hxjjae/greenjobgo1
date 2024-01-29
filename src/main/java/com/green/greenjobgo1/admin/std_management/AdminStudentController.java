@@ -27,7 +27,12 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/student")
-@Tag(name = "관리자 학생관리")
+@Tag(name = "관리자 학생관리" , description = " UPLOAD_FAILED(453, \"파일을 업로드 할 수 없습니다.\"),\n" +
+        "    \nDELETE_FAILED(454, \"파일을 삭제할 수 없습니다.\"),\n" +
+        "    \nCOMPANY_MAIN_YN_FAILED(455, \"특정 분야 카테고리의 대표포트폴리오가 10개가 넘습니다.\"),\n" +
+        "    \nMAIN_YN_FAILED(456, \"메인 포트폴리오는 1개만 설정할 수 있습니다.\"),\n" +
+        "    \nONE_WORD_EMPTY(457, \"업로드하신 파일 또는 링크의 한줄소개가 비어있습니다.\"),\n" +
+        "    \nINTRODUCED_LINE_EMPTY(458, \"업로드하신 이력서의 한줄소개가 비어있습니다.\")")
 public class AdminStudentController {
 
     private final AdminStudentService SERVICE;

@@ -28,7 +28,12 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/student")
 @RequiredArgsConstructor
-@Tag(name = "수강생 CRUD")
+@Tag(name = "수강생 CRUD", description = "NOT_AUTHORIZED(452, \"editableYn이 활성화 되지 않았습니다.\"),\n" +
+        "    \nUPLOAD_FAILED(453, \"파일을 업로드 할 수 없습니다.\"),\n" +
+        "    \nDELETE_FAILED(454, \"파일을 삭제할 수 없습니다.\")" +
+        "    \nMAIN_YN_FAILED(456, \"메인 포트폴리오는 1개만 설정할 수 있습니다.\"),\n" +
+        "    \nONE_WORD_EMPTY(457, \"업로드하신 파일 또는 링크의 한줄소개가 비어있습니다.\"),\n" +
+        "    \nINTRODUCED_LINE_EMPTY(458, \"업로드하신 이력서의 한줄소개가 비어있습니다.\");")
 public class StudentController {
 
     private final StudentService SERVICE;
