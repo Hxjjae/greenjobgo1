@@ -91,4 +91,10 @@ public class AdminSignController {
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .build();
     }
+    @PostMapping(name = "/loginpic",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "관리자 로그인사진 업로드",
+            description = "")
+    public int loginPic(@RequestPart MultipartFile pic){
+        return 0;
+    }
 }

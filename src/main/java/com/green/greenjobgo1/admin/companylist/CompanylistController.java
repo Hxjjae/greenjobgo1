@@ -28,14 +28,16 @@ public class CompanylistController {
     private final CompanylistService service;
 
     @PostMapping
-    @Operation(summary = "회사 추가",description =
-            "area: 지역 명 ex) 대구,서울 <br>"+
+    @Operation(summary = "회사 추가",description = "area: 지역 명 ex) 대구,서울 <br>"+
             "companyName: 회사 명 <br>"+
             "leaderName: 대표 이름 <br>"+
             "homepage: 홈페이지링크 <br>"+
             "manager : 담당자 이름 <br>"+
             "phonenumber : 전화번호 <br>"+
-            "dateConslusion: 체결일자 <br>")
+            "dateConslusion: 체결일자 <br>"+
+            "<예외처리> <br>"+
+            "데이터베이스에 기업명이 들어 있으면 에러코드:440"
+    )
     public ResponseEntity<CompanyInsVo> companyName(@RequestBody CompanyNameDto dto){
         CompanyInsVo companyInsVo = service.companyName(dto);
         return ResponseEntity.ok(companyInsVo);

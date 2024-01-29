@@ -46,7 +46,7 @@ public class SignService {
     QFileEntity file = QFileEntity.fileEntity;
     QStudentEntity stu = QStudentEntity.studentEntity;
 
-    public SignInResultDto signIn(SignInParam p, String ip) {
+    public SignInResultDto  signIn(SignInParam p, String ip) {
         log.info("[getSignInResult] signDataHandler로 회원 정보 요청");
         StudentEntity user = studentRepository.findById(p.getEmail());
         CompanyEntity company = companyRep.findById(p.getEmail());
@@ -142,6 +142,7 @@ public class SignService {
         String accessToken = JWT_PROVIDER.generateJwtToken(String.valueOf(companyentity.getIcompany()),
                 Collections.singletonList(companyentity.getRole()),
                 JWT_PROVIDER.ACCESS_TOKEN_VALID_MS, JWT_PROVIDER.ACCESS_KEY);
+
         String refreshToken = JWT_PROVIDER.generateJwtToken(String.valueOf(companyentity.getIcompany()),
                 Collections.singletonList(companyentity.getRole()),
                 JWT_PROVIDER.REFRESH_TOKEN_VALID_MS, JWT_PROVIDER.REFRESH_KEY);

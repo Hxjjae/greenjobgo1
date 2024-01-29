@@ -11,6 +11,12 @@ public enum CommonErrorCode implements ErrorCode {
     RESOURCE_NOT_FOUND(500, "Resource not exists"),
     INTERNAL_SERVER_ERROR(500, "Internal server error"),
 
+    COMPANYLIST_DUPLICATE(440,"이미 존재하는 기업리스트 입니다."),
+    LEADERNAME_NULL(441,"대표이름을 입력 해주세요"),
+    AREA_NULL(442,"지역을 해주세요"),
+    MANAGER_NULL(443,"담당자를 입력 해주세요"),
+    PHONE_NULL(444,"폰번호를 입력 해주세요"),
+
     NOT_AUTHORIZED(452, "editableYn이 활성화 되지 않았습니다."),
     UPLOAD_FAILED(453, "파일을 업로드 할 수 없습니다."),
     DELETE_FAILED(454, "파일을 삭제할 수 없습니다."),

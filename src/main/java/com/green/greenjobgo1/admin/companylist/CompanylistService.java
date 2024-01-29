@@ -2,6 +2,8 @@ package com.green.greenjobgo1.admin.companylist;
 
 import com.green.greenjobgo1.admin.companylist.model.*;
 import com.green.greenjobgo1.common.entity.QCompanyListEntity;
+import com.green.greenjobgo1.common.security.config.exception.CommonErrorCode;
+import com.green.greenjobgo1.common.security.config.exception.RestApiException;
 import com.green.greenjobgo1.common.utils.ExcelUtil;
 import com.green.greenjobgo1.common.entity.CompanyListEntity;
 import com.green.greenjobgo1.repository.CompanylistRepository;
@@ -39,6 +41,22 @@ public class CompanylistService {
     QCompanyListEntity qCompanyList = QCompanyListEntity.companyListEntity;
 
     public CompanyInsVo companyName(CompanyNameDto dto) {
+        CompanyListEntity byCompanyName = companylistRep.findByCompanyName(dto.getCompanyName());
+        if (byCompanyName!=null){
+            throw new RestApiException(CommonErrorCode.COMPANYLIST_DUPLICATE);
+        }
+        if (dto.getLeaderName()==null){
+            throw new RestApiException(CommonErrorCode.LEADERNAME_NULL);
+        }
+        if (dto.getArea()==null){
+            throw new RestApiException(CommonErrorCode.AREA_NULL);
+        }
+        if (dto.getManager()==null){
+            throw new RestApiException(CommonErrorCode.MANAGER_NULL);
+        }
+        if (dto.getPhoneNumber()==null){
+            throw new RestApiException(CommonErrorCode.PHONE_NULL);
+        }
 
         CompanyListEntity companyListEntity = CompanyListEntity.builder()
                 .area(dto.getArea())

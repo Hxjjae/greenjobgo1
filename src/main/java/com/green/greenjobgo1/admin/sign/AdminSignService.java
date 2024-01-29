@@ -9,6 +9,7 @@ import com.green.greenjobgo1.admin.sign.model.StudentExcel;
 import com.green.greenjobgo1.common.entity.*;
 import com.green.greenjobgo1.common.security.config.exception.*;
 import com.green.greenjobgo1.common.utils.ExcelUtil;
+import com.green.greenjobgo1.common.utils.MyFileUtils;
 import com.green.greenjobgo1.common.utils.ResultUtils;
 import com.green.greenjobgo1.repository.*;
 import com.green.greenjobgo1.common.security.config.RedisService;
@@ -27,11 +28,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -55,14 +58,15 @@ public class AdminSignService {
     private final RedisService redisService;
     private final JwtTokenProvider JWT_PROVIDER;
     private final AuthenticationFacade facade;
-    private final FileRepository fileRep;
-    private final FileCategoryRepository fileCategoryRep;
     private final AdminCategoryRepository adminCategoryRep;
-    private final GlobalExceptionHandler exception;
     private final JPAQueryFactory jpaQueryFactory;
+    private final LoginPicRepository loginPicRep;
 
     QFileEntity file = QFileEntity.fileEntity;
     QStudentEntity stu = QStudentEntity.studentEntity;
+
+    @Value("${file.dir}")
+    private String FILE_DIR;
 
     @Transactional
     public int addExcel(MultipartFile studentfile) {
@@ -451,6 +455,36 @@ public class AdminSignService {
         log.info("localDateTime-getTime(): {}", LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
 
         redisService.setValuesWithTimeout(accessToken, "logout", expiration);
+    }
+
+    public LoginPicEntity loginPic(MultipartFile pic){
+        String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
+        String centerPath = String.format("%s/loginpic", MyFileUtils.getAbsolutePath(fileDir));
+
+        File dic = new File(centerPath);
+        if(!dic.exists()){
+            dic.mkdirs();
+        }
+
+        String originFileName = pic.getOriginalFilename();
+        String savedFileName = MyFileUtils.makeRandomFileNm(originFileName);
+        String savedFilePath = String.format("%s/%s",centerPath, savedFileName);
+
+        File target = new File(savedFilePath);
+        try {
+            pic.transferTo(target);
+        }catch (Exception e) {
+            throw new RestApiException(CommonErrorCode.INTERNAL_SERVER_ERROR);
+        }
+
+        String img = savedFileName;
+
+        LoginPicEntity loginPicEntity = LoginPicEntity.builder().pic(img).build();
+
+        loginPicRep.save(loginPicEntity);
+
+        return loginPicEntity;
+
     }
 
 }
