@@ -168,7 +168,7 @@ public class AdminStudentQdsl {
                         stu.delYn.eq(0))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(cos.endedAt.desc());
+                .orderBy(cos.endedAt.desc(),stu.istudent.desc());
         return query.fetch();
     }
 
