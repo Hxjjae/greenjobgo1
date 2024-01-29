@@ -13,7 +13,7 @@ public enum CommonErrorCode implements ErrorCode {
 
     COMPANYLIST_DUPLICATE(440,"이미 존재하는 기업리스트 입니다."),
     LEADERNAME_NULL(441,"대표이름을 입력 해주세요"),
-    AREA_NULL(442,"지역을 해주세요"),
+    AREA_NULL(442,"지역을 입력 해주세요"),
     MANAGER_NULL(443,"담당자를 입력 해주세요"),
     PHONE_NULL(444,"전화번호를 입력 해주세요"),
 
