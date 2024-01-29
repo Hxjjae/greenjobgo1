@@ -32,7 +32,7 @@ public class SecurityConfiguration {
                                             , "webjars/**"
                                             , "swagger-resources/**"
                                             , "/api/admin/sign/sign-in", "/api/admin/sign/refresh-token", "/api/admin/sign/sign-up"
-                                            , "/api/admin-student/**"
+                                            , "/api/admin-student/**","/api/admin/sign/loginpic"
                                             ,"/api/sign/**"
                                             ,"/sign-api/sign-in"
                                             , "/sign-api/sign-up"
