@@ -487,4 +487,15 @@ public class AdminSignService {
 
     }
 
+    public String getloginPic(){
+        List<LoginPicEntity> all = loginPicRep.findAll();
+
+        Collections.shuffle(all);
+
+        LoginPicEntity loginPicEntity = all.get(0);
+        String pic = "/img/loginpic/"+loginPicEntity.getPic();
+        return pic;
+    }
+
+
 }

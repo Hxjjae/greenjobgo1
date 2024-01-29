@@ -15,7 +15,7 @@ public class LoginPicEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
-    private Long iemployee;
+    private Long ipic;
 
     @Column(nullable = false, length = 50)
     private String pic;

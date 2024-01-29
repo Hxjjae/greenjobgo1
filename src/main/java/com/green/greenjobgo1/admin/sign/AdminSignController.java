@@ -4,6 +4,7 @@ import com.green.greenjobgo1.admin.sign.model.AdminParam;
 import com.green.greenjobgo1.admin.sign.model.AdminSigInParam;
 import com.green.greenjobgo1.admin.sign.model.AdminSignInResultDto;
 import com.green.greenjobgo1.common.entity.AdminEntity;
+import com.green.greenjobgo1.common.entity.LoginPicEntity;
 import com.green.greenjobgo1.common.security.CommonRes;
 import com.green.greenjobgo1.common.security.sign.model.SignInResultDto;
 import com.green.greenjobgo1.sign.model.TokenDto;
@@ -91,10 +92,17 @@ public class AdminSignController {
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .build();
     }
+    //관리자 로그인 사진을 저장하기 위한 메소드 입니다.
     @PostMapping(name = "/loginpic",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "관리자 로그인사진 업로드",
-            description = "")
-    public int loginPic(@RequestPart MultipartFile pic){
-        return 0;
+            description = "관리자 로그인 사진을 저장하기 위한 메소드 입니다.")
+    public LoginPicEntity loginPic(@RequestPart MultipartFile pic){
+        return service.loginPic(pic);
+    }
+
+    @GetMapping("/loginpic")
+    @Operation(summary = "관리자 로그인 사진")
+    public String getloginPic(){
+        return service.getloginPic();
     }
 }
