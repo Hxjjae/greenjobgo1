@@ -397,6 +397,7 @@ public class AdminSignService {
         String ip = req.getRemoteAddr();
         List<String> roles = (List<String>)claims.get("roles");
 
+        log.info("roles:{}",roles.get(0));
         String redisKey;
         if ("ROLE_ADMIN".equals(roles.get(0))){
             redisKey = String.format("c:RT(%s):ADMIN:%s:%s", "Server", iuser, ip);
