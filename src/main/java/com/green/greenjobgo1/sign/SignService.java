@@ -51,6 +51,7 @@ public class SignService {
         StudentEntity user = studentRepository.findById(p.getEmail());
         CompanyEntity company = companyRep.findById(p.getEmail());
 
+        // 기업용 아이디 로그인
         if (company != null){
             CompanySignInParam param = new CompanySignInParam();
             param.setId(p.getEmail());
@@ -59,10 +60,11 @@ public class SignService {
             return signInResultDto;
         }
 
-
+        //이메일 확인
         if (user == null) {
             throw new RestApiException(SignErrorCode.EMAIL_NULL);
         }
+        //비밀번호 확인
         if(!PW_ENCODER.matches(p.getPw(), user.getPw())) {
             throw new RestApiException(SignErrorCode.PASSWORD_FAILED);
         }
@@ -141,12 +143,12 @@ public class SignService {
         log.info("[getSignInResult] access_token 객체 생성");
         String accessToken = JWT_PROVIDER.generateJwtToken(String.valueOf(companyentity.getIcompany()),
                 Collections.singletonList(companyentity.getRole()),
-                JWT_PROVIDER.ACCESS_TOKEN_VALID_MS, JWT_PROVIDER.ACCESS_KEY);
+                JWT_PROVIDER.ADMIN_ACCESS_TOKEN_VALID_MS, JWT_PROVIDER.ACCESS_KEY);
 
         String refreshToken = JWT_PROVIDER.generateJwtToken(String.valueOf(companyentity.getIcompany()),
                 Collections.singletonList(companyentity.getRole()),
                 JWT_PROVIDER.REFRESH_TOKEN_VALID_MS, JWT_PROVIDER.REFRESH_KEY);
-        Long accessTokenTime = JWT_PROVIDER.ACCESS_TOKEN_VALID_MS;
+        Long accessTokenTime = JWT_PROVIDER.ADMIN_ACCESS_TOKEN_VALID_MS;
 
         redisService.setValues(redisKey, refreshToken);
 
@@ -177,7 +179,9 @@ public class SignService {
         if (claims == null) {
             return error;
         }
+        String issuer = claims.getIssuer();
 
+        log.info("iuser:{}",issuer);
         String strIuser = claims.getSubject();
         Long iuser = Long.valueOf(strIuser);
         String ip = req.getRemoteAddr();
