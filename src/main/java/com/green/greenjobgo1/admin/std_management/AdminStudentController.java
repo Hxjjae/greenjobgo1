@@ -194,12 +194,10 @@ public class AdminStudentController {
     @PatchMapping("/portfolio-main")
     @Operation(summary = "대표 포트폴리오 설정")
     public AdminStudentPortfolioMainRes patchPortfolioMain(@RequestParam Long istudent,
-                                                           @RequestParam Long ifile,
-                                                           @RequestParam Integer mainYn) {
+                                                           @RequestParam Long ifile) {
         AdminStudentPortfolioMainDto dto = new AdminStudentPortfolioMainDto();
         dto.setIfile(ifile);
         dto.setIstudent(istudent);
-        dto.setMainYn(mainYn);
         return SERVICE.patchPortfolioMain(dto);
     }
 

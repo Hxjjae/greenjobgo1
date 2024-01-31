@@ -77,7 +77,7 @@ public class AdminStudentService {
             } else {
                 throw new RestApiException(CommonErrorCode.INTRODUCED_LINE_EMPTY);
             }
-        } else if (dto.getIFileCategory() == 2 || dto.getIFileCategory() == 3){
+        } else if (dto.getIFileCategory() == 2 || dto.getIFileCategory() == 3) {
             if (dto.getOneWord() == null) {
                 throw new RestApiException(CommonErrorCode.ONE_WORD_EMPTY);
             }
@@ -102,7 +102,7 @@ public class AdminStudentService {
 
 
             String centerPath = String.format("%s/student/%d", MyFileUtils.getAbsolutePath(FILE_DIR), entity.getStudentEntity().getIstudent());
-            String savedFilePath = String.format("%s/%s",centerPath, savedFileNm);
+            String savedFilePath = String.format("%s/%s", centerPath, savedFileNm);
             File fileTargetDir = new File(centerPath);
 
             if (!fileTargetDir.exists()) {
@@ -177,7 +177,6 @@ public class AdminStudentService {
                     savedFileNm = (dto.getFileLink() != null) ? dto.getFileLink() : null;
                 }
             }
-
 
 
             AdminStudentInsRes res = AdminStudentInsRes.builder()
@@ -548,7 +547,6 @@ public class AdminStudentService {
     }
 
 
-
     public AdminStudentPortfolioMainRes patchPortfolioMain(AdminStudentPortfolioMainDto dto) {
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
         List<FileEntity> files = stdId.get().getFiles();
@@ -557,14 +555,13 @@ public class AdminStudentService {
             for (FileEntity file : files) {
                 Long countByPortfolioMain = adminStudentQdsl.countByPortfolioMain(stdId.get().getIstudent());
 
-                if (countByPortfolioMain > 1) {
+                if (countByPortfolioMain < 1) {
                     Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
                     FileEntity fileEntity = new FileEntity();
 
-                    if (dto.getMainYn() != null) {
-                        fileEntity = fileId.get();
-                        fileEntity.setMainYn(dto.getMainYn());
-                    }
+                    fileEntity = fileId.get();
+                    fileEntity.setMainYn(1);
+
                     FileEntity save = FILE_REP.save(fileEntity);
 
                     return AdminStudentPortfolioMainRes.builder()
@@ -573,8 +570,22 @@ public class AdminStudentService {
                             .istudent(stdId.get().getIstudent())
                             .build();
 
+                } else if (countByPortfolioMain == 1) {
+                    Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
+                    FileEntity fileEntity = new FileEntity();
+
+                    fileEntity = fileId.get();
+                    fileEntity.setMainYn(0);
+
+                    FileEntity save = FILE_REP.save(fileEntity);
+
+                    return AdminStudentPortfolioMainRes.builder()
+                            .mainYn(save.getMainYn())
+                            .ifile(save.getIfile())
+                            .istudent(stdId.get().getIstudent())
+                            .build();
                 } else {
-                    throw new RestApiException(CommonErrorCode.UPLOAD_FAILED);
+                    throw new RestApiException(CommonErrorCode.MAIN_YN_FAILED);
                 }
             }
         } else {
@@ -642,7 +653,7 @@ public class AdminStudentService {
         }
     }
 
-    public AdminStudentSubjectCategoryRes selSubjectCategoryList(AdminStudentCategoryDto dto,Pageable pageable) {
+    public AdminStudentSubjectCategoryRes selSubjectCategoryList(AdminStudentCategoryDto dto, Pageable pageable) {
         long maxPage = adminStudentQdsl.subjectCategoryCount(dto);
         PagingUtils utils = new PagingUtils(pageable.getPageNumber() + 1, (int) maxPage, pageable);
         utils.setIdx((int) maxPage);
@@ -684,11 +695,12 @@ public class AdminStudentService {
                 .icourseSubject(dto.getIcourseSubject())
                 .build();
     }
-    public AdminStudentOneYearRes getStudentOneYear(Pageable pageable,Long iclassification,String subjectName,String studentName){
+
+    public AdminStudentOneYearRes getStudentOneYear(Pageable pageable, Long iclassification, String subjectName, String studentName) {
         long count = adminStudentQdsl.oneYearStudentCount(iclassification, subjectName, studentName);
 
-        PagingUtils utils = new PagingUtils(pageable.getPageNumber() + 1,  (int)count, pageable);
-        utils.setIdx( (int)count);
+        PagingUtils utils = new PagingUtils(pageable.getPageNumber() + 1, (int) count, pageable);
+        utils.setIdx((int) count);
 
         List<AdminStudentOneYearVo> studentOneYearlist = adminStudentQdsl.oneYearStudent(pageable, iclassification, subjectName, studentName);
 
@@ -706,23 +718,24 @@ public class AdminStudentService {
         return AdminStudentOneYearRes.builder().page(utils).vo(list).build();
 
     }
+
     @Transactional
-    public int delStudentOneYear(List<Long>istudent){
+    public int delStudentOneYear(List<Long> istudent) {
         String fileDir = MyFileUtils.getAbsolutePath(FILE_DIR);
 
         //포트폴리오 삭제
-        for (Long student:istudent) {
+        for (Long student : istudent) {
             //학생 찾기
             StudentEntity studentEntity = STU_REP.findById(student).get();
             //학생 포트폴리오삭제
             List<FileEntity> allByStudentEntity = FILE_REP.findAllByStudentEntity(studentEntity);
-            for (FileEntity fileEntity:allByStudentEntity) {
+            for (FileEntity fileEntity : allByStudentEntity) {
 
-                log.info("file:{}",fileEntity.getFile());
+                log.info("file:{}", fileEntity.getFile());
                 String targetDir = String.format("%s/student/%d", MyFileUtils.getAbsolutePath(fileDir), fileEntity.getStudentEntity().getIstudent());
-                log.info("targetDir:{}",targetDir);
+                log.info("targetDir:{}", targetDir);
                 File fileToDelete = new File(String.format("%s/%s", targetDir, fileEntity.getFile()));
-                log.info("fileToDelete:{}",fileToDelete);
+                log.info("fileToDelete:{}", fileToDelete);
                 FILE_REP.delete(fileEntity);
 
                 fileToDelete.delete();
@@ -738,26 +751,26 @@ public class AdminStudentService {
 
             // 빈폴더 삭제
             String format = String.format("%s/student/%d", MyFileUtils.getAbsolutePath(fileDir), studentEntity.getIstudent());
-            log.info("format:{}",format);
+            log.info("format:{}", format);
             File emptyDirectoryFile = new File(format);
             emptyDirectoryFile.delete();
 
 
             //학생 수강과목 삭제
             List<StudentCourseSubjectEntity> StudentEntity = SCS_REP.findByStudentEntity(studentEntity);
-            for (StudentCourseSubjectEntity subject:StudentEntity) {
+            for (StudentCourseSubjectEntity subject : StudentEntity) {
                 SCS_REP.delete(subject);
             }
 
             //학생 자격증 삭제
             List<CertificateEntity> CertificateStudentEntity = CERT_REP.findByStudentEntity(studentEntity);
-            for (CertificateEntity subject:CertificateStudentEntity) {
+            for (CertificateEntity subject : CertificateStudentEntity) {
                 CERT_REP.delete(subject);
             }
 
             //학생 삭제
             STU_REP.delete(studentEntity);
-            log.info("studentEntity:{}",studentEntity.getId());
+            log.info("studentEntity:{}", studentEntity.getId());
 
         }
         return 1;
