@@ -74,6 +74,10 @@ public class AdminSignService {
 
         // 엑셀의 셀데이터를 객체에 담기 4번째 행부터 15번째 열까지
         List<Map<String, Object>> listMap = excelUtil.getListData(studentfile, 1, 15);
+
+        if (listMap.size()<1){
+            throw new RestApiException(SignErrorCode.FILE_ERROR);
+        }
         //   각 셀의 데이터를 StudentExcel에 넣는다 한다.
         for (Map<String, Object> map : listMap) {
             StudentExcel student = StudentExcel.builder()
@@ -95,6 +99,7 @@ public class AdminSignService {
             studentlist.add(student);
         }
 
+
         //DB에 저장
         for (StudentExcel user : studentlist) {
 
@@ -107,7 +112,7 @@ public class AdminSignService {
             LocalDate birth = LocalDate.parse(birthday);
             log.info("birthday:{}", birthday);
             //생년월일 생성
-            
+
             // 생년월일 앞자리와 전화번호 뒷자리를 조합하여 비밀번호 생성
             String pwfirst = user.getBirthday().substring(0, 6);
             String phone = user.getPhone();
