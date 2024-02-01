@@ -71,13 +71,14 @@ public class AdminStudentService {
         StudentEntity studentEntity = stdId.get();
 
         if (dto.getIFileCategory() == 1) {
-            if (dto.getIntroducedLine() != null) {
+            if (dto.getIntroducedLine() == null || dto.getIntroducedLine().equals(" ")
+                || dto.getIntroducedLine().isEmpty()) {
+                throw new RestApiException(CommonErrorCode.INTRODUCED_LINE_EMPTY);
+            } else {
                 studentEntity.setIstudent(dto.getIstudent());
                 studentEntity.setIntroducedLine(dto.getIntroducedLine());
-            } else {
-                throw new RestApiException(CommonErrorCode.INTRODUCED_LINE_EMPTY);
             }
-        } else if (dto.getIFileCategory() == 2 || dto.getIFileCategory() == 3) {
+        } else if (dto.getIFileCategory() == 2 || dto.getIFileCategory() == 3){
             if (dto.getOneWord() == null) {
                 throw new RestApiException(CommonErrorCode.ONE_WORD_EMPTY);
             }
