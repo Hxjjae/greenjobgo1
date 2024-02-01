@@ -75,6 +75,7 @@ public class AdminSignService {
         // 엑셀의 셀데이터를 객체에 담기 4번째 행부터 15번째 열까지
         List<Map<String, Object>> listMap = excelUtil.getListData(studentfile, 1, 15);
 
+        log.info("listsize:{}",listMap.size());
         if (listMap.size()<1){
             throw new RestApiException(SignErrorCode.FILE_ERROR);
         }
@@ -120,7 +121,7 @@ public class AdminSignService {
             log.info("패스워드확인:{}",pwfirst);
             log.info("패스워드확인:{}",pwsecond);
             log.info("패스워드확인:{}",pwfirst+pwsecond);
-            CourseSubjectEntity subjectentity = subjectRep.findBySubjectNameAndRound(user.getSubjectName(), Integer.parseInt(user.getRound()));
+            CourseSubjectEntity subjectentity = subjectRep.findBySubjectNameAndRoundAndDelYn(user.getSubjectName(), Integer.parseInt(user.getRound()),0);
 
 
             if (subjectentity == null) {
@@ -159,7 +160,7 @@ public class AdminSignService {
                 log.info("ID:{}",save.getIstudent());
                 //학생이 소속된 과목table 정보 가져오기
                 log.info("과정명:{}",user.getSubjectName());
-                CourseSubjectEntity courseSubjectEntity = subjectRep.findBySubjectNameAndRound(user.getSubjectName(), Integer.parseInt(user.getRound()));
+                CourseSubjectEntity courseSubjectEntity = subjectRep.findBySubjectNameAndRoundAndDelYn(user.getSubjectName(), Integer.parseInt(user.getRound()),0);
 
                 //subject의 대분류 조회
                 CategorySubjectEntity categorySubjectEntity = adminCategoryRep.findById(courseSubjectEntity.getCategorySubjectEntity().getIclassification()).get();

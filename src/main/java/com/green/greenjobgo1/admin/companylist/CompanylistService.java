@@ -248,9 +248,11 @@ public class CompanylistService {
         List<CompanyListEntity> companyList = companylistRep.findAll();
 
         int rowNum = 2;
+        int num = 1;
         for (CompanyListEntity company:companyList) {
             Row row = sheet.createRow(rowNum++);
 
+            row.createCell(0).setCellValue(num++);
             row.createCell(1).setCellValue(company.getArea());
             row.createCell(2).setCellValue(company.getCompanyName());
             row.createCell(3).setCellValue(company.getHomepage());

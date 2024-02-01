@@ -31,6 +31,7 @@ public class AdminSignController {
     @PostMapping(value = "/excel",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "엑셀로 수강생을 회원가입합니다."
             ,description = "리턴값이 1이면 회원가입완료<br>"+
+            "A열(1번째 열은 공백으로 값유무확인하기 때문에 공백이 있으면 안됩니다.)"+
             "과목테이블에 없는 과목이 엑셀파일에 있으면 에러코드: 437.<br>"+
             "취업관리실 직원이 Employee테이블에 없다면 에러코드: 438<br>"+
             "파일형식이 안맞으면 500에러 와 445에러"
