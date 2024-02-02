@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkgreenjobgo_admin=self.webpackChunkgreenjobgo_admin||[]).push([[756],{756:(e,n,s)=>{s.r(n),s.d(n,{default:()=>a});s(2791);var r=s(184);const a=()=>(0,r.jsx)("div",{children:"Register"})}}]);
+//# sourceMappingURL=756.0ea92d54.chunk.js.map
