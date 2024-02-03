@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -47,6 +49,7 @@ public class AdminStudentService {
     private final FileCategoryRepository FILE_CATE_REP;
     private final AdminStudentQdsl adminStudentQdsl;
     private final CompanyService SERVICE;
+    private final PasswordEncoder PW_ENCODER;
 
     @Value("${file.dir}")
     private String FILE_DIR;
@@ -445,9 +448,17 @@ public class AdminStudentService {
             student.setEducation(dto.getEducation());
             student.setMobileNumber(dto.getMobileNumber());
             student.setHuntJobYn(dto.getHuntJobYn());
-            student.setAge(dto.getAge());
             student.setGender(dto.getGender());
+            student.setAge(dto.getAge());
             student.setBirthday(LocalDate.now().minusYears(dto.getAge()));
+            /* TODO 생일변경으로 바꾸기 */
+//            String birthday = student.getBirthday().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+//            String pwFirst = birthday.substring(2, 3) + birthday.substring(5,6) + birthday.substring(8,9);
+//            String phone = student.getMobileNumber();
+//            String pwSecond = phone.substring(9);
+//
+//            student.setPw(PW_ENCODER.encode(pwFirst + pwSecond));
+
 
             StudentEntity stdSave = STU_REP.save(student);
 
