@@ -21,7 +21,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         log.info("[commence] 인증 실패로 response.sendError 발생");
 
         EntryPointErrorResponse msg = new EntryPointErrorResponse();
-        msg.setMsg("인증이 실패하였습니다.");
+        msg.setMsg("로그인 유효 시간이 초과되었습니다.");
 
         res.setStatus(401);
         res.setContentType(MediaType.APPLICATION_JSON_VALUE);
