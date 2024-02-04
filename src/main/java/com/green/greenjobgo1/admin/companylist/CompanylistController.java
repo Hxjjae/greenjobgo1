@@ -36,7 +36,7 @@ public class CompanylistController {
             "phonenumber : 전화번호 <br>"+
             "dateConslusion: 체결일자 <br>"+
             "<예외처리> <br>"+
-            "데이터베이스에 기업명이 들어 있으면 에러코드:440 <br>"+
+            "데이터베이스에 기업명이 들어 있으면(기업명 중복) 에러코드:440 <br>"+
             "leaderName 필수값체크 에러코드:441 <br>"+
             "area 필수값체크 에러코드:442 <br>"+
             "manager 필수값체크 에러코드:443 <br>"+
@@ -82,7 +82,9 @@ public class CompanylistController {
             "homepage: 홈페이지링크 <br>"+
             "manager : 담당자 <br>"+
             "phonenumber : 전화번호 <br>"+
-            "dateConslusion: 체결일자 <br>")
+            "dateConslusion: 체결일자 <br>"+
+            "<예외처리> <br>"+
+            "기업명 중복 예외처리:440 <br>")
     public ResponseEntity<CompanyListEntity> patchCompanyName(@RequestParam Long companyCode,
                                                               @RequestParam (required = false) String area,
                                                               @RequestParam (required = false) String companyName,

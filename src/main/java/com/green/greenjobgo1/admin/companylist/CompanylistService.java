@@ -139,8 +139,12 @@ public class CompanylistService {
     public CompanyListEntity patchCompanyName(Long companyCode, String area, String companyName, String manager
             , String leaderName, String homepage, String phoneNumber, LocalDate dateConslusion ) {
         CompanyListEntity entity = companylistRep.findById(companyCode).get();
+        CompanyListEntity byCompanyName = companylistRep.findByCompanyName(companyName);
         entity.setCompanyCode(companyCode);
 
+        if (byCompanyName!=null){
+            throw new RestApiException(CommonErrorCode.COMPANYLIST_DUPLICATE);
+        }
 
         // null이 아닌 경우에만 값이 들어갑니다.
         Optional.ofNullable(area).ifPresent(entity::setArea);
