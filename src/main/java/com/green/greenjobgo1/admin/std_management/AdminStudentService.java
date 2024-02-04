@@ -450,8 +450,9 @@ public class AdminStudentService {
             student.setHuntJobYn(dto.getHuntJobYn());
             student.setGender(dto.getGender());
             student.setAge(dto.getAge());
-            student.setBirthday(LocalDate.now().minusYears(dto.getAge()));
-            /* TODO 생일변경으로 바꾸기 */
+            student.setBirthday(LocalDate.now().minusYears(student.getAge()));
+
+//            /* TODO 생일변경으로 바꾸기 */
 //            String birthday = student.getBirthday().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 //            String pwFirst = birthday.substring(2, 3) + birthday.substring(5,6) + birthday.substring(8,9);
 //            String phone = student.getMobileNumber();
