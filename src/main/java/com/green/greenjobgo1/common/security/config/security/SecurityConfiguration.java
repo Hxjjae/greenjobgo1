@@ -34,17 +34,10 @@ public class SecurityConfiguration {
                                             , "/api/admin/sign/sign-in", "/api/admin/sign/refresh-token", "/api/admin/sign/sign-up"
                                             , "/api/admin-student/**","/api/admin/sign/loginpic"
                                             ,"/api/sign/**"
-                                            ,"/sign-api/sign-in"
-                                            , "/sign-api/sign-up"
-                                            , "/sign-api/exception"
-                                            , "/sign-api/otp"
-                                            , "/sign-api/test"
-                                            , "/sign-api/otp-valid"
                                             , "/view/**"
                                             , "/error","/admin/**" , "/student/**", "/business/**"
                                             , "/err"
                                     ).permitAll()
-                                    .requestMatchers(HttpMethod.GET, "/sign-api/refresh-token").permitAll()
                                     .requestMatchers(HttpMethod.GET,"/api/admin/category/**").hasAnyRole("ADMIN","COMPANY")
                                     .requestMatchers(HttpMethod.GET, "/api/admin/**").hasAnyRole( "ADMIN")
                                     .requestMatchers(HttpMethod.PUT, "/api/admin/**").hasAnyRole("ADMIN")
