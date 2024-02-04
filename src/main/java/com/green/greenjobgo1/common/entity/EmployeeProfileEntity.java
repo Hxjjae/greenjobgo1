@@ -26,7 +26,7 @@ public class EmployeeProfileEntity {
     @Column(length = 20, name = "one_word")
     private String oneWord;
 
-    @Column(nullable = false, length = 20, name = "name")
+    @Column(nullable = false, length = 20, name = "name",unique = true)
     private String name;
     @Column(length = 20, name = "counseling_number")
     private String counselingNumber;

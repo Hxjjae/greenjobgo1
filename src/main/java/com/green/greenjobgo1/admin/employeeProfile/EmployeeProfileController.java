@@ -38,7 +38,11 @@ public class EmployeeProfileController {
             "name: 직원 이름 <br>"+
             "counselingNumber : 상담 전화 <br>"+
             "phone : 휴대폰 번호 <br>"+
-            "email : 이메일 <br>")
+            "email : 이메일 <br>"+
+            "<예외처리> <br>"+
+            "취업담당실장 이름 중복 예외처리 에러코드 446"
+
+    )
     public ResponseEntity<EmployeeProfileEntity> insProfile(EmployeeProfileDto dto,
                                                             @RequestPart MultipartFile pic){
         return ResponseEntity.ok(service.insProfile(dto,pic));
@@ -48,7 +52,10 @@ public class EmployeeProfileController {
             "name: 직원 이름 <br>"+
             "counselingNumber : 상담 전화 <br>"+
             "phone : 휴대폰 번호 <br>"+
-            "email : 이메일 <br>")
+            "email : 이메일 <br>"+
+            "<예외처리> <br>"+
+            "취업담당실장 이름 중복 예외처리 에러코드 446"
+    )
     public ResponseEntity<EmployeeProfileVo> patchProfile(@RequestParam Long iemply,
                                                         @RequestParam(required = false) String oneWord,
                                                         @RequestParam(required = false) String name,

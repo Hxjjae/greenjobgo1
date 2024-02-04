@@ -3,6 +3,9 @@ package com.green.greenjobgo1.admin.employeeProfile;
 import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileDto;
 import com.green.greenjobgo1.admin.employeeProfile.model.EmployeeProfileVo;
 import com.green.greenjobgo1.common.entity.EmployeeProfileEntity;
+import com.green.greenjobgo1.common.security.config.exception.CommonErrorCode;
+import com.green.greenjobgo1.common.security.config.exception.ErrorCode;
+import com.green.greenjobgo1.common.security.config.exception.RestApiException;
 import com.green.greenjobgo1.repository.EmployeeProfileRepository;
 import com.green.greenjobgo1.common.utils.MyFileUtils;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -42,6 +45,12 @@ public class EmployeeProfileService {
     }
 
     public EmployeeProfileEntity insProfile(EmployeeProfileDto dto,MultipartFile pic){
+        EmployeeProfileEntity entitybyName = EmployeeProfileRep.findByName(dto.getName());
+
+        if (!(entitybyName == null)){
+            throw new  RestApiException(CommonErrorCode.EMPLOYEE_DUPLICATE);
+        }
+
 
         EmployeeProfileEntity entity = EmployeeProfileEntity.builder()
                 .oneWord(dto.getOneWord())
@@ -85,6 +94,14 @@ public class EmployeeProfileService {
 
     public EmployeeProfileVo patchProfile(Long iemply,String name,String oneWord,String conuselingNumber,String phone,String email,MultipartFile pic){
         EmployeeProfileEntity entity = EmployeeProfileRep.findById(iemply).get();
+
+        EmployeeProfileEntity entitybyName = EmployeeProfileRep.findByName(name);
+
+        log.info("name:{}",name);
+        log.info("entityName:{}",entity.getName());
+        if (!(entitybyName == null)){
+            throw new  RestApiException(CommonErrorCode.EMPLOYEE_DUPLICATE);
+        }
 
         Optional.ofNullable(oneWord).ifPresent(entity::setOneWord);
         Optional.ofNullable(conuselingNumber).ifPresent(entity::setCounselingNumber);

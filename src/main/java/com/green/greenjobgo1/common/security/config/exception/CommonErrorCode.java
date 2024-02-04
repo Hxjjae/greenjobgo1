@@ -16,6 +16,7 @@ public enum CommonErrorCode implements ErrorCode {
     AREA_NULL(442,"지역을 입력 해주세요"),
     MANAGER_NULL(443,"담당자를 입력 해주세요"),
     PHONE_NULL(444,"전화번호를 입력 해주세요"),
+    EMPLOYEE_DUPLICATE(446, "이미 존재하는 직원입니다."),
 
     NOT_AUTHORIZED(452, "editableYn이 활성화 되지 않았습니다."),
     UPLOAD_FAILED(453, "파일을 업로드 할 수 없습니다."),
