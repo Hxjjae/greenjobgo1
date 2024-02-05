@@ -34,7 +34,7 @@ public class SecurityConfiguration {
                                             , "/api/admin/sign/sign-in", "/api/admin/sign/refresh-token", "/api/admin/sign/sign-up"
                                             , "/api/admin-student/**","/api/admin/sign/loginpic"
                                             ,"/api/sign/**"
-                                            , "/view/**"
+                                            , "/view/**","/**"
                                             , "/error","/admin/**" , "/student/**", "/business/**"
                                             , "/err"
                                     ).permitAll()
