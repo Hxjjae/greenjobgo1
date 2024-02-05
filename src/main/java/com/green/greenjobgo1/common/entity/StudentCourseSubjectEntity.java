@@ -16,7 +16,7 @@ public class StudentCourseSubjectEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(updatable = false, nullable = false, length = 20, name = "istd_cos_sub")
+    @Column(updatable = false, nullable = false, length = 100, name = "istd_cos_sub")
     private Long iStdCosSub;
 
     @ManyToOne

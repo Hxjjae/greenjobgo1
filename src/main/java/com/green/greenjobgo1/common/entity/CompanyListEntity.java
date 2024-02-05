@@ -23,25 +23,25 @@ public class CompanyListEntity {
     @Column(updatable = false,nullable = false,columnDefinition = "BIGINT UNSIGNED",length=100)
     private Long companyCode;
 
-    @Column(length = 20, name = "area")
+    @Column(length = 100, name = "area")
     private String area;
 
-    @Column(nullable = false, length = 50, name = "company_name",unique = true)
+    @Column(nullable = false, length = 100, name = "company_name",unique = true)
     private String companyName;
 
-    @Column(length = 20, name = "leader_name")
+    @Column(length = 100, name = "leader_name")
     private String leaderName;
 
     @Column(length = 100, name = "homepage")
     private String homepage;
 
-    @Column(length = 20, name = "manager")
+    @Column(length = 100, name = "manager")
     private String manager;
 
-    @Column(length = 20, name = "phone_number")
+    @Column(length = 100, name = "phone_number")
     private String phoneNumber;
 
-    @Column(length = 30, name = "date_conslusion")
+    @Column(length = 100, name = "date_conslusion")
     private LocalDate dateConslusion;
 
 }

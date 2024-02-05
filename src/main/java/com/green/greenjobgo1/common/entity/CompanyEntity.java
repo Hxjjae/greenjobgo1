@@ -24,7 +24,7 @@ public class CompanyEntity {
     @Column(updatable = false,nullable = false,columnDefinition = "BIGINT UNSIGNED",length=100)
     private Long icompany;
 
-    @Column(nullable = false, length = 20, name = "id",unique = true)
+    @Column(nullable = false, length = 100, name = "id",unique = true)
     private String id;
 
     @Column(nullable = false, length = 100, name = "password")
@@ -33,10 +33,10 @@ public class CompanyEntity {
     @Column(nullable = false, length = 20, name = "role")
     private String role;
 
-    @Column(nullable = false, length = 10, name = "started_at")
+    @Column(nullable = false, name = "started_at")
     private LocalDate startedAt;
 
-    @Column(nullable = false, length = 10, name = "ended_at")
+    @Column(nullable = false, name = "ended_at")
     private LocalDate endedAt;
 
 

@@ -32,10 +32,10 @@ public class SecurityConfiguration {
                                             , "webjars/**"
                                             , "swagger-resources/**"
                                             , "/api/admin/sign/sign-in", "/api/admin/sign/refresh-token", "/api/admin/sign/sign-up"
-                                            , "/api/admin-student/**","/api/admin/sign/loginpic"
-                                            ,"/api/sign/**"
-                                            , "/view/**","/**"
-                                            , "/error","/admin/**" , "/student/**", "/business/**"
+                                            , "/api/admin-student/**", "/api/admin/sign/loginpic"
+                                            , "/api/sign/**"
+                                            , "/view/**", "/**"
+                                            , "/error", "/admin/**", "/student/**", "/business/**"
                                             , "/err"
                                     ).permitAll()
                                     .requestMatchers(HttpMethod.GET,"/api/admin/category/**").hasAnyRole("ADMIN","COMPANY")

@@ -46,16 +46,16 @@ public class StudentEntity {
     @JoinColumn(name = "employee_profile")
     private EmployeeProfileEntity employeeProfile;
 
-    @Column(nullable = false, length = 20, name = "student_id", unique = true)
+    @Column(nullable = false, length = 100, name = "student_id", unique = true)
     private String id;
 
     @Column(nullable = false, length = 100, name = "student_pw")
     private String pw;
 
-    @Column(nullable = false, length = 20, name = "mobile_number")
+    @Column(nullable = false, length = 100, name = "mobile_number")
     private String mobileNumber;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 100)
     private String name;
 
     @Column(nullable = false)
@@ -64,13 +64,10 @@ public class StudentEntity {
     @Column(nullable = false)
     private String gender;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 100)
     private String address;
 
-    @Column(length = 50, name = "address_detail")
-    private String addressDetail;
-
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 100)
     private String education;
 
     @Column(nullable = false, length = 20)

@@ -24,7 +24,7 @@ public class CategorySubjectEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(updatable = false, nullable = false, length = 20)
+    @Column(updatable = false, nullable = false, length = 100)
     private Long iclassification;
 
     @OneToMany(mappedBy = "categorySubjectEntity", cascade = CascadeType.ALL)
@@ -34,7 +34,7 @@ public class CategorySubjectEntity {
     @OneToMany(mappedBy = "categorySubjectEntity")
     private List<StudentEntity> students = new ArrayList<>();
 
-    @Column(nullable = false, length = 10,unique = true)
+    @Column(nullable = false, length = 100,unique = true)
     private String classification;
 
     @Column(nullable = false, length = 10, name = "del_yn")

@@ -23,21 +23,21 @@ public class EmployeeProfileEntity {
     @Column(updatable = false,nullable = false,columnDefinition = "BIGINT UNSIGNED",length=100)
     private Long iemply;
 
-    @Column(length = 20, name = "one_word")
+    @Column(length = 100, name = "one_word")
     private String oneWord;
 
     @Column(nullable = false, length = 20, name = "name",unique = true)
     private String name;
-    @Column(length = 20, name = "counseling_number")
+    @Column(length = 100, name = "counseling_number")
     private String counselingNumber;
 
     @Column(nullable = false, length = 20, name = "phone_number")
     private String phoneNumber;
 
-    @Column(length = 20, name = "email")
+    @Column(length = 100, name = "email")
     private String email;
 
-    @Column(length = 50, name = "profile_pic")
+    @Column(length = 100, name = "profile_pic")
     private String profilePic;
 
     @Column(nullable = false, length = 10, name = "del_yn")

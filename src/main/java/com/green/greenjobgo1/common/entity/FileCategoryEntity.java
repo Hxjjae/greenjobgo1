@@ -21,7 +21,7 @@ public class FileCategoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(updatable = false, nullable = false, length = 20)
+    @Column(updatable = false, nullable = false, length = 100)
     private Long iFileCategory;
 
     @OneToMany(mappedBy = "fileCategoryEntity")

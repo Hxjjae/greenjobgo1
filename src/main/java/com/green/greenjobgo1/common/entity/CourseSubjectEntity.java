@@ -36,7 +36,7 @@ public class CourseSubjectEntity {
     private List<StudentCourseSubjectEntity> scsList = new ArrayList<>();
 
 
-    @Column(nullable = false, length = 50, name = "subject_name")
+    @Column(nullable = false, length = 100, name = "subject_name")
     private String subjectName;
 
     @Column(nullable = false, name = "started_at")
@@ -45,14 +45,14 @@ public class CourseSubjectEntity {
     @Column(nullable = false, name = "ended_at")
     private LocalDate endedAt;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 100)
     @ColumnDefault("0")
     private int subjectCondition;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 100)
     private String instructor;
 
-    @Column(nullable = false, length = 10, name = "lecture_room")
+    @Column(nullable = false, length = 100, name = "lecture_room")
     private String lectureRoom;
 
     @Column(nullable = false, length = 10, name = "del_yn")

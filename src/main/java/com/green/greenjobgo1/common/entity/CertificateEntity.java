@@ -25,7 +25,7 @@ public class CertificateEntity {
     @JoinColumn(name = "istudent")
     private StudentEntity studentEntity;
 
-    @Column(length = 30)
+    @Column(length = 100)
     private String certificate;
 
 }

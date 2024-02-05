@@ -17,6 +17,6 @@ public class LoginPicEntity {
     @Column(updatable = false, nullable = false, columnDefinition = "BIGINT UNSIGNED")
     private Long ipic;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 100)
     private String pic;
 }
