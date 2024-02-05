@@ -53,8 +53,12 @@ public class CompanylistController {
     }
     @GetMapping("/download")
     @Operation(summary = "기업리스트 엑셀파일 다운로드")
-    public void downloadCompanylist(HttpServletResponse res) throws IOException {
-        service.downloadCompanylist(res);
+    public void downloadCompanylist(HttpServletResponse res) {
+        try {
+            service.downloadCompanylist(res);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @GetMapping

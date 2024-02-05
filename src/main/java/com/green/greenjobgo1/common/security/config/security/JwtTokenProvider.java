@@ -1,6 +1,6 @@
 package com.green.greenjobgo1.common.security.config.security;
 
-import com.green.greenjobgo1.admin.AdminRepository;
+import com.green.greenjobgo1.repository.AdminRepository;
 import com.green.greenjobgo1.common.security.config.security.model.MyUserDetails;
 import com.green.greenjobgo1.common.entity.AdminEntity;
 import com.green.greenjobgo1.common.entity.CompanyEntity;

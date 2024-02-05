@@ -142,6 +142,7 @@ public class CompanylistService {
         CompanyListEntity byCompanyName = companylistRep.findByCompanyName(companyName);
         entity.setCompanyCode(companyCode);
 
+        //이름중복 예외처리
         if (byCompanyName!=null){
             throw new RestApiException(CommonErrorCode.COMPANYLIST_DUPLICATE);
         }
@@ -226,7 +227,7 @@ public class CompanylistService {
 
         // Header 넣기
         int cellNum = 0;
-        Row header = sheet.createRow(1); // 첫번째줄 헤더
+        Row header = sheet.createRow(0); // 첫번째줄 헤더
         String[] headerName = new String[]{"지역", "기업명", "홈페이지", "대표명", "담당자", "연락처", "체결일자"};
 
 
@@ -251,7 +252,7 @@ public class CompanylistService {
         });
         List<CompanyListEntity> companyList = companylistRep.findAll();
 
-        int rowNum = 2;
+        int rowNum = 1;
         int num = 1;
         for (CompanyListEntity company:companyList) {
             Row row = sheet.createRow(rowNum++);
@@ -274,9 +275,6 @@ public class CompanylistService {
         // Download
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment;filename=company.xlsx");
-//        ServletOutputStream servletOutputStream = response.getOutputStream();
-//        servletOutputStream.flush();
-//        servletOutputStream.close();
 
         try {
             wb.write(response.getOutputStream());
