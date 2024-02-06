@@ -342,7 +342,7 @@ public class AdminStudentQdsl {
         return query.fetchOne();
     }
 
-    public List<AdminStudentOneYearVo> oneYearStudent(Pageable pageable,Long iclassification,String subjectName,String studentName){
+    public List<AdminStudentOneYearVo> oneYearStudent(Pageable pageable,Long iclassification,Long icourseSubject,String studentName){
 
         //1년전 날짜 계산
         LocalDate oneYearAgo = LocalDate.now().minusYears(1);
@@ -364,7 +364,7 @@ public class AdminStudentQdsl {
                 .innerJoin(cas)
                 .on(cas.iclassification.eq(cos.categorySubjectEntity.iclassification))
                 .where(eqIclassification(iclassification))
-                .where(eqSubjectName(subjectName))
+                .where(eqIcourseSubject(icourseSubject))
                 .where(eqStudentName(studentName))
                 .where(cos.endedAt.before(oneYearAgo))
                 .orderBy(getorder(pageable))
@@ -374,7 +374,7 @@ public class AdminStudentQdsl {
     }
 
 
-    public long oneYearStudentCount(Long iclassification,String subjectName,String studentName){
+    public long oneYearStudentCount(Long iclassification,Long icourseSubject,String studentName){
         LocalDate oneYearAgo = LocalDate.now().minusYears(1);
        return jpaQueryFactory.select(stu.istudent.count()).from(stu)
                 .innerJoin(scs)
@@ -384,7 +384,7 @@ public class AdminStudentQdsl {
                 .innerJoin(cas)
                 .on(cas.iclassification.eq(cos.categorySubjectEntity.iclassification))
                 .where(eqIclassification(iclassification))
-                .where(eqSubjectName(subjectName))
+                .where(eqIcourseSubject(icourseSubject))
                 .where(eqStudentName(studentName))
                 .where(cos.endedAt.before(oneYearAgo))
                 .fetchOne();

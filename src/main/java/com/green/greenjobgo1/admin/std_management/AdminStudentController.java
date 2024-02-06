@@ -316,9 +316,9 @@ public class AdminStudentController {
     public AdminStudentOneYearRes getOneYearStudent(@ParameterObject @PageableDefault(page = 1)
                                                     @SortDefault(sort = "istudent", direction = Sort.Direction.ASC) Pageable pageable,
                                                     @RequestParam(required = false) Long iclassification,
-                                                    @RequestParam(required = false) String subjectName,
+                                                    @RequestParam(required = false) Long icourseSubject,
                                                     @RequestParam(required = false) String studentName) {
-        return SERVICE.getStudentOneYear(pageable, iclassification, subjectName, studentName);
+        return SERVICE.getStudentOneYear(pageable, iclassification, icourseSubject, studentName);
     }
 
     @DeleteMapping("/oneyearago")

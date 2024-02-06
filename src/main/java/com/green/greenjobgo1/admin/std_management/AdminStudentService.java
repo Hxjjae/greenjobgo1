@@ -709,13 +709,13 @@ public class AdminStudentService {
                 .build();
     }
 
-    public AdminStudentOneYearRes getStudentOneYear(Pageable pageable, Long iclassification, String subjectName, String studentName) {
-        long count = adminStudentQdsl.oneYearStudentCount(iclassification, subjectName, studentName);
+    public AdminStudentOneYearRes getStudentOneYear(Pageable pageable, Long iclassification, Long icourseSubject, String studentName) {
+        long count = adminStudentQdsl.oneYearStudentCount(iclassification, icourseSubject, studentName);
 
         PagingUtils utils = new PagingUtils(pageable.getPageNumber() + 1, (int) count, pageable);
         utils.setIdx((int) count);
 
-        List<AdminStudentOneYearVo> studentOneYearlist = adminStudentQdsl.oneYearStudent(pageable, iclassification, subjectName, studentName);
+        List<AdminStudentOneYearVo> studentOneYearlist = adminStudentQdsl.oneYearStudent(pageable, iclassification, icourseSubject, studentName);
 
         List<AdminStudentOneYearFileVo> list = studentOneYearlist.stream().map(item -> AdminStudentOneYearFileVo.builder()
                 .classification(item.getClassification())
