@@ -22,7 +22,7 @@ public enum CommonErrorCode implements ErrorCode {
     UPLOAD_FAILED(453, "파일을 업로드 할 수 없습니다."),
     DELETE_FAILED(454, "파일을 삭제할 수 없습니다."),
     COMPANY_MAIN_YN_FAILED(455, "특정 분야 카테고리의 대표포트폴리오가 10개가 넘습니다."),
-    MAIN_YN_FAILED(456, "메인 포트폴리오는 1개만 설정할 수 있습니다."),
+    MAIN_YN_FAILED(456, "이미 등록된 대표 포트폴리오가 있습니다."),
     ONE_WORD_EMPTY(457, "업로드하신 파일 또는 링크의 한줄소개가 비어있습니다."),
     INTRODUCED_LINE_EMPTY(458, "업로드하신 이력서의 한줄소개가 비어있습니다."),
     SUBJECT_DUPLICATE(459, "이미 존재하는 과정명(회차)입니다."),
