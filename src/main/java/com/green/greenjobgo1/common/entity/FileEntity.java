@@ -52,4 +52,7 @@ public class FileEntity {
     @Column
     @ColumnDefault("0")
     private Integer mainYn;
+
+    @Column(length = 50)
+    private String originFileName;
 }
