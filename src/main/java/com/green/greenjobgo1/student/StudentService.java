@@ -60,7 +60,10 @@ public class StudentService {
         entity.setCreatedAt(LocalDate.now());
         entity.setStudentEntity(stdId.get());
         entity.setOneWord(dto.getOneWord());
-        entity.setOriginFileName(file.getOriginalFilename());
+
+        if (file.getOriginalFilename() != null) {
+            entity.setOriginFileName(file.getOriginalFilename());
+        }
 
         StudentEntity studentEntity = stdId.get();
         if (dto.getIFileCategory() == 1) {
