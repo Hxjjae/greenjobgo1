@@ -24,7 +24,9 @@ public enum CommonErrorCode implements ErrorCode {
     COMPANY_MAIN_YN_FAILED(455, "특정 분야 카테고리의 대표포트폴리오가 10개가 넘습니다."),
     MAIN_YN_FAILED(456, "메인 포트폴리오는 1개만 설정할 수 있습니다."),
     ONE_WORD_EMPTY(457, "업로드하신 파일 또는 링크의 한줄소개가 비어있습니다."),
-    INTRODUCED_LINE_EMPTY(458, "업로드하신 이력서의 한줄소개가 비어있습니다.");
+    INTRODUCED_LINE_EMPTY(458, "업로드하신 이력서의 한줄소개가 비어있습니다."),
+    SUBJECT_DUPLICATE(459, "이미 존재하는 과정명(회차)입니다."),
+    CATEGORY_NOT_EQUALS(460, "해당하는 대분류가 없습니다.");
 
 
 

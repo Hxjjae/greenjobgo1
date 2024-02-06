@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AdminSubjectRepository extends JpaRepository<CourseSubjectEntity, Long> {
     CourseSubjectEntity findBySubjectNameAndRoundAndDelYn(String subjectName,int round,int delYn);
+
+    CourseSubjectEntity findBySubjectNameAndRound(String subjectName, int round);
 }

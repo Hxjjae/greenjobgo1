@@ -32,6 +32,12 @@ public class AdminSubjectService {
 
 
     public AdminSubjectInsRes insAdminSubject(AdminSubjectInsDto dto) {
+        CourseSubjectEntity existSubject = AS_REP.findBySubjectNameAndRound(dto.getCourseSubjectName(), dto.getRound());
+
+        if (existSubject != null) {
+            throw new RestApiException(CommonErrorCode.SUBJECT_DUPLICATE);
+        }
+
         List<CategorySubjectEntity> categorySubjectEntities = AC_REP.findAll();
         CourseSubjectEntity courseSubjectEntity = new CourseSubjectEntity();
         for (CategorySubjectEntity categorySubjectEntity : categorySubjectEntities) {
@@ -47,8 +53,11 @@ public class AdminSubjectService {
                 courseSubjectEntity.setClassTime(dto.getClassTime());
 
                 break;
+            } else {
+                throw new RestApiException(CommonErrorCode.CATEGORY_NOT_EQUALS);
             }
         }
+
         CourseSubjectEntity save = AS_REP.save(courseSubjectEntity);
         return AdminSubjectInsRes.builder()
                 .icourseSubject(save.getIcourseSubject())
