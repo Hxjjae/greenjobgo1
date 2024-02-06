@@ -596,6 +596,12 @@ public class AdminStudentService {
     public AdminStudentPortfolioMainRes patchPortfolioMain(AdminStudentPortfolioMainDto dto) {
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
         List<FileEntity> files = stdId.get().getFiles();
+        Long count= adminStudentQdsl.countByPortfolioMain(stdId.get().getIstudent());
+
+        //메인이 포폴이 등록되어있을때 에러발생
+        if (count==1){
+            throw new RestApiException(CommonErrorCode.MAIN_YN_FAILED);
+        }
 
         if (stdId.isPresent()) {
             for (FileEntity file : files) {
