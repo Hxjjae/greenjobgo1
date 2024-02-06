@@ -57,6 +57,9 @@ public class CompanylistService {
         if (dto.getPhoneNumber()==null){
             throw new RestApiException(CommonErrorCode.PHONE_NULL);
         }
+//        if (dto.getPhoneNumber().length()>11){
+//            throw new RestApiException(CommonErrorCode.PHONE_NULL);
+//        }
 
         CompanyListEntity companyListEntity = CompanyListEntity.builder()
                 .area(dto.getArea())
