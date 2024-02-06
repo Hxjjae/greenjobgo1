@@ -377,6 +377,12 @@ public class AdminStudentService {
             List<StudentEntity> stdList = STU_REP.findAllById(dto.getIstudent());
             List<AdminMainPortfolioPatchRes> resultList = new ArrayList<>();
 
+            for (int i = 0; i <stdList.size(); i++) {
+                if (stdList.get(i).getHuntJobYn()==1) {
+                    throw new RestApiException(CommonErrorCode.MAIN_FAIL);
+                }
+            }
+
             if (!stdList.isEmpty()) {
                 for (StudentEntity studentEntity : stdList) {
                     Long rowCount = adminStudentQdsl.rowCount(studentEntity.getCategorySubjectEntity().getIclassification());
@@ -476,6 +482,9 @@ public class AdminStudentService {
             student.setAge(dto.getAge());
             student.setBirthday(LocalDate.now().minusYears(student.getAge()));
 
+            if (dto.getHuntJobYn()==1){
+                student.setCompanyMainYn(0);
+            }
 //            /* TODO 생일변경으로 바꾸기 */
 //            String birthday = student.getBirthday().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 //            String pwFirst = birthday.substring(2, 3) + birthday.substring(5,6) + birthday.substring(8,9);

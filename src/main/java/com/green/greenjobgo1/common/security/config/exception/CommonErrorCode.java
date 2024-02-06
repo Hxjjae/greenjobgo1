@@ -26,7 +26,8 @@ public enum CommonErrorCode implements ErrorCode {
     ONE_WORD_EMPTY(457, "업로드하신 파일 또는 링크의 한줄소개가 비어있습니다."),
     INTRODUCED_LINE_EMPTY(458, "업로드하신 이력서의 한줄소개가 비어있습니다."),
     SUBJECT_DUPLICATE(459, "이미 존재하는 과정명(회차)입니다."),
-    CATEGORY_NOT_EQUALS(460, "해당하는 대분류가 없습니다.");
+    CATEGORY_NOT_EQUALS(460, "해당하는 대분류가 없습니다."),
+    MAIN_FAIL(461,"취업한 학생이 있습니다. 메인 등록 실패!");
 
 
 
