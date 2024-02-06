@@ -13,6 +13,6 @@ public class StudentFileLink {
     private Long ifile;
     private String fileLink;
     private String oneWord;
-    private Integer mainYn;
+    private int mainYn;
     private String originFileName;
 }
