@@ -436,6 +436,13 @@ public class StudentService {
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
         List<FileEntity> files = stdId.get().getFiles();
 
+        Long count = studentQdsl.countByPortfolioMain(dto.getIstudent());
+
+        //메인이 포폴이 등록되어있을때 에러발생
+        if (count==1){
+            throw new RestApiException(CommonErrorCode.MAIN_YN_FAILED);
+        }
+
         if (stdId.isPresent()) {
             for (FileEntity file : files) {
                 Long countByPortfolioMain = studentQdsl.countByPortfolioMain(dto.getIstudent());
