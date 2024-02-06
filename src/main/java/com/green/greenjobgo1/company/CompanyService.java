@@ -268,7 +268,7 @@ public class CompanyService {
                 .where(qstudent.istudent.eq(istudent)).fetch();
 
         CompanythumbnailVo thumbnail = jpaQueryFactory.select(Projections.bean(CompanythumbnailVo.class,
-                        qfileEntity.file
+                        qfileEntity.file,qfileEntity.originFileName
                 )).from(qfileEntity)
                 .innerJoin(qfileEntity)
                 .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
@@ -276,8 +276,9 @@ public class CompanyService {
                 .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(4L))
                 .fetchOne();
 
-        CompanythumbnailVo aboutMe = jpaQueryFactory.select(Projections.bean(CompanythumbnailVo.class,
+         CompanyAboutMeVo aboutMe = jpaQueryFactory.select(Projections.bean(CompanyAboutMeVo.class,
                         qfileEntity.file
+                         ,qfileEntity.originFileName
                 )).from(qfileEntity)
                 .innerJoin(qfileEntity)
                 .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
@@ -286,7 +287,10 @@ public class CompanyService {
                 .fetchOne();
 
         List<CompanyStdfileImgVo> fileLink = jpaQueryFactory.select(Projections.bean(CompanyStdfileImgVo.class,
-                        qfileEntity.file,qfileEntity.oneWord,qfileEntity.mainYn
+                        qfileEntity.file
+                        ,qfileEntity.originFileName
+                        ,qfileEntity.oneWord,
+                        qfileEntity.mainYn
                 )).from(qfileEntity)
                 .innerJoin(qfileEntity)
                 .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
@@ -296,7 +300,10 @@ public class CompanyService {
 
 
         List<CompanystdportfolioVo> portfolio= jpaQueryFactory.select(Projections.bean(CompanystdportfolioVo.class,
-                        qfileEntity.file,qfileEntity.oneWord,qfileEntity.mainYn
+                        qfileEntity.file
+                        ,qfileEntity.originFileName
+                        ,qfileEntity.oneWord
+                        ,qfileEntity.mainYn
                 )).from(qfileEntity)
                 .innerJoin(qfileEntity)
                 .on(qfileEntity.studentEntity.istudent.eq(qstudent.istudent))
@@ -326,10 +333,11 @@ public class CompanyService {
                 .thumbnail(thumbnail)
                 .aboutMe(aboutMe)
                 .portfolio((portfolio.stream().map(item-> CompanystdportfolioVo.builder()
-                                .file(item.getFile())
-                                .oneWord(item.getOneWord()).mainYn(item.getMainYn()).build()).toList()))
-                .fileLink(fileLink.stream().map(item-> CompanystdportfolioVo.builder()
-                                .file(item.getFile())
+                        .file(item.getFile())
+                        .originFileName(item.getOriginFileName())
+                        .oneWord(item.getOneWord()).mainYn(item.getMainYn()).build()).toList()))
+                .fileLink(fileLink.stream().map(item-> CompanyStdfileImgVo.builder()
+                        .file(item.getFile())
                         .oneWord(item.getOneWord()).mainYn(item.getMainYn())
                         .build()).toList()).build();
         return CompanystdDetailRes.builder().vo(build).file(build1).build();

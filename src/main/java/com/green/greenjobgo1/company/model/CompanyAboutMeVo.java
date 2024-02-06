@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanystdportfolioVo {
+public class CompanyAboutMeVo {
     private String file;
     private String originFileName;
-    private String oneWord;
-    private int mainYn;
 }

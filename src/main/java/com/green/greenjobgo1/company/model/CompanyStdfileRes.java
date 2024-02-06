@@ -13,8 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 public class CompanyStdfileRes {
     private CompanythumbnailVo thumbnail;
-    private CompanythumbnailVo aboutMe;
+    private CompanyAboutMeVo aboutMe;
     private List<CompanystdportfolioVo> portfolio;
-    private List<CompanystdportfolioVo> fileLink;
+    private List<CompanyStdfileImgVo> fileLink;
 
 }
