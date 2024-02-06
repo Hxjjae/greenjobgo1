@@ -13,4 +13,5 @@ public class AdminStudentResume {
     private Long ifile;
     private String resume;
     private String oneWord;
+    private String originFileName;
 }

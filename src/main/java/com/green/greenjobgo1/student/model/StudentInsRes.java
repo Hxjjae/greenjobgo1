@@ -14,5 +14,6 @@ public class StudentInsRes {
     private String file;
     private LocalDate createdAt;
     private String oneWord;
+    private String originFileName;
 
 }
