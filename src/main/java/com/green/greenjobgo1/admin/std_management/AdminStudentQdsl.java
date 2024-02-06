@@ -289,6 +289,11 @@ public class AdminStudentQdsl {
                         file.mainYn.eq(1));
         return query.fetchOne();
     }
+    public AdminFileMainVo mainFile(StudentEntity student){
+        return jpaQueryFactory.select(Projections.bean(AdminFileMainVo.class,file.ifile))
+                .from(file)
+                .where(file.mainYn.eq(1), file.studentEntity.eq(student)).fetchOne();
+    }
 
     public Long countByThumbnail(Long istudent) {
         JPAQuery<Long> query = jpaQueryFactory

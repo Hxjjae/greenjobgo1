@@ -436,15 +436,12 @@ public class StudentService {
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
         List<FileEntity> files = stdId.get().getFiles();
 
+        AdminFileMainVo MainVo = studentQdsl.mainFile(stdId.get());
+
         Long count = studentQdsl.countByPortfolioMain(dto.getIstudent());
 
-        //메인이 포폴이 등록되어있을때 에러발생
-        if (count==1){
-            throw new RestApiException(CommonErrorCode.MAIN_YN_FAILED);
-        }
 
         if (stdId.isPresent()) {
-            for (FileEntity file : files) {
                 Long countByPortfolioMain = studentQdsl.countByPortfolioMain(dto.getIstudent());
 
                 if (countByPortfolioMain < 1) {
@@ -463,7 +460,7 @@ public class StudentService {
                             .istudent(stdId.get().getIstudent())
                             .build();
 
-                } else if (countByPortfolioMain == 1) {
+                } else if (countByPortfolioMain == 1 && (MainVo.getIfile().equals(dto.getIfile())) ) {
                     Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
                     FileEntity fileEntity = new FileEntity();
 
@@ -481,11 +478,11 @@ public class StudentService {
                 } else {
                     throw new RestApiException(CommonErrorCode.MAIN_YN_FAILED);
                 }
-            }
+
         } else {
             throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
-        return null;
+
     }
 
     public CertificateRes delCertificate(StudentCertificateDto dto) {

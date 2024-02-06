@@ -155,6 +155,12 @@ public class StudentQdsl {
         return query.fetchOne();
     }
 
+    public AdminFileMainVo mainFile(StudentEntity student){
+        return jpaQueryFactory.select(Projections.bean(AdminFileMainVo.class,file.ifile))
+                .from(file)
+                .where(file.mainYn.eq(1), file.studentEntity.eq(student)).fetchOne();
+    }
+
     public List<CompanyListEntity> companyList(String companyName, Pageable pageable) {
         JPAQuery<CompanyListEntity> query =  jpaQueryFactory.select(Projections.constructor(CompanyListEntity.class,
                         qCompanyList.companyCode,

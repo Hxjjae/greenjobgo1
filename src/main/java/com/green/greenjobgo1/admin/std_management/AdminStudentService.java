@@ -596,18 +596,13 @@ public class AdminStudentService {
     public AdminStudentPortfolioMainRes patchPortfolioMain(AdminStudentPortfolioMainDto dto) {
         Optional<StudentEntity> stdId = STU_REP.findById(dto.getIstudent());
         List<FileEntity> files = stdId.get().getFiles();
-        Long count= adminStudentQdsl.countByPortfolioMain(stdId.get().getIstudent());
 
-        //메인이 포폴이 등록되어있을때 에러발생
-        if (count==1){
-            throw new RestApiException(CommonErrorCode.MAIN_YN_FAILED);
-        }
+        AdminFileMainVo adminFileMainVo = adminStudentQdsl.mainFile(stdId.get());
 
         if (stdId.isPresent()) {
-            for (FileEntity file : files) {
                 Long countByPortfolioMain = adminStudentQdsl.countByPortfolioMain(stdId.get().getIstudent());
 
-                if (countByPortfolioMain < 1) {
+            if (countByPortfolioMain < 1) {
                     Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
                     FileEntity fileEntity = new FileEntity();
 
@@ -622,7 +617,7 @@ public class AdminStudentService {
                             .istudent(stdId.get().getIstudent())
                             .build();
 
-                } else if (countByPortfolioMain == 1) {
+                } else if (countByPortfolioMain == 1 && (adminFileMainVo.getIfile().equals(dto.getIfile()))) {
                     Optional<FileEntity> fileId = FILE_REP.findById(dto.getIfile());
                     FileEntity fileEntity = new FileEntity();
 
@@ -639,11 +634,11 @@ public class AdminStudentService {
                 } else {
                     throw new RestApiException(CommonErrorCode.MAIN_YN_FAILED);
                 }
-            }
+
         } else {
             throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
         }
-        return null;
+
     }
 
     public AdminStudentCertificateTotalRes updCertificateList(AdminStudentCertificateListDto dto) {
