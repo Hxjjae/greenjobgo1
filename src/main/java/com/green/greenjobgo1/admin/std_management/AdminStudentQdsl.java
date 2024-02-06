@@ -144,7 +144,7 @@ public class AdminStudentQdsl {
 
     public AdminStudentDetailSubjectRes subjectList(Long istudent) {
         JPAQuery<AdminStudentDetailSubjectRes> query = jpaQueryFactory.select(
-                        Projections.bean(AdminStudentDetailSubjectRes.class, cos.icourseSubject, cos.subjectName))
+                        Projections.bean(AdminStudentDetailSubjectRes.class, cos.icourseSubject, cos.subjectName, cos.startedAt, cos.endedAt))
                 .from(cos)
                 .join(cos.scsList, scs)
                 .join(scs.studentEntity, stu)

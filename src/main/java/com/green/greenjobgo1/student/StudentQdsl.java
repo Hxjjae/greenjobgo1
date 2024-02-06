@@ -93,7 +93,7 @@ public class StudentQdsl {
 
     public StudentDetailSubjectRes subjectList(Long istudent) {
         JPAQuery<StudentDetailSubjectRes> query = jpaQueryFactory.select(
-                        Projections.bean(StudentDetailSubjectRes.class, cos.icourseSubject, cos.subjectName))
+                        Projections.bean(StudentDetailSubjectRes.class, cos.icourseSubject, cos.subjectName, cos.startedAt, cos.endedAt))
                 .from(cos)
                 .join(cos.scsList, scs)
                 .join(scs.studentEntity, stu)

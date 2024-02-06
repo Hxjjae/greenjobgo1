@@ -14,7 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Table(name = "course_subject")
+@Table(name = "course_subject", uniqueConstraints = {
+        @UniqueConstraint(
+                name = "ROUND_SUBJECT_NAME_UNIQUE",
+                columnNames = {"subjectName","round"}
+        )})
 @Order(2)
 @Entity
 @ToString(callSuper = true)

@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -12,4 +14,6 @@ import lombok.NoArgsConstructor;
 public class StudentDetailSubjectRes {
     private Long icourseSubject;
     private String subjectName;
+    private LocalDate startedAt;
+    private LocalDate endedAt;
 }
