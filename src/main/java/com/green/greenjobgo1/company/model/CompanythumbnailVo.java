@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CompanythumbnailVo {
     private String file;
+    private String originFileName;
 }
