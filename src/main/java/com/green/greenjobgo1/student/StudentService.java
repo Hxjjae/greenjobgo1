@@ -176,24 +176,42 @@ public class StudentService {
                 }
             }
 
+            if (file.getOriginalFilename() != null) {
+                StudentInsRes res = StudentInsRes.builder()
+                        .file(result.getFile())
+                        .ifile(result.getIfile())
+                        .createdAt(result.getCreatedAt())
+                        .istudent(result.getStudentEntity().getIstudent())
+                        .oneWord(result.getOneWord())
+                        .originFileName(result.getOriginFileName())
+                        .build();
 
-            StudentInsRes res = StudentInsRes.builder()
-                    .file(result.getFile())
-                    .ifile(result.getIfile())
-                    .createdAt(result.getCreatedAt())
-                    .istudent(result.getStudentEntity().getIstudent())
-                    .oneWord(result.getOneWord())
-                    .originFileName(result.getOriginFileName())
-                    .build();
+                StudentIntroducedLineRes std = StudentIntroducedLineRes.builder()
+                        .introducedLine(studentSave.getIntroducedLine())
+                        .build();
 
-            StudentIntroducedLineRes std = StudentIntroducedLineRes.builder()
-                    .introducedLine(studentSave.getIntroducedLine())
-                    .build();
+                return StudentInsTotalRes.builder()
+                        .res(res)
+                        .std(std)
+                        .build();
+            } else {
+                StudentInsRes res = StudentInsRes.builder()
+                        .file(result.getFile())
+                        .ifile(result.getIfile())
+                        .createdAt(result.getCreatedAt())
+                        .istudent(result.getStudentEntity().getIstudent())
+                        .oneWord(result.getOneWord())
+                        .build();
 
-            return StudentInsTotalRes.builder()
-                    .res(res)
-                    .std(std)
-                    .build();
+                StudentIntroducedLineRes std = StudentIntroducedLineRes.builder()
+                        .introducedLine(studentSave.getIntroducedLine())
+                        .build();
+
+                return StudentInsTotalRes.builder()
+                        .res(res)
+                        .std(std)
+                        .build();
+            }
         }
         return null;
     }

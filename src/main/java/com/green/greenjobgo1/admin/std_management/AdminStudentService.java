@@ -186,24 +186,43 @@ public class AdminStudentService {
                 }
             }
 
+            if (file.getOriginalFilename() != null) {
+                AdminStudentInsRes res = AdminStudentInsRes.builder()
+                        .file(result.getFile())
+                        .ifile(result.getIfile())
+                        .createdAt(result.getCreatedAt())
+                        .istudent(result.getStudentEntity().getIstudent())
+                        .oneWord(result.getOneWord())
+                        .originFileName(file.getOriginalFilename())
+                        .build();
 
-            AdminStudentInsRes res = AdminStudentInsRes.builder()
-                    .file(result.getFile())
-                    .ifile(result.getIfile())
-                    .createdAt(result.getCreatedAt())
-                    .istudent(result.getStudentEntity().getIstudent())
-                    .oneWord(result.getOneWord())
-                    .originFileName(result.getOriginFileName())
-                    .build();
+                AdminStudentIntroducedLineRes std = AdminStudentIntroducedLineRes.builder()
+                        .introducedLine(studentSave.getIntroducedLine())
+                        .build();
 
-            AdminStudentIntroducedLineRes std = AdminStudentIntroducedLineRes.builder()
-                    .introducedLine(studentSave.getIntroducedLine())
-                    .build();
+                return AdminStudentInsTotalRes.builder()
+                        .res(res)
+                        .std(std)
+                        .build();
+            } else {
+                AdminStudentInsRes res = AdminStudentInsRes.builder()
+                        .file(result.getFile())
+                        .ifile(result.getIfile())
+                        .createdAt(result.getCreatedAt())
+                        .istudent(result.getStudentEntity().getIstudent())
+                        .oneWord(result.getOneWord())
+                        .build();
 
-            return AdminStudentInsTotalRes.builder()
-                    .res(res)
-                    .std(std)
-                    .build();
+                AdminStudentIntroducedLineRes std = AdminStudentIntroducedLineRes.builder()
+                        .introducedLine(studentSave.getIntroducedLine())
+                        .build();
+
+                return AdminStudentInsTotalRes.builder()
+                        .res(res)
+                        .std(std)
+                        .build();
+            }
+
         }
         return null;
     }
