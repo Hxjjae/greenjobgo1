@@ -61,7 +61,7 @@ public class StudentService {
         entity.setStudentEntity(stdId.get());
         entity.setOneWord(dto.getOneWord());
 
-        if (file.getOriginalFilename() != null) {
+        if (file != null) {
             entity.setOriginFileName(file.getOriginalFilename());
         }
 
@@ -176,7 +176,7 @@ public class StudentService {
                 }
             }
 
-            if (file.getOriginalFilename() != null) {
+            if (file != null) {
                 StudentInsRes res = StudentInsRes.builder()
                         .file(result.getFile())
                         .ifile(result.getIfile())
