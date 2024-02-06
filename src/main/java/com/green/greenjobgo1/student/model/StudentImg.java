@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class StudentImg {
     private Long ifile;
     private String img;
+    private String originFileName;
 }

@@ -70,6 +70,7 @@ public class AdminStudentService {
         entity.setCreatedAt(LocalDate.now());
         entity.setStudentEntity(stdId.get());
         entity.setOneWord(dto.getOneWord());
+        entity.setOriginFileName(file.getOriginalFilename());
 
         StudentEntity studentEntity = stdId.get();
 
@@ -189,6 +190,7 @@ public class AdminStudentService {
                     .createdAt(result.getCreatedAt())
                     .istudent(result.getStudentEntity().getIstudent())
                     .oneWord(result.getOneWord())
+                    .originFileName(result.getOriginFileName())
                     .build();
 
             AdminStudentIntroducedLineRes std = AdminStudentIntroducedLineRes.builder()

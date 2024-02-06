@@ -63,7 +63,7 @@ public class AdminStudentQdsl {
 
     public List<AdminStudentFileRes> fileVos(AdminStudentDetailDto dto) {
         JPAQuery<AdminStudentFileRes> query = jpaQueryFactory
-                .select(Projections.bean(AdminStudentFileRes.class, file.ifile, file.file, file.oneWord, file.mainYn))
+                .select(Projections.bean(AdminStudentFileRes.class, file.ifile, file.file, file.oneWord, file.mainYn, file.originFileName))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),
@@ -85,7 +85,7 @@ public class AdminStudentQdsl {
 
     public AdminStudentImg img(AdminStudentDetailDto dto) {
         JPAQuery<AdminStudentImg> query = jpaQueryFactory
-                .select(Projections.bean(AdminStudentImg.class, file.file.as("img"), file.ifile))
+                .select(Projections.bean(AdminStudentImg.class, file.file.as("img"), file.ifile, file.originFileName))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),
@@ -96,7 +96,7 @@ public class AdminStudentQdsl {
 
     public AdminStudentResume resume(AdminStudentDetailDto dto) {
         JPAQuery<AdminStudentResume> query = jpaQueryFactory
-                .select(Projections.bean(AdminStudentResume.class, file.ifile, file.file.as("resume"), file.oneWord))
+                .select(Projections.bean(AdminStudentResume.class, file.ifile, file.file.as("resume"), file.oneWord, file.originFileName))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),

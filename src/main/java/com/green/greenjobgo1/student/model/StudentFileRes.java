@@ -14,4 +14,5 @@ public class StudentFileRes {
     private String file;
     private String oneWord;
     private Integer mainYn;
+    private String originFileName;
 }

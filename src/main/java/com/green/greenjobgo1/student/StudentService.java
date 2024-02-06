@@ -60,6 +60,7 @@ public class StudentService {
         entity.setCreatedAt(LocalDate.now());
         entity.setStudentEntity(stdId.get());
         entity.setOneWord(dto.getOneWord());
+        entity.setOriginFileName(file.getOriginalFilename());
 
         StudentEntity studentEntity = stdId.get();
         if (dto.getIFileCategory() == 1) {
@@ -179,6 +180,7 @@ public class StudentService {
                     .createdAt(result.getCreatedAt())
                     .istudent(result.getStudentEntity().getIstudent())
                     .oneWord(result.getOneWord())
+                    .originFileName(result.getOriginFileName())
                     .build();
 
             StudentIntroducedLineRes std = StudentIntroducedLineRes.builder()

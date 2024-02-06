@@ -49,7 +49,7 @@ public class StudentQdsl {
 
     public List<StudentFileRes> fileVos(StudentSelDto dto) {
         JPAQuery<StudentFileRes> query = jpaQueryFactory
-                .select(Projections.bean(StudentFileRes.class, file.ifile, file.file, file.oneWord, file.mainYn))
+                .select(Projections.bean(StudentFileRes.class, file.ifile, file.file, file.oneWord, file.mainYn, file.originFileName))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),
@@ -60,7 +60,7 @@ public class StudentQdsl {
 
     public List<StudentFileLink> fileLinks(StudentSelDto dto) {
         JPAQuery<StudentFileLink> query = jpaQueryFactory
-                .select(Projections.bean(StudentFileLink.class, file.ifile, file.file.as("fileLink"), file.oneWord, file.mainYn))
+                .select(Projections.bean(StudentFileLink.class, file.ifile, file.file.as("fileLink"), file.oneWord, file.mainYn, file.originFileName))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),
@@ -71,7 +71,7 @@ public class StudentQdsl {
 
     public StudentImg img(StudentSelDto dto) {
         JPAQuery<StudentImg> query = jpaQueryFactory
-                .select(Projections.bean(StudentImg.class, file.file.as("img"), file.ifile))
+                .select(Projections.bean(StudentImg.class, file.file.as("img"), file.ifile, file.originFileName))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),
@@ -82,7 +82,7 @@ public class StudentQdsl {
 
     public StudentResume resume(StudentSelDto dto) {
         JPAQuery<StudentResume> query = jpaQueryFactory
-                .select(Projections.bean(StudentResume.class, file.ifile, file.file.as("resume"), file.oneWord))
+                .select(Projections.bean(StudentResume.class, file.ifile, file.file.as("resume"), file.oneWord, file.originFileName))
                 .from(file)
                 .join(file.studentEntity, stu)
                 .where(stu.istudent.eq(dto.getIstudent()),
