@@ -361,7 +361,7 @@ public class CompanyService {
                 .where(eqcategory(icategory))
                 .where(qfileEntity.fileCategoryEntity.iFileCategory.eq(4L))
                 .where(qstudent.companyMainYn.eq(1))
-                .where(qstudent.huntJobYn.eq(1))
+                .where(qstudent.huntJobYn.eq(0))
                 .fetch();
 
         List<CompanyMainVo> mainvolist = list.stream().map(item -> CompanyMainVo.builder()
