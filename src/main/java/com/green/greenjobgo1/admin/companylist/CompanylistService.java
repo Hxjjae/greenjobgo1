@@ -145,11 +145,6 @@ public class CompanylistService {
         CompanyListEntity byCompanyName = companylistRep.findByCompanyName(companyName);
         entity.setCompanyCode(companyCode);
 
-        //이름중복 예외처리
-        if (byCompanyName!=null){
-            throw new RestApiException(CommonErrorCode.COMPANYLIST_DUPLICATE);
-        }
-
         // null이 아닌 경우에만 값이 들어갑니다.
         Optional.ofNullable(area).ifPresent(entity::setArea);
         Optional.ofNullable(companyName).ifPresent(entity::setCompanyName);
