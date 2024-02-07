@@ -252,6 +252,7 @@ public class AdminStudentService {
                         .subjectName(item.getSubjectName())
                         .file(adminStudentQdsl.fileCount(item.getIstudent()))
                         .huntJobYn(item.getHuntJobYn())
+                        .round(item.getRound())
                         .build()).toList())
                 .build();
         return ResponseEntity.ok(build);

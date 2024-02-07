@@ -3,10 +3,12 @@ package com.green.greenjobgo1.admin.std_management;
 import com.green.greenjobgo1.admin.std_management.model.*;
 import com.green.greenjobgo1.common.entity.*;
 import com.green.greenjobgo1.company.model.CompanyStdVo;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -46,7 +48,7 @@ public class AdminStudentQdsl {
         JPAQuery<AdminStudentRes> query = jpaQueryFactory
                 .select(Projections.bean(AdminStudentRes.class, stu.istudent, cas.classification, cos.subjectName,
                         cos.startedAt, cos.endedAt, stu.name, stu.gender, stu.address, stu.mobileNumber
-                        , stu.education, stu.huntJobYn))
+                        , stu.education, stu.huntJobYn, cos.round))
                 .from(scs)
                 .join(scs.studentEntity, stu)
                 .join(scs.courseSubjectEntity, cos)
@@ -155,7 +157,19 @@ public class AdminStudentQdsl {
     public List<AdminPortfolioRes> portfolioVos(AdminPortfolioDto dto, Pageable pageable) {
         JPAQuery<AdminPortfolioRes> query = jpaQueryFactory.select(
                         Projections.bean(AdminPortfolioRes.class, stu.name.as("studentName")
-                                , cos.subjectName, file.file.as("img"), stu.istudent, stu.storageYn, stu.huntJobYn))
+                                , cos.subjectName, file.file.as("img")
+                                , stu.istudent, stu.storageYn, stu.huntJobYn
+                                , ExpressionUtils.as(JPAExpressions.select(file.file)
+                                        .from(stu)
+                                        .join(stu.scsList, scs)
+                                        .join(scs.courseSubjectEntity, cos)
+                                        .join(cos.categorySubjectEntity, cate)
+                                        .join(stu.files, file)
+                                        .where(eqIclassification(dto.getIclassfication()),
+                                                eqSubjectName(dto.getSubjectName()),
+                                                eqStudentName(dto.getStudentName()),
+                                                file.fileCategoryEntity.iFileCategory.eq(4L),
+                                                stu.delYn.eq(0)),"img")))
                 .from(stu)
                 .join(stu.scsList, scs)
                 .join(scs.courseSubjectEntity, cos)
@@ -164,7 +178,6 @@ public class AdminStudentQdsl {
                 .where(eqIclassification(dto.getIclassfication()),
                         eqSubjectName(dto.getSubjectName()),
                         eqStudentName(dto.getStudentName()),
-                        file.fileCategoryEntity.iFileCategory.eq(4L),
                         stu.delYn.eq(0))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
