@@ -155,11 +155,11 @@ public class AdminStudentQdsl {
     }
 
     public List<AdminPortfolioRes> portfolioVos(AdminPortfolioDto dto, Pageable pageable) {
-        JPAQuery<AdminPortfolioRes> query = jpaQueryFactory.select(
+        JPAQuery<AdminPortfolioRes> query = jpaQueryFactory.selectDistinct(
                         Projections.bean(AdminPortfolioRes.class, stu.name.as("studentName")
-                                , cos.subjectName, file.file.as("img")
+                                , cos.subjectName
                                 , stu.istudent, stu.storageYn, stu.huntJobYn
-                                , ExpressionUtils.as(JPAExpressions.select(file.file)
+                                , ExpressionUtils.as(JPAExpressions.selectDistinct(file.file)
                                         .from(stu)
                                         .join(stu.scsList, scs)
                                         .join(scs.courseSubjectEntity, cos)
