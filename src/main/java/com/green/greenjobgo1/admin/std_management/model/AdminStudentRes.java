@@ -25,4 +25,5 @@ public class AdminStudentRes {
     private Long certificate;
     private Long file;
     private Integer huntJobYn;
+    private Integer round;
 }

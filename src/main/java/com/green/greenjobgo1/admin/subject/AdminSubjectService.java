@@ -40,9 +40,10 @@ public class AdminSubjectService {
 
         List<CategorySubjectEntity> categorySubjectEntities = AC_REP.findAll();
         CourseSubjectEntity courseSubjectEntity = new CourseSubjectEntity();
+        boolean categoryMatch = false;
+
         for (CategorySubjectEntity categorySubjectEntity : categorySubjectEntities) {
             if (categorySubjectEntity.getIclassification().equals(dto.getIclassification())) {
-
                 courseSubjectEntity.setInstructor(dto.getInstructor());
                 courseSubjectEntity.setLectureRoom(dto.getLectureRoom());
                 courseSubjectEntity.setSubjectName(dto.getCourseSubjectName());
@@ -52,10 +53,13 @@ public class AdminSubjectService {
                 courseSubjectEntity.setRound(dto.getRound());
                 courseSubjectEntity.setClassTime(dto.getClassTime());
 
+                categoryMatch = true;
                 break;
-            } else {
-                throw new RestApiException(CommonErrorCode.CATEGORY_NOT_EQUALS);
             }
+        }
+
+        if (!categoryMatch) {
+            throw new RestApiException(CommonErrorCode.CATEGORY_NOT_EQUALS);
         }
 
         CourseSubjectEntity save = AS_REP.save(courseSubjectEntity);
@@ -70,10 +74,9 @@ public class AdminSubjectService {
                 .round(save.getRound())
                 .classTime(save.getClassTime())
                 .build();
-
     }
 
-    public AdminSubjectFindRes selAdminSubject(AdminSubjectDto dto, AdminCategoryDto categoryDto, Pageable pageable) {
+        public AdminSubjectFindRes selAdminSubject(AdminSubjectDto dto, AdminCategoryDto categoryDto, Pageable pageable) {
         long maxPage = adminSubjectQdsl.selIdx(categoryDto, dto);
         PagingUtils utils = new PagingUtils(pageable.getPageNumber() + 1, (int) maxPage, pageable);
         if (categoryDto.getIclassification() != null) {
