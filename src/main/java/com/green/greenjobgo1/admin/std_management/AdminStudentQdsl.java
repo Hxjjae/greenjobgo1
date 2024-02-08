@@ -8,6 +8,7 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
+
+import static org.hibernate.internal.util.StringHelper.coalesce;
 
 @Slf4j
 @Component
@@ -156,32 +159,26 @@ public class AdminStudentQdsl {
 
     public List<AdminPortfolioRes> portfolioVos(AdminPortfolioDto dto, Pageable pageable) {
         JPAQuery<AdminPortfolioRes> query = jpaQueryFactory.selectDistinct(
-                        Projections.bean(AdminPortfolioRes.class, stu.name.as("studentName")
-                                , cos.subjectName
-                                , stu.istudent, stu.storageYn, stu.huntJobYn
-                                , ExpressionUtils.as(JPAExpressions.selectDistinct(file.file)
-                                        .from(stu)
-                                        .join(stu.scsList, scs)
-                                        .join(scs.courseSubjectEntity, cos)
-                                        .join(cos.categorySubjectEntity, cate)
-                                        .join(stu.files, file)
-                                        .where(eqIclassification(dto.getIclassfication()),
-                                                eqSubjectName(dto.getSubjectName()),
-                                                eqStudentName(dto.getStudentName()),
-                                                file.fileCategoryEntity.iFileCategory.eq(4L),
-                                                stu.delYn.eq(0)),"img")))
+                        Projections.bean(AdminPortfolioRes.class,
+                                stu.name.as("studentName"),
+                                cos.subjectName,
+                                stu.istudent,
+                                stu.storageYn,
+                                stu.huntJobYn, Expressions.stringTemplate("COALESCE({0}, {1})", file.file, "").as("img"
+                        )))
                 .from(stu)
-                .join(stu.scsList, scs)
-                .join(scs.courseSubjectEntity, cos)
-                .join(cos.categorySubjectEntity, cate)
-                .join(stu.files, file)
+                .leftJoin(stu.scsList, scs)
+                .leftJoin(scs.courseSubjectEntity, cos)
+                .leftJoin(cos.categorySubjectEntity, cate)
+                .leftJoin(stu.files, file)
                 .where(eqIclassification(dto.getIclassfication()),
                         eqSubjectName(dto.getSubjectName()),
                         eqStudentName(dto.getStudentName()),
+                        file.fileCategoryEntity.iFileCategory.eq(4L),
                         stu.delYn.eq(0))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(cos.endedAt.desc(),stu.istudent.desc());
+                .orderBy(cos.endedAt.desc(), stu.istudent.desc());
         return query.fetch();
     }
 
