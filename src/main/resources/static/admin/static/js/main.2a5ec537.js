@@ -1,4 +1,4 @@
-/*! For license information please see main.b62dd005.js.LICENSE.txt */
+/*! For license information please see main.2a5ec537.js.LICENSE.txt */
 (() => {
   var e = {
       3940: (e, t, n) => {
@@ -65616,7 +65616,7 @@
                     REACT_APP_API_URL: "/api/admin",
                     REACT_APP_BASE_FILE_URL:
                       "https://greenjobgo.kr/img/student",
-                    REACT_APP_BASE_URL: "https://greenjobgo.kr/",
+                    REACT_APP_BASE_URL: "https://greenjobgo.kr",
                     REACT_APP_BS_URL: "/student/sub-category-list?page",
                     REACT_APP_CADP_URL: "/company?icompany",
                     REACT_APP_CAD_URL: "/company",
@@ -65670,7 +65670,7 @@
                     REACT_APP_API_URL: "/api/admin",
                     REACT_APP_BASE_FILE_URL:
                       "https://greenjobgo.kr/img/student",
-                    REACT_APP_BASE_URL: "https://greenjobgo.kr/",
+                    REACT_APP_BASE_URL: "https://greenjobgo.kr",
                     REACT_APP_BS_URL: "/student/sub-category-list?page",
                     REACT_APP_CADP_URL: "/company?icompany",
                     REACT_APP_CAD_URL: "/company",
@@ -65740,7 +65740,7 @@
                     REACT_APP_API_URL: "/api/admin",
                     REACT_APP_BASE_FILE_URL:
                       "https://greenjobgo.kr/img/student",
-                    REACT_APP_BASE_URL: "https://greenjobgo.kr/",
+                    REACT_APP_BASE_URL: "https://greenjobgo.kr",
                     REACT_APP_BS_URL: "/student/sub-category-list?page",
                     REACT_APP_CADP_URL: "/company?icompany",
                     REACT_APP_CAD_URL: "/company",
@@ -71344,9 +71344,9 @@
         341: "c04a4b3b",
         380: "e97a8c31",
         416: "751da4d0",
-        455: "f4c10ff5",
+        455: "e38cfdb3",
         580: "a3a45cb3",
-        661: "b2be75f3",
+        661: "fdc13c8c",
         700: "16bbf1a2",
         888: "0df519f9",
         975: "49fe6f1b",
