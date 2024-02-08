@@ -53,6 +53,6 @@ public class FileEntity {
     @ColumnDefault("0")
     private Integer mainYn;
 
-    @Column(length = 50)
+    @Column
     private String originFileName;
 }

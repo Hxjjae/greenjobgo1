@@ -164,8 +164,12 @@ public class AdminStudentQdsl {
                                 cos.subjectName,
                                 stu.istudent,
                                 stu.storageYn,
-                                stu.huntJobYn, Expressions.stringTemplate("COALESCE({0}, {1})", file.file, "").as("img"
-                        )))
+                                stu.huntJobYn,
+                                Expressions.stringTemplate("COALESCE({0}, '')",
+                                                JPAExpressions.select(file.file)
+                                                        .from(file)
+                                                        .where(file.studentEntity.eq(stu).and(file.fileCategoryEntity.iFileCategory.eq(4L))))
+                                        .as("img")))
                 .from(stu)
                 .leftJoin(stu.scsList, scs)
                 .leftJoin(scs.courseSubjectEntity, cos)
@@ -174,7 +178,6 @@ public class AdminStudentQdsl {
                 .where(eqIclassification(dto.getIclassfication()),
                         eqSubjectName(dto.getSubjectName()),
                         eqStudentName(dto.getStudentName()),
-                        file.fileCategoryEntity.iFileCategory.eq(4L),
                         stu.delYn.eq(0))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
