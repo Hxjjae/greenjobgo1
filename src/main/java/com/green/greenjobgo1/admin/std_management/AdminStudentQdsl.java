@@ -188,21 +188,24 @@ public class AdminStudentQdsl {
     public List<AdminStorageStudentRes> storageVos(AdminStorageStudentDto dto, Pageable pageable) {
         JPAQuery<AdminStorageStudentRes> query = jpaQueryFactory.select(
                         Projections.bean(AdminStorageStudentRes.class, stu.istudent, stu.name.as("studentName")
-                                , cos.subjectName, file.file.as("img"), stu.introducedLine, stu.storageYn, stu.companyMainYn, stu.huntJobYn))
+                                , cos.subjectName, stu.introducedLine, stu.storageYn, stu.companyMainYn, stu.huntJobYn,
+                                Expressions.stringTemplate("COALESCE({0}, '')",
+                                                JPAExpressions.select(file.file)
+                                                        .from(file)
+                                                        .where(file.studentEntity.eq(stu).and(file.fileCategoryEntity.iFileCategory.eq(4L))))
+                                        .as("img")))
                 .from(stu)
-                .join(stu.scsList, scs)
-                .join(scs.courseSubjectEntity, cos)
-                .join(cos.categorySubjectEntity, cate)
-                .join(stu.files, file)
+                .leftJoin(stu.scsList, scs)
+                .leftJoin(scs.courseSubjectEntity, cos)
+                .leftJoin(cos.categorySubjectEntity, cate)
+                .leftJoin(stu.files, file)
                 .where(eqIclassification(dto.getIclassfication()),
                         eqSubjectName(dto.getSubjectName()),
                         eqStudentName(dto.getStudentName()),
-                        file.fileCategoryEntity.iFileCategory.eq(4L),
-                        stu.storageYn.eq(1),
                         stu.delYn.eq(0))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(stu.companyMainYn.desc(), cos.endedAt.desc());
+                .orderBy(stu.companyMainYn.desc(),cos.endedAt.desc());
         return query.fetch();
     }
 

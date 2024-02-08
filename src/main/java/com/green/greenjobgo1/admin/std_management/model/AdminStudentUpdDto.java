@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,6 +18,6 @@ public class AdminStudentUpdDto {
     private String certificate;
     private String mobileNumber;
     private Integer huntJobYn;
-    private Integer age;
+    private LocalDate birthday;
     private String gender;
 }

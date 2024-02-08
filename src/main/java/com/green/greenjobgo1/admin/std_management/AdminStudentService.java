@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -480,19 +481,19 @@ public class AdminStudentService {
             student.setMobileNumber(dto.getMobileNumber());
             student.setHuntJobYn(dto.getHuntJobYn());
             student.setGender(dto.getGender());
-            student.setAge(dto.getAge());
-            student.setBirthday(LocalDate.now().minusYears(student.getAge()));
+            student.setBirthday(dto.getBirthday());
+            student.setAge(Period.between(student.getBirthday(), LocalDate.now()).getYears());
 
             if (dto.getHuntJobYn()==1){
                 student.setCompanyMainYn(0);
             }
-//            /* TODO 생일변경으로 바꾸기 */
-//            String birthday = student.getBirthday().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-//            String pwFirst = birthday.substring(2, 3) + birthday.substring(5,6) + birthday.substring(8,9);
-//            String phone = student.getMobileNumber();
-//            String pwSecond = phone.substring(9);
-//
-//            student.setPw(PW_ENCODER.encode(pwFirst + pwSecond));
+            /* TODO 생일변경으로 바꾸기 */
+            String birthday = student.getBirthday().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            String pwFirst = birthday.substring(2, 3) + birthday.substring(5,6) + birthday.substring(8,9);
+            String phone = student.getMobileNumber();
+            String pwSecond = phone.substring(9);
+
+            student.setPw(PW_ENCODER.encode(pwFirst + pwSecond));
 
 
             StudentEntity stdSave = STU_REP.save(student);
