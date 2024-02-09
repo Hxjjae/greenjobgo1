@@ -34,7 +34,7 @@ public class StudentEntity {
     @OneToMany(mappedBy = "studentEntity")
     private List<FileEntity> files = new ArrayList<>();
 
-    @OneToMany(mappedBy = "studentEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "studentEntity", cascade = CascadeType.ALL)
     private List<CertificateEntity> certificates;
 
     @ToString.Exclude
