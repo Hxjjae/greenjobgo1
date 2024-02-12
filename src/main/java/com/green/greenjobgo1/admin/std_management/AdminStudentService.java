@@ -487,7 +487,7 @@ public class AdminStudentService {
             if (dto.getHuntJobYn()==1){
                 student.setCompanyMainYn(0);
             }
-            /* TODO 생일변경으로 바꾸기 */
+
             String birthday = student.getBirthday().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             String pwFirst = birthday.substring(2, 3) + birthday.substring(5,6) + birthday.substring(8,9);
             String phone = student.getMobileNumber();
