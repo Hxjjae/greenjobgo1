@@ -202,7 +202,8 @@ public class AdminStudentQdsl {
                 .where(eqIclassification(dto.getIclassfication()),
                         eqSubjectName(dto.getSubjectName()),
                         eqStudentName(dto.getStudentName()),
-                        stu.delYn.eq(0))
+                        stu.delYn.eq(0),
+                        stu.storageYn.eq(1))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(stu.companyMainYn.desc(),cos.endedAt.desc());
