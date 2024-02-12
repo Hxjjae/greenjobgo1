@@ -146,26 +146,23 @@ public class AdminSignService {
                     .build();
 
             StudentEntity studententity = stdRep.findById(user.getEmail());
+            CourseSubjectEntity courseSubjectEntity = subjectRep.findBySubjectNameAndRoundAndDelYn(user.getSubjectName(), Integer.parseInt(user.getRound()),0);
+
+            //subject의 대분류 조회
+            CategorySubjectEntity categorySubjectEntity = adminCategoryRep.findById(courseSubjectEntity.getCategorySubjectEntity().getIclassification()).get();
+
+            Long iclassification = courseSubjectEntity.getCategorySubjectEntity().getIclassification();
 
             // 중복된 이메일은 회원가입 X
             if (studententity == null){
                 StudentEntity save = stdRep.save(student);
 
                 log.info("ID:{}",save.getIstudent());
-                //학생이 소속된 과목table 정보 가져오기
                 log.info("과정명:{}",user.getSubjectName());
-                CourseSubjectEntity courseSubjectEntity = subjectRep.findBySubjectNameAndRoundAndDelYn(user.getSubjectName(), Integer.parseInt(user.getRound()),0);
-
-                //subject의 대분류 조회
-                CategorySubjectEntity categorySubjectEntity = adminCategoryRep.findById(courseSubjectEntity.getCategorySubjectEntity().getIclassification()).get();
-
-                Long iclassification = courseSubjectEntity.getCategorySubjectEntity().getIclassification();
-
 
                 StudentCourseSubjectEntity entity = StudentCourseSubjectEntity.builder()
                         .studentEntity(save)
                         .courseSubjectEntity(subjectentity)
-                        .iclassification(iclassification)
                         .iclassification(categorySubjectEntity.getIclassification())
                         .build();
 
@@ -174,6 +171,24 @@ public class AdminSignService {
                     throw new RestApiException(CommonErrorCode.INTERNAL_SERVER_ERROR);
                 }
 
+            }else {
+                //회원수정
+                student.setIstudent(studententity.getIstudent());
+                StudentEntity save = stdRep.save(student);
+
+                List<StudentCourseSubjectEntity> byStudentEntity = studentCourseSubjectRep.findByStudentEntity(student);
+
+                //수강과목 수정
+                for (StudentCourseSubjectEntity scs:byStudentEntity) {
+                    log.info("StudentCourseSubjectEntity:{}",scs.getIStdCosSub());
+                    StudentCourseSubjectEntity entity = StudentCourseSubjectEntity.builder()
+                            .iStdCosSub(scs.getIStdCosSub())
+                            .studentEntity(save)
+                            .courseSubjectEntity(subjectentity)
+                            .iclassification(categorySubjectEntity.getIclassification())
+                            .build();
+                    studentCourseSubjectRep.save(entity);
+                }
             }
         }
         return 1;
