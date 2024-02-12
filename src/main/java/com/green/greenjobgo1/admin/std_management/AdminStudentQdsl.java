@@ -186,7 +186,7 @@ public class AdminStudentQdsl {
     }
 
     public List<AdminStorageStudentRes> storageVos(AdminStorageStudentDto dto, Pageable pageable) {
-        JPAQuery<AdminStorageStudentRes> query = jpaQueryFactory.select(
+        JPAQuery<AdminStorageStudentRes> query = jpaQueryFactory.selectDistinct(
                         Projections.bean(AdminStorageStudentRes.class, stu.istudent, stu.name.as("studentName")
                                 , cos.subjectName, stu.introducedLine, stu.storageYn, stu.companyMainYn, stu.huntJobYn,
                                 Expressions.stringTemplate("COALESCE({0}, '')",
