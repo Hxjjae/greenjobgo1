@@ -23,4 +23,5 @@ public class AdminStudentUpdRes {
     private Integer age;
     private String gender;
     private LocalDate birthday;
+    private String pw;
 }

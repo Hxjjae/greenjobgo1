@@ -491,7 +491,7 @@ public class AdminStudentService {
             String birthday = student.getBirthday().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             String pwFirst = birthday.substring(2, 3) + birthday.substring(5,6) + birthday.substring(8,9);
             String phone = student.getMobileNumber();
-            String pwSecond = phone.substring(9);
+            String pwSecond = phone.substring(9,12);
 
             student.setPw(PW_ENCODER.encode(pwFirst + pwSecond));
 
@@ -509,6 +509,7 @@ public class AdminStudentService {
                     .age(stdSave.getAge())
                     .gender(stdSave.getGender())
                     .birthday(stdSave.getBirthday())
+                    .pw(stdSave.getPw())
                     .build();
         } else {
             throw new RestApiException(CommonErrorCode.RESOURCE_NOT_FOUND);
