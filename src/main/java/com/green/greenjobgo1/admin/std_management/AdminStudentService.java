@@ -489,9 +489,9 @@ public class AdminStudentService {
             }
 
             String birthday = student.getBirthday().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            String pwFirst = birthday.substring(2, 3) + birthday.substring(5,6) + birthday.substring(8,9);
-            String phone = student.getMobileNumber();
-            String pwSecond = phone.substring(9,12);
+            String pwFirst = birthday.substring(2, 4) + birthday.substring(5,7) + birthday.substring(8,10);
+            String phone = student.getMobileNumber().replaceAll("-", "");
+            String pwSecond = phone.substring(7);
 
             student.setPw(PW_ENCODER.encode(pwFirst + pwSecond));
 
