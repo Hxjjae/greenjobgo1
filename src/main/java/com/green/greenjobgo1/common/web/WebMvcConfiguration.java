@@ -31,7 +31,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         reg.addResourceHandler( "/img/**")
                 .addResourceLocations(String.format("file:%s/", FILE_DIR));
 
-        reg.addResourceHandler("/admin", "/admin/**")
+        reg.addResourceHandler("/admin", "/admin/**","/admin/")
                 .addResourceLocations("classpath:/static/admin/**")
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver() {
