@@ -2,10 +2,9 @@ package com.green.greenjobgo1.admin.subject;
 
 import com.green.greenjobgo1.admin.category.model.AdminCategoryDto;
 import com.green.greenjobgo1.admin.subject.model.*;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+
 import lombok.RequiredArgsConstructor;
-import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -18,36 +17,36 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/subject")
-@Tag(name = "관리자 과목 CRUD")
+/** name = "관리자 과목 CRUD" **/
 public class AdminSubjectController {
 
     @Autowired
     private final AdminSubjectService SERVICE;
 
     @PostMapping
-    @Operation(summary = "수강과목 추가", description = "")
+    /** summary = "수강과목 추가", description = "" **/
     public AdminSubjectInsRes postAdminSubject(@RequestBody AdminSubjectInsDto dto) {
         return SERVICE.insAdminSubject(dto);
     }
 
     @GetMapping
-    @Operation(summary = "수강과목 보기", description = "iclassficiation = 대분류 pk\n" +
+    /** summary = "수강과목 보기", description = "iclassficiation = 대분류 pk\n" +
             "subjectName = 과정 이름\n" +
             "condition = 과정 상태\n" +
             "delYn = 삭제 여부\n" +
-            "\nResponses : " +
-            "\npage = 현재 페이지\n" +
-            "\nmaxPage = 최대 페이지\n" +
-            "\nrow = 행 갯수(10고정)\n" +
-            "\nicourseSubject = 과정 pk\n" +
-            "\niclassfication = 대분류 pk\n" +
-            "\ncourseSubjectName = 과정 이름\n" +
-            "\nstartedAt = 시작일자\n" +
-            "\nendedAt = 종료일자\n" +
-            "\ninstructor = 강사명\n" +
-            "\nlectureRoom = 강의실\n" +
-            "\ndelYn = 삭제 여부\n")
-    public ResponseEntity<AdminSubjectFindRes> getAdminSubject(@ParameterObject @PageableDefault(sort = "icourseSubject", page = 1) Pageable pageable,
+            "\n Responses : " +
+            "\n page = 현재 페이지\n" +
+            "\n maxPage = 최대 페이지\n" +
+            "\n row = 행 갯수(10고정)\n" +
+            "\n icourseSubject = 과정 pk\n" +
+            "\n iclassfication = 대분류 pk\n" +
+            "\n courseSubjectName = 과정 이름\n" +
+            "\n startedAt = 시작일자\n" +
+            "\n endedAt = 종료일자\n" +
+            "\n instructor = 강사명\n" +
+            "\n lectureRoom = 강의실\n" +
+            "\n delYn = 삭제 여부\n" **/
+    public ResponseEntity<AdminSubjectFindRes> getAdminSubject(@PageableDefault(sort = "icourseSubject", page = 1) Pageable pageable,
                                                                @RequestParam(required = false) Long iclassification,
                                                                @RequestParam(required = false) String subjectName,
                                                                @RequestParam(required = false, defaultValue = "0") Integer condition,
@@ -63,7 +62,7 @@ public class AdminSubjectController {
     }
 
     @PutMapping
-    @Operation(summary = "수강과목 수정", description = "\nicourseSubject = 과정 pk\n" +
+    /** summary = "수강과목 수정", description = "\nicourseSubject = 과정 pk\n" +
             "\niclassfication = 대분류 pk\n" +
             "\ncourseSubjectName = 과정 이름\n" +
             "\nstartedAt = 시작일자\n" +
@@ -71,7 +70,7 @@ public class AdminSubjectController {
             "\nInstructor = 강사명\n" +
             "\nLectureRoom = 강의실\n" +
             "\nround = 회차\n" +
-            "\nclassTime = 수강시간")
+            "\nclassTime = 수강시간" **/
 
     public AdminSubjectUpdRes putAdminSubject(@RequestParam Long icourseSubject,
                                               @RequestParam Long iclassification,
@@ -96,8 +95,8 @@ public class AdminSubjectController {
     }
 
     @PatchMapping
-    @Operation(summary = "수강과목 상태 변경", description = "icourseSubject = 과정 pk\n" +
-            "\ncondition = 과정 상태 (0 = 시작전 , 1 = 진행중, 2 = 종료)\n")
+    /** summary = "수강과목 상태 변경", description = "icourseSubject = 과정 pk\n" +
+            "\ncondition = 과정 상태 (0 = 시작전 , 1 = 진행중, 2 = 종료)\n" **/
     public AdminSubjectPatchRes patchAdminSubject(@RequestParam Long icourseSubject,
                                                   @RequestParam int condition) {
         AdminSubjectPatchDto dto = new AdminSubjectPatchDto();
@@ -107,7 +106,7 @@ public class AdminSubjectController {
     }
 
     @DeleteMapping
-    @Operation(summary = "수강과목 삭제", description = "")
+    /** summary = "수강과목 삭제", description = "" **/
     public List<AdminSubjectDelRes> delAdminSubject(@RequestParam List<Long> icourseSubject) {
         AdminSubjectDelDto dto = new AdminSubjectDelDto();
         dto.setIcourseSubject(icourseSubject);

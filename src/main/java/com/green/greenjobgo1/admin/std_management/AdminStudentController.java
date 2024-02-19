@@ -6,10 +6,7 @@ import com.green.greenjobgo1.common.security.config.exception.CommonErrorCode;
 import com.green.greenjobgo1.common.security.config.exception.RestApiException;
 import com.green.greenjobgo1.student.model.StudentCertificateDto;
 import com.green.greenjobgo1.student.model.StudentCertificateRes;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -27,21 +24,22 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/student")
-@Tag(name = "관리자 학생관리" , description = " UPLOAD_FAILED(453, \"파일을 업로드 할 수 없습니다.\"),\n" +
+/** name = "관리자 학생관리" , description = " UPLOAD_FAILED(453, \"파일을 업로드 할 수 없습니다.\"),\n" +
         "    \nDELETE_FAILED(454, \"파일을 삭제할 수 없습니다.\"),\n" +
         "    \nCOMPANY_MAIN_YN_FAILED(455, \"특정 분야 카테고리의 대표포트폴리오가 10개가 넘습니다.\"),\n" +
         "    \nMAIN_YN_FAILED(456, \"메인 포트폴리오는 1개만 설정할 수 있습니다.\"),\n" +
         "    \nONE_WORD_EMPTY(457, \"업로드하신 파일 또는 링크의 한줄소개가 비어있습니다.\"),\n" +
-        "    \nINTRODUCED_LINE_EMPTY(458, \"업로드하신 이력서의 한줄소개가 비어있습니다.\")")
+        "    \nINTRODUCED_LINE_EMPTY(458, \"업로드하신 이력서의 한줄소개가 비어있습니다.\")") **/
 public class AdminStudentController {
 
     private final AdminStudentService SERVICE;
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, path = "/file")
-    @Operation(summary = "관리자 수강생 파일 및 링크 업로드", description = "istudent = 학생pk \n" +
-            "\niFileCategory = 파일카테고리 pk 1번 이력서, 2번 포트폴리오 파일, 3번 포트폴리오 링크, 4번 포트폴리오 대표 이미지\n" +
-            "\nintroducedLine = 한줄 소개 \n" +
-            "\nfileLink = 파일 링크 ! 3번을 택했을경우에는 이부분만 작성하시고 파일은 안올려도됩니다.")
+    /** summary = "관리자 수강생 파일 및 링크 업로드",
+     * description = "istudent = 학생pk \n" +
+            "\n iFileCategory = 파일카테고리 pk 1번 이력서, 2번 포트폴리오 파일, 3번 포트폴리오 링크, 4번 포트폴리오 대표 이미지\n" +
+            "\n introducedLine = 한줄 소개 \n" +
+            "\n fileLink = 파일 링크 ! 3번을 택했을경우에는 이부분만 작성하시고 파일은 안올려도됩니다." **/
     public AdminStudentInsTotalRes postFile(@RequestPart(required = false) MultipartFile file,
                                             @RequestParam Long istudent,
                                             @RequestParam Long iFileCategory,
@@ -59,8 +57,8 @@ public class AdminStudentController {
     }
 
     @GetMapping("/sub-category-list")
-    @Operation(summary = "일괄삭제 리스트 GET")
-    public AdminStudentSubjectCategoryRes getSubjectCategory(@ParameterObject @PageableDefault(sort = "icourseSubject", direction = Sort.Direction.DESC, page = 1) Pageable pageable,
+    /** "일괄삭제 리스트 GET" **/
+    public AdminStudentSubjectCategoryRes getSubjectCategory(@PageableDefault(sort = "icourseSubject", direction = Sort.Direction.DESC, page = 1) Pageable pageable,
                                                              @RequestParam(required = false) Long iclassification,
                                                              @RequestParam(required = false) Long icourseSubject) {
         AdminStudentCategoryDto dto = new AdminStudentCategoryDto();
@@ -70,7 +68,7 @@ public class AdminStudentController {
     }
 
     @GetMapping("/dropbox-category")
-    @Operation(summary = "과정별 드롭박스 GET")
+    /** summary = "과정별 드롭박스 GET" **/
     public AdminStudentSubjectDropBoxRes getSubjectDropbox(@RequestParam Long iclassification) {
         AdminStudentSubjectDropBoxDto dto = new AdminStudentSubjectDropBoxDto();
         dto.setIclassification(iclassification);
@@ -79,7 +77,7 @@ public class AdminStudentController {
 
 
     @GetMapping
-    @Operation(summary = "학생 조회", description = "istudnet : 수강생 PK \n" +
+    /** summary = "학생 조회", description = "istudnet : 수강생 PK \n" +
             "\n classfication : 카테고리 \n" +
             "\n subjectName : 수강과목 명 \n" +
             "\n startedAt : 강의시작일자\n" +
@@ -89,8 +87,8 @@ public class AdminStudentController {
             "\n address : 지역\n" +
             "\n mobileNumber : 휴대폰 번호 \n" +
             "\n certificate : 자격증 \n" +
-            "\n file : 이력서 + 포트폴리오 ")
-    public ResponseEntity<AdminStudentFindRes> getStudentList(@ParameterObject @PageableDefault(sort = "istudent", direction = Sort.Direction.ASC, page = 1) Pageable pageable,
+            "\n file : 이력서 + 포트폴리오 " **/
+    public ResponseEntity<AdminStudentFindRes> getStudentList(@PageableDefault(sort = "istudent", direction = Sort.Direction.ASC, page = 1) Pageable pageable,
                                                               @RequestParam(required = false) Long icategory,
                                                               @RequestParam(required = false) String subjectName) {
         AdminStudentDto dto = new AdminStudentDto();
@@ -100,7 +98,7 @@ public class AdminStudentController {
     }
 
     @GetMapping("/detail")
-    @Operation(summary = "학생 상세 조회", description = "name : 수강생 이름 \n" +
+    /** summary = "학생 상세 조회", description = "name : 수강생 이름 \n" +
             "\n birthday : 생일 \n" +
             "\n address : 주소 \n" +
             "\n addressDetail : 상세주소\n" +
@@ -108,7 +106,7 @@ public class AdminStudentController {
             "\n startedAt : 권한시작일자\n" +
             "\n endedAt : 권한만료일자 \n" +
             "\n mobileNumber : 휴대폰 번호 \n" +
-            "\n education : 학력 ")
+            "\n education : 학력 " **/
     public AdminStudentDetailFindRes getStudentDetail(@RequestParam Long istudent) {
         AdminStudentDetailDto dto = new AdminStudentDetailDto();
         dto.setIstudent(istudent);
@@ -116,11 +114,11 @@ public class AdminStudentController {
     }
 
     @GetMapping("/portfolio")
-    @Operation(summary = "포트폴리오 조회", description = "img : 포트폴리오 대표 이미지 \n" +
+    /** summary = "포트폴리오 조회", description = "img : 포트폴리오 대표 이미지 \n" +
             "\n istudent : 수강생 PK \n" +
             "\n studentName : 수강생 이름 \n" +
-            "\n subjectname : 수강과목 이름")
-    public ResponseEntity<AdminPortfolioFindRes> getPortfolio(@ParameterObject @PageableDefault(page = 1)
+            "\n subjectname : 수강과목 이름" **/
+    public ResponseEntity<AdminPortfolioFindRes> getPortfolio(@PageableDefault(page = 1)
                                                               @SortDefault.SortDefaults({
                                                                       @SortDefault(sort = "storageYn", direction = Sort.Direction.DESC),
                                                                       @SortDefault(sort = "istudent", direction = Sort.Direction.ASC)
@@ -137,11 +135,11 @@ public class AdminStudentController {
     }
 
     @GetMapping("/storage")
-    @Operation(summary = "보관함 리스트 조회", description = "img : 포트폴리오 대표 이미지 \n" +
+    /** summary = "보관함 리스트 조회", description = "img : 포트폴리오 대표 이미지 \n" +
             "\n istudent : 수강생 PK \n" +
             "\n studentName : 수강생 이름 \n" +
-            "\n subjectname : 수강과목 이름")
-    public ResponseEntity<AdminStorageStudentFindRes> getStorage(@ParameterObject @PageableDefault(sort = "istudent", direction = Sort.Direction.ASC, page = 1) Pageable pageable,
+            "\n subjectname : 수강과목 이름" **/
+    public ResponseEntity<AdminStorageStudentFindRes> getStorage(@PageableDefault(sort = "istudent", direction = Sort.Direction.ASC, page = 1) Pageable pageable,
                                                                  @RequestParam(required = false) Long iclassfication,
                                                                  @RequestParam(required = false) String studentName,
                                                                  @RequestParam(required = false) String subjectName) {
@@ -153,13 +151,13 @@ public class AdminStudentController {
     }
 
     @GetMapping("/role-list")
-    @Operation(summary = "수강생 열람 가능기간 조회")
+    /** summary = "수강생 열람 가능기간 조회" **/
     public AdminStudentRoleSelListRes getRoleList() {
         return SERVICE.setRoleList();
     }
 
     @PatchMapping("/storage")
-    @Operation(summary = "보관 여부 결정")
+    /** summary = "보관 여부 결정" **/
     public AdminStorageStudentPatchRes patchStorage(@RequestParam Long istudent,
                                                     @RequestParam int storageYn) {
 
@@ -170,7 +168,7 @@ public class AdminStudentController {
     }
 
     @PutMapping("/certificate")
-    @Operation(summary = "자격증 수정")
+    /** summary = "자격증 수정" **/
     public AdminStudentCertificateRes putCertificate(@RequestParam Long istudent,
                                                      @RequestParam Long icertificate,
                                                      @RequestParam String certificate) {
@@ -192,7 +190,7 @@ public class AdminStudentController {
 //    }
 
     @PatchMapping("/portfolio-main")
-    @Operation(summary = "대표 포트폴리오 설정")
+    /** summary = "대표 포트폴리오 설정" **/
     public AdminStudentPortfolioMainRes patchPortfolioMain(@RequestParam Long istudent,
                                                            @RequestParam Long ifile) {
         AdminStudentPortfolioMainDto dto = new AdminStudentPortfolioMainDto();
@@ -203,7 +201,7 @@ public class AdminStudentController {
 
 
     @PatchMapping("/main")
-    @Operation(summary = "메인 여부 결정 (대분류당 10개) 상한")
+    /** summary = "메인 여부 결정 (대분류당 10개) 상한" **/
     public List<AdminMainPortfolioPatchRes> patchMain(@RequestParam List<Long> istudent,
                                                       @RequestParam int companyMainYn) {
         AdminMainPortfolioPatchDto dto = new AdminMainPortfolioPatchDto();
@@ -213,7 +211,7 @@ public class AdminStudentController {
     }
 
     @PatchMapping("/editable-yn")
-    @Operation(summary = "학생 권한 수정")
+    /** summary = "학생 권한 수정" **/
     public AdminStudentRoleRes patchRole(@RequestParam Long icourseSubject,
                                          @RequestParam LocalDate startedAt,
                                          @RequestParam LocalDate endedAt) {
@@ -227,7 +225,7 @@ public class AdminStudentController {
 
 
     @PutMapping
-    @Operation(summary = "학생 정보 수정")
+    /** summary = "학생 정보 수정" **/
     public AdminStudentUpdRes putStudent(@RequestParam Long istudent,
                                          @RequestParam(required = false) String studentName,
                                          @RequestParam(required = false) String address,
@@ -252,7 +250,7 @@ public class AdminStudentController {
     }
 
     @DeleteMapping
-    @Operation(summary = "학생 삭제")
+    /** summary = "학생 삭제" **/
     public AdminStudentDelRes delStudent(@RequestParam Long istudent) {
         AdminStudentDelDto dto = new AdminStudentDelDto();
         dto.setIstudent(istudent);
@@ -260,7 +258,7 @@ public class AdminStudentController {
     }
 
     @DeleteMapping("/certificate")
-    @Operation(summary = "자격증 삭제")
+    /** summary = "자격증 삭제" **/
     public AdminStudentCertificateRes delCertificatee(@RequestParam Long istudent,
                                                       @RequestParam Long icertificate) {
         AdminStudentCertificateDto dto = new AdminStudentCertificateDto();
@@ -270,7 +268,7 @@ public class AdminStudentController {
     }
 
     @DeleteMapping("/file")
-    @Operation(summary = "학생 파일 삭제")
+    /** summary = "학생 파일 삭제" **/
     public AdminStudentFileDelRes delFile(@RequestParam Long ifile) {
         AdminStudentFileDelDto dto = new AdminStudentFileDelDto();
         dto.setIfile(ifile);
@@ -278,7 +276,7 @@ public class AdminStudentController {
     }
 
     @DeleteMapping("/student-list")
-    @Operation(summary = "학생 일괄 삭제")
+    /** summary = "학생 일괄 삭제" **/
     public AdminStudentDelListRes delStudentList(@RequestParam Long iclassification,
                                                  @RequestParam Long icourseSubject) {
         AdminStudentDelDto dto = new AdminStudentDelDto();
@@ -288,8 +286,8 @@ public class AdminStudentController {
     }
 
     @PostMapping("/certificate")
-    @Operation(summary = "수강생 자격증 추가", description = "istudent = 수강생 pk \n" +
-            "\n certificates = 자격증 list 로 입력")
+    /** summary = "수강생 자격증 추가", description = "istudent = 수강생 pk \n" +
+            "\n certificates = 자격증 list 로 입력" **/
     public AdminStudentCertificateListRes postCertificate(@RequestParam Long istudent,
                                                  @RequestParam List<String> certificates) {
             StudentCertificateDto dto = new StudentCertificateDto();
@@ -300,7 +298,7 @@ public class AdminStudentController {
     }
 
     @GetMapping("/oneyearago")
-    @Operation(summary = "1년이 지난 학생 조회",
+    /** summary = "1년이 지난 학생 조회",
             description = "classification: 대분류<br>"+
                     "subjectName: 수강과목 <br>"+
                     "round: 기수(회차)<br>"+
@@ -311,9 +309,8 @@ public class AdminStudentController {
                     "gender: 성별<br>"+
                     "portfolio: 포트폴리오 개수<br>"+
                     "storageYn: 저장된 포트폴리오 (보관함) 유무 1이면 보관함<br>"+
-                    "studentName: <br>"
-    )
-    public AdminStudentOneYearRes getOneYearStudent(@ParameterObject @PageableDefault(page = 1)
+                    "studentName: <br>" **/
+    public AdminStudentOneYearRes getOneYearStudent(@PageableDefault(page = 1)
                                                     @SortDefault(sort = "istudent", direction = Sort.Direction.ASC) Pageable pageable,
                                                     @RequestParam(required = false) Long iclassification,
                                                     @RequestParam(required = false) Long icourseSubject,
@@ -322,10 +319,9 @@ public class AdminStudentController {
     }
 
     @DeleteMapping("/oneyearago")
-    @Operation(summary = "1년이 지난 학생 삭제",description = "리턴값이 1이면 삭제완료 처리<br>"+
+    /** summary = "1년이 지난 학생 삭제",description = "리턴값이 1이면 삭제완료 처리<br>"+
             "<예외처리><br>"+
-    "파일 삭제 실패시: code: 454,"
-    )
+    "파일 삭제 실패시: code: 454," **/
     public int delStudentOneYear(@RequestParam List<Long> istudent) {
          return SERVICE.delStudentOneYear(istudent);
     }

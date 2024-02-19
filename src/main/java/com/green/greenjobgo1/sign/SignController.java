@@ -4,8 +4,8 @@ import com.green.greenjobgo1.sign.model.SignInParam;
 import com.green.greenjobgo1.common.security.CommonRes;
 import com.green.greenjobgo1.common.security.sign.model.SignInResultDto;
 import com.green.greenjobgo1.sign.model.TokenDto;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+//import io.swagger.v3.oas.annotations.Operation;
+//import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,24 +13,24 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
-@Tag(name = "수강생,기업 로그인,로그아웃")
+//@Tag(name = "수강생,기업 로그인,로그아웃")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/sign")
 public class SignController {
     private final SignService service;
     @PostMapping("/sign-in")
-    @Operation(summary = "로그인", description = """
-            "email(id)": 이메일(기업id: greendg100)<br>
-            "pw": 비밀번호(기업pw green1234)<br>
-            "editableYn: 편집가능유무 1이면 편집가능" <br>
-            "portfolioYn: 포트폴리오가 있으면 1" <br>
-            "aboutMeYn: 이력서가 있으면 1" <br>
-            <예외처리> <br>
-            이메일 오류: code:432<br>"
-            비밀번호 오류 :code:434<br>"
-            조회기간 만료 :code:435<br>"
-            """)
+//    @Operation(summary = "로그인", description = """
+//            "email(id)": 이메일(기업id: greendg100)<br>
+//            "pw": 비밀번호(기업pw green1234)<br>
+//            "editableYn: 편집가능유무 1이면 편집가능" <br>
+//            "portfolioYn: 포트폴리오가 있으면 1" <br>
+//            "aboutMeYn: 이력서가 있으면 1" <br>
+//            <예외처리> <br>
+//            이메일 오류: code:432<br>"
+//            비밀번호 오류 :code:434<br>"
+//            조회기간 만료 :code:435<br>"
+//            """)
     public SignInResultDto signIn(HttpServletRequest req, @RequestBody SignInParam p) {
         String ip = req.getRemoteAddr();
         log.info("[signIn] 로그인을 시도하고 있습니다. email(id): {}, pw: {}, ip: {}", p.getEmail(), p.getPw(), ip);
@@ -44,13 +44,13 @@ public class SignController {
     }
 
     @PostMapping("/refresh-token")
-    @Operation(summary = "accessToken 재발행")
+//    @Operation(summary = "accessToken 재발행")
     public String refreshToken(HttpServletRequest req, @RequestBody TokenDto token) {
         return service.refreshToken(req, token.getRefreshToken());
     }
 
     @PostMapping("/logout")
-    @Operation(summary = "로그아웃")
+//    @Operation(summary = "로그아웃")
     public ResponseEntity<?> logout(HttpServletRequest req) {
         service.logout(req);
         ResponseCookie responseCookie = ResponseCookie.from("refresh-token", "")
